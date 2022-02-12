@@ -1,0 +1,35 @@
+<div class="einheitenContainer">
+    <h2>Einheiten</h2>
+    <button mat-button class="floatRight" (click)="this.openDialog()">Hinzufügen</button>
+    
+    <div class="accordionContainer">
+        <mat-accordion *ngIf="this.einheiten.length != 0">
+            <mat-expansion-panel *ngFor="let einheit of this.einheiten">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{ einheit.topic }}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{ einheit.description }}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <mat-form-field appearance="outline" class="fill">
+                    <mat-label>Notizen</mat-label>
+                    <textarea matInput [(ngModel)]="einheit.notes"></textarea>
+                </mat-form-field>
+
+                <div class="marginBottom">
+                    <app-tasks [tasks]="einheit.tasks">
+
+                    </app-tasks>
+                </div>
+
+                <div class="marginBottom">
+                    <app-files [files]="einheit.files">
+
+                    </app-files>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</div>

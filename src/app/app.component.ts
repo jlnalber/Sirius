@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { FaecherManagerService } from 'src/app/shared/faecher-manager.service';
+import { Component, HostListener, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Sirius';
+  opened = false;
+
+  @HostListener('window:beforeunload', [ '$event' ])
+  beforeUnloadHandler(_event: any) {
+    this.faecherManager.saveInCache();
+  }
+
+  constructor(private readonly faecherManager: FaecherManagerService) { }
 }

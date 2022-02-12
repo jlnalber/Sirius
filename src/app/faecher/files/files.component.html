@@ -1,0 +1,14 @@
+<mat-card>
+    <mat-card-title>
+        <h3>Dateien</h3>
+    </mat-card-title>
+    <mat-card-content>
+        <div class="fileContainer">
+            <div *ngFor="let file of this.files" class="task">
+            </div>
+        </div>
+    </mat-card-content>
+    <mat-card-actions *ngIf="this.isAbleToAddFiles" align="end">
+        <button (click)="this.openDialog()" mat-flat-button>Hinzufügen</button>
+    </mat-card-actions>
+</mat-card>

@@ -1,1 +1,62 @@
+$oxford-blue: #00072dff;
+$royal-blue-dark: #001c55ff;
+$royal-blue-dark-2: #0a2472ff;
+$sapphire-blue: #0e6ba8ff;
+$non-photo-blue: #a6e1faff;// below defines your custom color to build a theme palette from
+
+$my-blue: (
+  A100: $sapphire-blue,
+  A200: $royal-blue-dark-2,
+  A400: $royal-blue-dark,
+  A700: $oxford-blue,
+  contrast: (
+    A100: white,
+    A200: white,
+    A400: white,
+    A700: white,
+  )
+);
+
+// below creates a primary palette with three shades of blue
+//$my-primary: mat-palette($my-blue, 100, 50, 200);
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+
+
+$Sirius-primary: mat.define-palette($my-blue, A200, A100, A400);
+$Sirius-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$Sirius-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$Sirius-theme: mat.define-light-theme((
+  color: (
+    primary: $Sirius-primary,
+    accent: $Sirius-accent,
+    warn: $Sirius-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($Sirius-theme);
+
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; user-select: none; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

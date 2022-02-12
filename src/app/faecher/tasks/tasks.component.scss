@@ -1,0 +1,27 @@
+$height: 36px;
+
+.taskContainer {
+    padding-top: 10px;
+}
+
+.task {
+    margin: 5px;
+    padding: 10px;
+    padding-left: 15px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 3px #00000066;
+}
+
+.checkBoxContainer {
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    height: $height;
+}
+
+button {
+    height: $height;
+}

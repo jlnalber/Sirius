@@ -1,0 +1,33 @@
+
+<div class="fachContainer">
+    <h1>
+        {{ this.fach?.name }}
+    </h1>
+
+    <p>
+        {{ this.fach?.description }}
+    </p>
+
+    <mat-form-field appearance="outline" class="fill">
+        <mat-label>Notizen</mat-label>
+        <textarea *ngIf="this.fach" matInput [(ngModel)]="this.fach.notes"></textarea>
+    </mat-form-field>
+
+    <div class="marginBottom">
+        <app-tasks *ngIf="this.fach" [tasks]="this.fach?.tasks">
+
+        </app-tasks>
+    </div>
+
+    <div class="marginBottom">
+        <app-files *ngIf="this.fach" [files]="this.fach?.files">
+
+        </app-files>
+    </div>
+
+    <div class="marginBottom">
+        <app-einheiten *ngIf="this.fach" [einheiten]="this.fach?.einheiten">
+            
+        </app-einheiten>
+    </div>
+</div>

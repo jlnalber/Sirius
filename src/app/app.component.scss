@@ -1,0 +1,49 @@
+mat-toolbar {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-app-region: drag;
+}
+
+mat-toolbar button {
+  -webkit-app-region: no-drag;
+}
+
+.icon {
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    fill: currentColor;
+    color: inherit;
+    font-size: 24px;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    margin-right: 10px;
+    border-radius: 50%;
+    $hw: 40px;
+    width: $hw;
+    height: $hw;
+    transition: all 0.25s ease-in-out;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.main {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+mat-sidenav-container {
+    flex-grow: 1;
+}
+
+mat-sidenav {
+    padding: 0px;
+    min-width: 25%;
+}

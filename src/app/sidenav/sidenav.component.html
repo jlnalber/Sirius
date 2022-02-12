@@ -1,0 +1,21 @@
+<div class="faecherContainer">
+    <mat-nav-list>
+        <mat-list-item [routerLink]="'/faecher/'" class="fill" (click)="this.openedChange.emit(false)">
+            Übersicht
+        </mat-list-item>
+        <mat-divider *ngIf="this.faecherManager.faecher.length != 0"></mat-divider>
+        <mat-list-item *ngFor="let fach of this.faecherManager.faecher" [routerLink]="'/faecher/' + fach.id" class="fill" (click)="this.openedChange.emit(false)">
+            {{ fach.name }}
+        </mat-list-item>
+    </mat-nav-list>
+    <!--<div class="fachContainer fill">
+        <button mat-button [routerLink]="'/faecher/'" class="fill" (click)="this.openedChange.emit(false)">
+            Übersicht
+        </button>
+    </div>
+    <div *ngFor="let fach of this.faecherManager.faecher" class="fachContainer topStroke fill">
+        <button mat-button [routerLink]="'/faecher/' + fach.id" class="fill" (click)="this.openedChange.emit(false)">
+            {{ fach.name }}
+        </button>
+    </div>-->
+</div>

@@ -1,0 +1,19 @@
+<h1 mat-dialog-title class="fill">Fach hinzufügen</h1>
+<div mat-dialog-content class="fill">
+  <div>
+    <mat-form-field appearance="outline" class="fill">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="data.name" class="fill" required>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="outline" class="fill">
+      <mat-label>Beschreibung</mat-label>
+      <input matInput [(ngModel)]="data.description" class="fill">
+    </mat-form-field>
+  </div>
+</div>
+<div mat-dialog-actions align="end" class="fill">
+  <button color="accent" mat-button (click)="onNoClick()">Abbrechen</button>
+  <button [disabled]="data.name == ''" mat-button [mat-dialog-close]="data" cdkFocusInitial>Hinzufügen</button>
+</div>

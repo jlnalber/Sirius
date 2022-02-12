@@ -1,0 +1,22 @@
+<mat-card>
+    <mat-card-title>
+        <h3>Aufgaben</h3>
+    </mat-card-title>
+    <mat-card-content>
+        <div class="taskContainer">
+            <div *ngFor="let task of this.tasks" class="task">
+                <div align="left" class="checkBoxContainer">
+                    <mat-checkbox color="primary" [(ngModel)]="task.closed">
+                        {{ task.description }}
+                    </mat-checkbox>
+                </div>
+                <div align="right">
+                    <button color="accent" mat-button (click)="this.removeTask(task)"><mat-icon>clear</mat-icon></button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+    <mat-card-actions *ngIf="this.isAbleToAddTasks" align="end">
+        <button (click)="this.openDialog()" mat-flat-button>Hinzufügen</button>
+    </mat-card-actions>
+</mat-card>
