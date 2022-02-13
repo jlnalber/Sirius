@@ -1,0 +1,33 @@
+$wh: 25px;
+$border: 2px;
+$pad: 2px;
+$whn: calc($wh - 2 * ($border + $pad));
+
+.wrapper {
+    width: calc($wh + 2px);
+    height: calc($wh + 2px);
+    background-color: transparent;
+    overflow: hidden;
+}
+
+.color {
+    width: $wh;
+    height: $wh;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: all 0.2s linear;
+    border: 1px solid #00000028;
+}
+
+.sameColor {
+    border: $border solid #00000099;
+    width: $whn;
+    height: $whn;
+    padding: $pad;
+}
+
+.bg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
