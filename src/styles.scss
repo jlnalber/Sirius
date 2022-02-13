@@ -60,3 +60,7 @@ $Sirius-theme: mat.define-light-theme((
 
 html, body { height: 100%; user-select: none; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.fill {
+  width: 100%;
+}
