@@ -1,0 +1,23 @@
+<div class="canvasWrapper" [ngStyle]="{ 'width.%': this.width, 'height.%': this.height }">
+    <app-canvas [stroke]="this.stroke"></app-canvas>
+
+    <div class="bottomElements">
+        <div class="table">
+            <div class="tc left">
+                <div class="controlWrapper">
+
+                </div>
+            </div>
+            <div class="tc center">
+                <div class="controlWrapper">
+                    <app-pen-control [stroke]="this.stroke"></app-pen-control>
+                </div>
+            </div>
+            <div class="tc right">
+                <div class="controlWrapper">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -16,6 +16,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
+import { MatSliderModule } from '@angular/material/slider';
 
 import { FaecherDialogComponent, FaecherComponent } from './faecher/faecher.component';
 import { FachComponent } from './faecher/fach/fach.component';
@@ -25,6 +26,13 @@ import { FilesComponent } from './faecher/files/files.component';
 import { EinheitenDialogComponent, EinheitenComponent } from './faecher/einheiten/einheiten.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { NgxElectronModule } from 'ngx-electron';
+import { WhiteboardComponent } from './whiteboard/whiteboard.component';
+import { DrawingComponent } from './whiteboard/drawing/drawing.component';
+import { CanvasComponent } from './whiteboard/drawing/canvas/canvas.component';
+import { PenControlComponent } from './whiteboard/drawing/pen-control/pen-control.component';
+import { StrokePickerComponent } from './whiteboard/drawing/stroke-picker/stroke-picker.component';
+import { ColorsetComponent } from './whiteboard/drawing/colorset/colorset.component';
+import { ColorComponent } from './whiteboard/drawing/colorset/color/color.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +46,14 @@ import { NgxElectronModule } from 'ngx-electron';
     TaskDialogComponent,
     EinheitenComponent,
     EinheitenDialogComponent,
-    SidenavComponent
+    SidenavComponent,
+    WhiteboardComponent,
+    DrawingComponent,
+    CanvasComponent,
+    PenControlComponent,
+    StrokePickerComponent,
+    ColorsetComponent,
+    ColorComponent
   ],
   imports: [
     BrowserModule,
@@ -56,6 +71,7 @@ import { NgxElectronModule } from 'ngx-electron';
     MatDialogModule,
     MatExpansionModule,
     MatListModule,
+    MatSliderModule,
     NgxElectronModule
   ],
   providers: [],
