@@ -1,3 +1,4 @@
+import { BoardService } from './../../../../features/board.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { Stroke } from 'src/app/global/stroke';
 import { Color } from 'src/app/global/color';
@@ -9,10 +10,9 @@ import { Color } from 'src/app/global/color';
 })
 export class ColorComponent implements OnInit {
 
-  @Input() stroke!: Stroke;
   @Input() color!: Color;
 
-  constructor() { }
+  constructor(public readonly boardService: BoardService) { }
 
   ngOnInit(): void {
   }

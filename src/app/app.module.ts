@@ -33,6 +33,7 @@ import { PenControlComponent } from './whiteboard/drawing/pen-control/pen-contro
 import { StrokePickerComponent } from './whiteboard/drawing/stroke-picker/stroke-picker.component';
 import { ColorsetComponent } from './whiteboard/drawing/colorset/colorset.component';
 import { ColorComponent } from './whiteboard/drawing/colorset/color/color.component';
+import { MoveControlComponent } from './whiteboard/drawing/move-control/move-control.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { ColorComponent } from './whiteboard/drawing/colorset/color/color.compon
     PenControlComponent,
     StrokePickerComponent,
     ColorsetComponent,
-    ColorComponent
+    ColorComponent,
+    MoveControlComponent
   ],
   imports: [
     BrowserModule,

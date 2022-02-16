@@ -1,8 +1,8 @@
-<div class="control" [ngClass]="this.active ? 'active' : 'inactive'" (click)="this.active = !this.active">
+<div class="control" [ngClass]="this.isDrawing() ? 'active' : 'inactive'" (click)="this.click()">
     <mat-icon>create</mat-icon>
 </div>
-<div *ngIf="this.active" class="card">
+<div *ngIf="this.active && this.isDrawing()" class="card">
     <div class="">
-        <app-stroke-picker [stroke]="this.stroke"></app-stroke-picker>
+        <app-stroke-picker></app-stroke-picker>
     </div>
 </div>

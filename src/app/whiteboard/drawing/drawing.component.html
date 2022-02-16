@@ -1,5 +1,5 @@
 <div class="canvasWrapper" [ngStyle]="{ 'width.%': this.width, 'height.%': this.height }">
-    <app-canvas [stroke]="this.stroke"></app-canvas>
+    <app-canvas></app-canvas>
 
     <div class="bottomElements">
         <div class="table">
@@ -10,7 +10,8 @@
             </div>
             <div class="tc center">
                 <div class="controlWrapper">
-                    <app-pen-control [stroke]="this.stroke"></app-pen-control>
+                    <app-pen-control class="control"></app-pen-control>
+                    <app-move-control class="control"></app-move-control>
                 </div>
             </div>
             <div class="tc right">

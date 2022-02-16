@@ -1,3 +1,4 @@
+import { BoardService } from './../../../features/board.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { Stroke } from 'src/app/global/stroke';
 
@@ -8,9 +9,7 @@ import { Stroke } from 'src/app/global/stroke';
 })
 export class StrokePickerComponent implements OnInit {
 
-  @Input() stroke!: Stroke;
-
-  constructor() { }
+  constructor(public readonly boardService: BoardService) { }
 
   ngOnInit(): void {
   }

@@ -3,6 +3,6 @@
 </div>
 <div *ngIf="this.active && this.isMoving()" class="card">
     <div class="">
-        <mat-slider color="primary" [min]="1" [max]="800" value="400" (input)="this.onSliderChange($event)"></mat-slider>
+        <mat-slider color="primary" [min]="1" [max]="2000" [value]="this.getSliderValue()" value="400" (input)="this.onSliderChange($event)"></mat-slider>
     </div>
 </div>

@@ -1,5 +1,6 @@
 import { Stroke } from './../../../global/stroke';
 import { Component, Input, OnInit } from '@angular/core';
+import { BoardService, BoardModes } from 'src/app/features/board.service';
 
 @Component({
   selector: 'app-pen-control',
@@ -8,10 +9,20 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class PenControlComponent implements OnInit {
 
-  @Input() stroke!: Stroke;
   active: boolean = false;
 
-  constructor() { }
+  public isDrawing(): boolean {
+    let res = this.boardService.mode == BoardModes.Draw;
+    if (!res && !this.active) this.active = true;
+    return res;
+  }
+
+  public click(): void {
+    this.active = !this.active;
+    this.boardService.mode = BoardModes.Draw;
+  }
+
+  constructor(public readonly boardService: BoardService) { }
 
   ngOnInit(): void {
   }

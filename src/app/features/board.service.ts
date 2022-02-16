@@ -22,8 +22,13 @@ export interface Point {
 })
 export class BoardService {
 
-  private static calculateCoord(origVal: number, translate: number, zoom: number) {
-    return (origVal - translate) / zoom;
+  public getActualPoint(p: Point): Point {
+    if (this.canvas) {
+      let x = (p.x - this.canvas.translateX) / this.canvas.zoom;
+      let y = (p.y - this.canvas.translateY) / this.canvas.zoom;
+      return { x: x, y: y };
+    }
+    return { x: 0, y: 0 };
   }
 
   constructor() { }
@@ -60,12 +65,9 @@ export class BoardService {
     this.currentPath = new Path(pathEl, this.stroke);
   }
   private drawMoveTouch(from: Point, to: Point) {
-    if (this.canvas) {
-      let x = BoardService.calculateCoord(to.x, this.canvas.translateX, this.canvas.zoom);
-      let y = BoardService.calculateCoord(to.y, this.canvas.translateY, this.canvas.zoom);
-      let p = { x: x, y: y };
-      this.currentPath.addPoint(p);
-    }
+    let realFrom = this.getActualPoint(from);
+
+    this.currentPath.addPoint(realFrom);
   }
   private drawEndTouch() {
     this.currentPath.finalize();

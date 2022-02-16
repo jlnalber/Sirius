@@ -1,3 +1,4 @@
+import { BoardService } from './../../../features/board.service';
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
 import { fromEvent } from 'rxjs';
@@ -18,42 +19,90 @@ export class CanvasComponent implements AfterViewInit {
   @ViewChild('canvas')
   public canvas!: ElementRef;
 
-  @Input() public stroke: Stroke = new Stroke(new Color(0, 0, 0));
+  @ViewChild('g')
+  public g!: ElementRef;
 
-  constructor() { }
+  public svgElement: SVGSVGElement | undefined;
+  public gElement: SVGGElement | undefined;
 
-  ngAfterViewInit(): void {
-    let svgElement = this.canvas.nativeElement as SVGSVGElement;
-    this.captureEvents(svgElement);
+  private _translateX: number = 0;
+  private _translateY: number = 0;
+  private _zoom: number = 1;
+
+  public get translateX(): number {
+    return this._translateX;
+  }
+  public set translateX(value: number) {
+    this._translateX = value;
+    this.justify();
+  }
+  public get translateY(): number {
+    return this._translateY;
+  }
+  public set translateY(value: number) {
+    this._translateY = value;
+    this.justify();
+  }
+  public get zoom(): number {
+    return this._zoom;
+  }
+  public set zoom(value: number) {
+
+    if (this.svgElement) {
+      let midY = this.svgElement?.clientHeight / 2;
+      let midX = this.svgElement?.clientWidth / 2;
+      let vectY = -this._translateY + midY;
+      let vectX = -this._translateX + midX;
+      let finalMidY = vectY * value / this._zoom;
+      let finalMidX = vectX * value / this._zoom;
+      let finalY = vectY - finalMidY;
+      let finalX = vectX - finalMidX;
+      this._translateX += finalX;
+      this._translateY += finalY;
+    }
+
+    this._zoom = value;
+    this.justify();
   }
 
-  private currentPath: Path = new Path(document.createElementNS(svgns, 'path'), this.stroke);
-  
-  private captureEvents(canvasEl: SVGSVGElement) {
-    canvasEl.addEventListener('mouseup', () => {
-      this.currentPath.finalize();
+  constructor(private readonly boardService: BoardService) {
+    this.boardService.canvas = this;
+  }
+
+  ngAfterViewInit(): void {
+    this.svgElement = this.canvas.nativeElement as SVGSVGElement;
+    this.gElement = this.g.nativeElement as SVGGElement;
+    this.captureEvents();
+  }
+
+  private captureEvents() {
+    this.svgElement?.addEventListener('mouseup', () => {
+      this.boardService.endTouch();
     })
-    canvasEl.addEventListener('mouseleave', () => {
-      this.currentPath.finalize();
+    this.svgElement?.addEventListener('mouseleave', () => {
+      this.boardService.endTouch();
     })
+    this.svgElement?.addEventListener('touchcancel', () => {
+      this.boardService.endTouch();
+    });
+    this.svgElement?.addEventListener('touchend', () => {
+      this.boardService.endTouch();
+    });
 
     // this will capture all mousedown events from the canvas element
-    fromEvent(canvasEl, 'mousedown')
+    fromEvent(this.svgElement as SVGSVGElement, 'mousedown')
       .pipe(
         switchMap((e) => {
-          //this.currentPath.finalize();
-          let pathEl = document.createElementNS(svgns, 'path');
-          canvasEl.appendChild(pathEl);
-          this.currentPath = new Path(pathEl, this.stroke);
+          this.boardService.startTouch();
 
           // after a mouse down, we'll record all mouse moves
-          return fromEvent(canvasEl, 'mousemove')
+          return fromEvent(this.svgElement as SVGSVGElement, 'mousemove')
             .pipe(
               // we'll stop (and unsubscribe) once the user releases the mouse
               // this will trigger a 'mouseup' event    
-              takeUntil(fromEvent(canvasEl, 'mouseup')),
+              takeUntil(fromEvent(this.svgElement as SVGSVGElement, 'mouseup')),
               // we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
-              takeUntil(fromEvent(canvasEl, 'mouseleave')),
+              takeUntil(fromEvent(this.svgElement as SVGSVGElement, 'mouseleave')),
               // pairwise lets us get the previous value to draw a line from
               // the previous point to the current point    
               pairwise()
@@ -61,7 +110,7 @@ export class CanvasComponent implements AfterViewInit {
         })
       )
       .subscribe((res: any) => {
-        const rect = canvasEl.getBoundingClientRect();
+        const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
   
         // previous and current position with the offset
         const prevPos = {
@@ -74,9 +123,52 @@ export class CanvasComponent implements AfterViewInit {
           y: res[1].clientY - rect.top
         };
   
-        // this method we'll implement soon to do the actual drawing
-        this.currentPath.addPoint(currentPos);/*.drawOnCanvas(prevPos, currentPos, canvasEl);*/
+        this.boardService.moveTouch(prevPos, currentPos);
       });
+      
+      // this will capture all mousedown events from the canvas element
+      fromEvent(this.svgElement as SVGSVGElement, 'touchstart')
+        .pipe(
+          switchMap((e) => {
+            this.boardService.startTouch();
+  
+            // after a mouse down, we'll record all mouse moves
+            return fromEvent(this.svgElement as SVGSVGElement, 'touchmove')
+              .pipe(
+                // we'll stop (and unsubscribe) once the user releases the mouse
+                // this will trigger a 'mouseup' event    
+                takeUntil(fromEvent(this.svgElement as SVGSVGElement, 'touchend')),
+                // we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
+                takeUntil(fromEvent(this.svgElement as SVGSVGElement, 'touchcancel')),
+                // pairwise lets us get the previous value to draw a line from
+                // the previous point to the current point    
+                pairwise()
+              )
+          })
+        )
+        .subscribe((res: any) => {
+          let res1: any = res[0].changedTouches[0];
+          let res2: any = res[1].changedTouches[0];
+
+          const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
+    
+          // previous and current position with the offset
+          const prevPos = {
+            x: res1.clientX - rect.left,
+            y: res1.clientY - rect.top
+          };
+    
+          const currentPos = {
+            x: res2.clientX - rect.left,
+            y: res2.clientY - rect.top
+          };
+    
+          this.boardService.moveTouch(prevPos, currentPos);
+        });
+  }
+
+  private justify() {
+    this.gElement?.setAttribute('transform', `translate(${this.translateX} ${this.translateY}) scale(${this.zoom})`)
   }
 
 }

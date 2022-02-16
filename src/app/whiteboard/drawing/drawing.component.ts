@@ -12,8 +12,6 @@ export class DrawingComponent implements OnInit {
   @Input() width: number = 100;
   @Input() height: number = 100;
 
-  @Input() stroke!: Stroke;
-
   constructor() { }
 
   ngOnInit(): void {
