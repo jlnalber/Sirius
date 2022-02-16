@@ -1,3 +1,4 @@
+import { Point } from './../../../global/path';
 import { BoardService } from './../../../features/board.service';
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
@@ -76,24 +77,46 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   private captureEvents() {
-    this.svgElement?.addEventListener('mouseup', () => {
-      this.boardService.endTouch();
+    let getPosFromMouseEvent = (e: MouseEvent): Point => {
+      const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
+
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+    }
+
+    let getPosFromTouchEvent = (e: any): Point => {
+      let res1: any = e.changedTouches[0];
+
+      const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
+      
+      return {
+        x: res1.clientX - rect.left,
+        y: res1.clientY - rect.top
+      };
+    }
+
+    this.svgElement?.addEventListener('mouseup', (e: MouseEvent) => {
+      this.boardService.endTouch(getPosFromMouseEvent(e));
     })
-    this.svgElement?.addEventListener('mouseleave', () => {
-      this.boardService.endTouch();
+    this.svgElement?.addEventListener('mouseleave', (e: MouseEvent) => {
+      if (e.buttons != 0) {
+        this.boardService.endTouch(getPosFromMouseEvent(e));
+      }
     })
-    this.svgElement?.addEventListener('touchcancel', () => {
-      this.boardService.endTouch();
+    this.svgElement?.addEventListener('touchcancel', (e: any) => {
+      this.boardService.endTouch(getPosFromTouchEvent(e));
     });
-    this.svgElement?.addEventListener('touchend', () => {
-      this.boardService.endTouch();
+    this.svgElement?.addEventListener('touchend', (e: any) => {
+      this.boardService.endTouch(getPosFromTouchEvent(e));
     });
 
     // this will capture all mousedown events from the canvas element
     fromEvent(this.svgElement as SVGSVGElement, 'mousedown')
       .pipe(
-        switchMap((e) => {
-          this.boardService.startTouch();
+        switchMap((e: any) => {
+          this.boardService.startTouch(getPosFromMouseEvent(e as MouseEvent));
 
           // after a mouse down, we'll record all mouse moves
           return fromEvent(this.svgElement as SVGSVGElement, 'mousemove')
@@ -130,7 +153,7 @@ export class CanvasComponent implements AfterViewInit {
       fromEvent(this.svgElement as SVGSVGElement, 'touchstart')
         .pipe(
           switchMap((e) => {
-            this.boardService.startTouch();
+            this.boardService.startTouch(getPosFromTouchEvent(e));
   
             // after a mouse down, we'll record all mouse moves
             return fromEvent(this.svgElement as SVGSVGElement, 'touchmove')

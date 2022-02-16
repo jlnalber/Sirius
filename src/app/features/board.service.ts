@@ -9,7 +9,15 @@ const svgns = "http://www.w3.org/2000/svg";
 
 export enum BoardModes {
   Draw,
-  Move
+  Move,
+  Shape
+}
+
+export enum Shapes {
+  Rectangle,
+  Circle,
+  Ellipse,
+  Line
 }
 
 export interface Point {
@@ -38,10 +46,11 @@ export class BoardService {
   public mode: BoardModes = BoardModes.Draw;
   private currentPath: Path = new Path(document.createElementNS(svgns, 'path'), this.stroke);
 
-  public startTouch() {
+  public startTouch(p: Point) {
     switch (this.mode) {
-      case BoardModes.Draw: this.drawStartTouch(); break;
-      case BoardModes.Move: this.moveStartTouch(); break;
+      case BoardModes.Draw: this.drawStartTouch(p); break;
+      case BoardModes.Move: this.moveStartTouch(p); break;
+      case BoardModes.Shape: this.shapeStartTouch(p); break;
     }
   }
 
@@ -49,31 +58,35 @@ export class BoardService {
     switch (this.mode) {
       case BoardModes.Draw: this.drawMoveTouch(from, to); break;
       case BoardModes.Move: this.moveMoveTouch(from, to); break;
+      case BoardModes.Shape: this.shapeMoveTouch(from, to); break;
     }
   }
 
-  public endTouch() {
+  public endTouch(p: Point) {
     switch (this.mode) {
-      case BoardModes.Draw: this.drawEndTouch(); break;
-      case BoardModes.Move: this.moveEndTouch(); break;
+      case BoardModes.Draw: this.drawEndTouch(p); break;
+      case BoardModes.Move: this.moveEndTouch(p); break;
+      case BoardModes.Shape: this.shapeEndTouch(p); break;
     }
   }
 
-  private drawStartTouch() {
+  private drawStartTouch(p: Point) {
     let pathEl = document.createElementNS(svgns, 'path');
     this.canvas?.gElement?.appendChild(pathEl);
     this.currentPath = new Path(pathEl, this.stroke);
+    this.currentPath.addPoint(this.getActualPoint(p));
   }
   private drawMoveTouch(from: Point, to: Point) {
     let realFrom = this.getActualPoint(from);
 
     this.currentPath.addPoint(realFrom);
   }
-  private drawEndTouch() {
+  private drawEndTouch(p: Point) {
+    this.currentPath.addPoint(this.getActualPoint(p));
     this.currentPath.finalize();
   }
 
-  private moveStartTouch() {
+  private moveStartTouch(p: Point) {
     return;
   }
   private moveMoveTouch(from: Point, to: Point) {
@@ -82,8 +95,18 @@ export class BoardService {
       this.canvas.translateY += to.y - from.y;
     }
   }
-  private moveEndTouch() {
+  private moveEndTouch(p: Point) {
     return;
+  }
+
+  private shapeStartTouch(p: Point) {
+
+  }
+  private shapeMoveTouch(from: Point, to: Point) {
+
+  }
+  private shapeEndTouch(p: Point) {
+
   }
   
 }
