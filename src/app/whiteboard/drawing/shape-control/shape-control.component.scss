@@ -22,6 +22,10 @@ $controlheight: 50px;
     color: white;
 }
 
+app-stroke-picker {
+    margin: 40px;
+}
+
 .control mat-icon {
     position: absolute;
     bottom: 0;
@@ -37,8 +41,8 @@ $controlheight: 50px;
 }
 
 .card {
-    $width: 200px;
-    $height: 250px;
+    $width: 470px;
+    $height: 300px;
     $cardhoverabovecontrols: 15px;
     position: fixed;
     width: $width;
@@ -49,4 +53,5 @@ $controlheight: 50px;
     box-shadow: 3px 3px 5px #00000028;
     border: 1px solid #00000038;
     border-radius: 5px;
+    overflow: hidden;
 }

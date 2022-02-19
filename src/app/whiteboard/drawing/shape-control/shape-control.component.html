@@ -3,7 +3,8 @@
 </div>
 <div *ngIf="this.active && this.isOpen()" class="card">
     <div class="">
-        <app-stroke-picker></app-stroke-picker>
-        <app-fill-picker></app-fill-picker>
+        <app-shape-picker #shapePicker></app-shape-picker>
+        <app-stroke-picker [listener]="this.cListener" [strokeWidthListener]="this.sListener"></app-stroke-picker>
+        <app-fill-picker [listener]="this.cListener"></app-fill-picker>
     </div>
 </div>
