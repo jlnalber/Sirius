@@ -5,7 +5,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 
-module.exports = function(el: any) {
+export function f (el: any) {
   el.addEventListener('touchstart', function() {
     var top = el.scrollTop
       , totalScroll = el.scrollHeight
