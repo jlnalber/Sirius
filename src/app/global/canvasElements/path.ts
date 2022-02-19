@@ -1,5 +1,5 @@
 import { BoardService } from "../../features/board.service";
-import { Point, CanvasItem, svgns } from "./canvasElement";
+import { Point, CanvasItem } from "./canvasElement";
 import { Stroke } from "../stroke";
 
 export class Path extends CanvasItem {
@@ -25,8 +25,7 @@ export class Path extends CanvasItem {
         super();
 
         this.stroke = this.boardService.stroke;
-        this.pathElement = document.createElementNS(svgns, 'path');
-        this.boardService.canvas?.gElement?.appendChild(this.pathElement);
+        this.pathElement = this.boardService.createElement('path') as SVGPathElement;
 
         this.intialize();
     }

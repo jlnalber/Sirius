@@ -1,5 +1,5 @@
 import { BoardService } from 'src/app/features/board.service';
-import { CanvasItem, svgns } from "./canvasElement";
+import { CanvasItem } from "./canvasElement";
 
 export abstract class Shape extends CanvasItem {
     
@@ -14,8 +14,7 @@ export abstract class Shape extends CanvasItem {
     constructor(protected boardService: BoardService, svgTag: string) {
         super();
 
-        this.svgElement = document.createElementNS(svgns, svgTag);
-        this.boardService.canvas?.gElement?.appendChild(this.svgElement);
+        this.svgElement = this.boardService.createElement(svgTag);
 
         this.initialize();
     }

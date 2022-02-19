@@ -1,13 +1,18 @@
 import { Rectangle } from './../global/canvasElements/rectangle';
 import { Injectable } from '@angular/core';
 import { PassThrough } from 'stream';
-import { CanvasItem, Point, svgns } from '../global/canvasElements/canvasElement';
+import { CanvasItem, Point } from '../global/canvasElements/canvasElement';
 import { Color } from '../global/color';
 import { Path } from '../global/canvasElements/path';
 import { Stroke } from '../global/stroke';
 import { CanvasComponent } from '../whiteboard/drawing/canvas/canvas.component';
 import { Move } from '../global/canvasElements/move';
 import { Event } from '../global/event';
+import { Circle } from '../global/canvasElements/circle';
+import { Ellipse } from '../global/canvasElements/ellipse';
+import { Line } from '../global/canvasElements/line';
+
+const svgns = "http://www.w3.org/2000/svg";
 
 export enum BoardModes {
   Draw,
@@ -54,7 +59,15 @@ export class BoardService {
     switch (this.mode) {
       case BoardModes.Draw: this.currentCanvasItem = new Path(this); break;
       case BoardModes.Move: this.currentCanvasItem = new Move(this); break;
-      case BoardModes.Shape: this.currentCanvasItem = new Rectangle(this); break;
+      case BoardModes.Shape: {
+        switch (this.shapeMode) {
+          case Shapes.Circle: this.currentCanvasItem = new Circle(this); break;
+          case Shapes.Ellipse: this.currentCanvasItem = new Ellipse(this); break;
+          case Shapes.Line: this.currentCanvasItem = new Line(this); break;
+          case Shapes.Rectangle: this.currentCanvasItem = new Rectangle(this); break;
+        }
+        break;
+      } 
     }
 
     this.currentCanvasItem?.touchStart(p);
@@ -72,6 +85,12 @@ export class BoardService {
     }
 
     this.isOnActiveTouch = false;
+  }
+
+  public createElement(tag: string): SVGElement {
+    let el = document.createElementNS(svgns, tag);
+    this.canvas?.gElement?.appendChild(el);
+    return el;
   }
   
 }

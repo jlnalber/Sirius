@@ -2,31 +2,27 @@ import { BoardService } from 'src/app/features/board.service';
 import { CanvasItem, Point } from "./canvasElement";
 import { Shape } from './shape';
 
-export class Rectangle extends Shape {
+export class Circle extends Shape {
 
     private start: Point = { x: 0, y: 0 };
 
     public touchStart(p: Point): void {
         let realP = this.boardService.getActualPoint(p);
         this.start = realP;
-        this.moveTo(realP);
+        this.goTo(realP);
     }
+
     public touchMove(from: Point, to: Point): void {
         let realTo = this.boardService.getActualPoint(to);
-        this.expandTo(realTo);
+        this.goTo(realTo);
     }
+
     public touchEnd(p: Point): void {
         let realTo = this.boardService.getActualPoint(p);
-        this.expandTo(realTo);
-
+        this.goTo(realTo);
     }
 
-    private moveTo(p: Point) {
-        this.svgElement.setAttributeNS(null, 'x', p.x.toString());
-        this.svgElement.setAttributeNS(null, 'y', p.y.toString());
-    }
-
-    private expandTo(p: Point) {
+    private goTo(p: Point): void {
         let smaller = (a: number, b: number): number => {
             return a < b ? a : b;
         }
@@ -39,13 +35,17 @@ export class Rectangle extends Shape {
         let endX = bigger(p.x, this.start.x);
         let endY = bigger(p.y, this.start.y);
 
-        this.moveTo({ x: startX, y: startY });
+        let rx = (endX - startX) / 2;
+        let ry = (endY - startY) / 2;
 
-        this.svgElement.setAttributeNS(null, 'width', (endX - startX).toString());
-        this.svgElement.setAttributeNS(null, 'height', (endY - startY).toString());
+        let r = smaller(rx, ry);
+
+        this.svgElement.setAttributeNS(null, 'cx', (startX + r).toString());
+        this.svgElement.setAttributeNS(null, 'cy', (startY + r).toString());
+        this.svgElement.setAttributeNS(null, 'r', r.toString());
     }
     
     constructor(boardService: BoardService) {
-        super(boardService, 'rect');
+        super(boardService, 'circle');
     }
 }
