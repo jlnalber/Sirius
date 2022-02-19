@@ -6,7 +6,7 @@ export abstract class Shape extends CanvasItem {
     private initialize() {
         this.svgElement.setAttributeNS(null, 'stroke', this.boardService.stroke.color.toString());
         this.svgElement.setAttributeNS(null, 'stroke-width', this.boardService.stroke.getThicknessString());
-        this.svgElement.setAttributeNS(null, 'fill', 'transparent')
+        this.svgElement.setAttributeNS(null, 'fill', this.boardService.fill.toString());
     }
     
     protected svgElement: SVGElement; 

@@ -39,6 +39,7 @@ export class BoardService {
   constructor() { }
 
   public stroke: Stroke = new Stroke(new Color(0, 0, 0));
+  public fill: Color = new Color(0, 0, 0, 0);
   public canvas: CanvasComponent | undefined;
   public mode: BoardModes = BoardModes.Shape;
   public shapeMode: Shapes = Shapes.Rectangle;

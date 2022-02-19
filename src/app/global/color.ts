@@ -90,7 +90,7 @@ export class Color {
 
     public toString() {
         let str = '#' + Color.toHex(this.r) + Color.toHex(this.g) + Color.toHex(this.b);
-        if (this.a) {
+        if (this.a != undefined) {
             str += Color.toHex(this.a);
         }
         return str;
