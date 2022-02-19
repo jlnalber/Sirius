@@ -94,7 +94,7 @@ export class BoardService {
     let el = document.createElementNS(svgns, tag);
     this.canvas?.gElement?.appendChild(el);
 
-    el.addEventListener('click', (ev: MouseEvent) => {
+    /*el.addEventListener('click', (ev: MouseEvent) => {
       this.onCanvasElementClick(el, ev);
     });
 
@@ -104,12 +104,12 @@ export class BoardService {
 
     el.addEventListener('mousemove', (ev: MouseEvent) => {
       this.onCanvasElementMouseMove(el, ev);
-    })
+    })*/
 
     return el;
   }
 
-  private onCanvasElementClick(el: SVGElement, ev: MouseEvent) {
+  /*private onCanvasElementClick(el: SVGElement, ev: MouseEvent) {
     this.removeElementWithDeleteMode(el, ev);
   }
 
@@ -125,6 +125,6 @@ export class BoardService {
     if (ev.buttons != 0 && this.mode == BoardModes.Delete && this.canvas && this.canvas.gElement && this.canvas.gElement.contains(el)) {
       this.canvas.gElement.removeChild(el);
     }
-  }
+  }*/
   
 }
