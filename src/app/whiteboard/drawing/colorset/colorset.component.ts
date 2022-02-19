@@ -9,7 +9,7 @@ import { Stroke } from 'src/app/global/stroke';
 })
 export class ColorsetComponent implements OnInit {
 
-  @Input() colors: Color[] = [
+  @Input() defaultColors: Color[] = [
     new Color(0, 0, 0),
     new Color(255, 0, 0),
     new Color(0, 255, 0),
@@ -19,6 +19,8 @@ export class ColorsetComponent implements OnInit {
     new Color(0, 255, 255),
     new Color(255, 255, 255)
   ]
+
+  @Input() colors: Color[] = [];
 
   @Input() listener!: ((c: Color) => void);
   @Input() currentColor!: () => Color;

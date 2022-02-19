@@ -1,4 +1,6 @@
 <div class="colorwrapper">
     <app-color *ngFor="let color of this.colors" [color]="color" [listener]="this.listener" [currentColor]="this.currentColor">
     </app-color>
+    <app-color *ngFor="let color of this.defaultColors" [color]="color" [listener]="this.listener" [currentColor]="this.currentColor">
+    </app-color>
 </div>

@@ -35,6 +35,7 @@ import { ColorsetComponent } from './whiteboard/drawing/colorset/colorset.compon
 import { ColorComponent } from './whiteboard/drawing/colorset/color/color.component';
 import { MoveControlComponent } from './whiteboard/drawing/move-control/move-control.component';
 import { ShapeControlComponent } from './whiteboard/drawing/shape-control/shape-control.component';
+import { FillPickerComponent } from './whiteboard/drawing/fill-picker/fill-picker.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { ShapeControlComponent } from './whiteboard/drawing/shape-control/shape-
     ColorsetComponent,
     ColorComponent,
     MoveControlComponent,
-    ShapeControlComponent
+    ShapeControlComponent,
+    FillPickerComponent
   ],
   imports: [
     BrowserModule,
