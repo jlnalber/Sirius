@@ -34,6 +34,7 @@ import { StrokePickerComponent } from './whiteboard/drawing/stroke-picker/stroke
 import { ColorsetComponent } from './whiteboard/drawing/colorset/colorset.component';
 import { ColorComponent } from './whiteboard/drawing/colorset/color/color.component';
 import { MoveControlComponent } from './whiteboard/drawing/move-control/move-control.component';
+import { ShapeControlComponent } from './whiteboard/drawing/shape-control/shape-control.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { MoveControlComponent } from './whiteboard/drawing/move-control/move-con
     StrokePickerComponent,
     ColorsetComponent,
     ColorComponent,
-    MoveControlComponent
+    MoveControlComponent,
+    ShapeControlComponent
   ],
   imports: [
     BrowserModule,

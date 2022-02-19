@@ -1,3 +1,4 @@
+import { Control } from 'src/app/global/control';
 import { MatSliderChange } from '@angular/material/slider';
 import { Component, OnInit } from '@angular/core';
 import { BoardModes, BoardService } from 'src/app/features/board.service';
@@ -10,7 +11,7 @@ const addition = 250;
   templateUrl: './move-control.component.html',
   styleUrls: ['./move-control.component.scss']
 })
-export class MoveControlComponent implements OnInit {
+export class MoveControlComponent extends Control implements OnInit {
 
   public zoomToSlider(zoom: number): number {
     return (Math.pow(Math.E, zoom) * multiplier - addition);
@@ -29,20 +30,9 @@ export class MoveControlComponent implements OnInit {
     return Math.log((slider + addition) / multiplier)
   }
 
-  active: boolean = false;
-
-  public isMoving(): boolean {
-    let res = this.boardService.mode == BoardModes.Move;
-    if (!res && !this.active) this.active = true;
-    return res;
+  constructor(boardService: BoardService) {
+    super(boardService, BoardModes.Move);
   }
-
-  public click(): void {;
-    this.active = !this.active;
-    this.boardService.mode = BoardModes.Move;
-  }
-
-  constructor(public readonly boardService: BoardService) { }
 
   ngOnInit(): void {
   }

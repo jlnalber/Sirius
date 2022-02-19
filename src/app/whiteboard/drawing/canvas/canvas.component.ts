@@ -1,14 +1,9 @@
-import { Point } from './../../../global/path';
+import { Point } from './../../../global/canvasElements/canvasElement';
 import { BoardService } from './../../../features/board.service';
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise } from 'rxjs';
-import { Color } from 'src/app/global/color';
-import { Path } from 'src/app/global/path';
-import { Stroke } from 'src/app/global/stroke';
-
-const svgns = "http://www.w3.org/2000/svg";
 
 @Component({
   selector: 'app-canvas',

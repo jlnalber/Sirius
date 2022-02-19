@@ -20,6 +20,9 @@ export class ColorsetComponent implements OnInit {
     new Color(255, 255, 255)
   ]
 
+  @Input() listener!: ((c: Color) => void);
+  @Input() currentColor!: () => Color;
+
   constructor() { }
 
   ngOnInit(): void {

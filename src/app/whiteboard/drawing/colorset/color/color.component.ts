@@ -11,8 +11,10 @@ import { Color } from 'src/app/global/color';
 export class ColorComponent implements OnInit {
 
   @Input() color!: Color;
+  @Input() listener!: ((c: Color) => void);
+  @Input() currentColor!: () => Color;
 
-  constructor(public readonly boardService: BoardService) { }
+  constructor() { }
 
   ngOnInit(): void {
   }

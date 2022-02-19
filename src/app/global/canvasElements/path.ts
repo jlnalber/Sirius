@@ -1,11 +1,8 @@
-import { Stroke } from "./stroke";
+import { BoardService } from "../../features/board.service";
+import { Point, CanvasItem, svgns } from "./canvasElement";
+import { Stroke } from "../stroke";
 
-export interface Point {
-    x: number,
-    y: number
-}
-
-export class Path {
+export class Path extends CanvasItem {
 
     private tolerance: ((path: Path) => number) = (path: Path) => {
         return Math.sqrt(path.stroke.getThickness());
@@ -21,7 +18,16 @@ export class Path {
         this.pathElement.setAttributeNS(null, 'fill', 'transparent')
     }
 
-    constructor(private pathElement: SVGPathElement, private stroke: Stroke) {
+    private pathElement: SVGPathElement;
+    private stroke: Stroke;
+
+    constructor(private boardService: BoardService) {
+        super();
+
+        this.stroke = this.boardService.stroke;
+        this.pathElement = document.createElementNS(svgns, 'path');
+        this.boardService.canvas?.gElement?.appendChild(this.pathElement);
+
         this.intialize();
     }
 
@@ -74,5 +80,21 @@ export class Path {
 
             this.pathElement.setAttributeNS(null, 'd', d);
         }
+    }
+
+    public touchStart(p: Point): void {
+        let realPoint = this.boardService.getActualPoint(p);
+        this.addPoint(realPoint);
+    }
+
+    public touchMove(from: Point, to: Point): void {
+        let realCurr = this.boardService.getActualPoint(to);
+        this.addPoint(realCurr);
+    }
+
+    public touchEnd(p: Point): void {
+        let realPoint = this.boardService.getActualPoint(p);
+        this.addPoint(realPoint);
+        this.finalize();
     }
 }
