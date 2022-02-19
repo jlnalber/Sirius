@@ -43,7 +43,8 @@ export class BoardService {
     return { x: 0, y: 0 };
   }
 
-  constructor() { }
+  constructor() {
+  }
 
   public stroke: Stroke = new Stroke(new Color(0, 0, 0));
   public fill: Color = new Color(0, 0, 0, 0);
@@ -94,37 +95,35 @@ export class BoardService {
     let el = document.createElementNS(svgns, tag);
     this.canvas?.gElement?.appendChild(el);
 
-    /*el.addEventListener('click', (ev: MouseEvent) => {
-      this.onCanvasElementClick(el, ev);
-    });
-
-    el.addEventListener('mouseenter', (ev: MouseEvent) => {
-      this.onCanvasElementMouseEnter(el, ev);
-    })
-
-    el.addEventListener('mousemove', (ev: MouseEvent) => {
-      this.onCanvasElementMouseMove(el, ev);
-    })*/
-
     return el;
   }
 
-  /*private onCanvasElementClick(el: SVGElement, ev: MouseEvent) {
-    this.removeElementWithDeleteMode(el, ev);
+  public downloadWhiteboard() {
+    this.doDownload('whiteboard.svg', this.getSVG());
   }
 
-  private onCanvasElementMouseEnter(el: SVGElement, ev: MouseEvent) {
-    this.removeElementWithDeleteMode(el, ev);
-  }
-
-  private onCanvasElementMouseMove(el: SVGElement, ev: MouseEvent) {
-    this.removeElementWithDeleteMode(el, ev);
-  }
-
-  private removeElementWithDeleteMode(el: SVGElement, ev: MouseEvent) {
-    if (ev.buttons != 0 && this.mode == BoardModes.Delete && this.canvas && this.canvas.gElement && this.canvas.gElement.contains(el)) {
-      this.canvas.gElement.removeChild(el);
+  public getSVG(): string {
+    if (this.canvas && this.canvas.svgElement) {
+      return `<?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      ${this.canvas.svgElement.innerHTML}
+      </svg>`;
     }
-  }*/
+    return '';
+  }
+  
+  private doDownload(filename: string, text: string) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
   
 }

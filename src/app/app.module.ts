@@ -38,6 +38,7 @@ import { ShapeControlComponent } from './whiteboard/drawing/shape-control/shape-
 import { FillPickerComponent } from './whiteboard/drawing/fill-picker/fill-picker.component';
 import { ShapePickerComponent } from './whiteboard/drawing/shape-picker/shape-picker.component';
 import { DeleteControlComponent } from './whiteboard/drawing/delete-control/delete-control.component';
+import { MenuControlComponent } from './whiteboard/drawing/menu-control/menu-control.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { DeleteControlComponent } from './whiteboard/drawing/delete-control/dele
     ShapeControlComponent,
     FillPickerComponent,
     ShapePickerComponent,
-    DeleteControlComponent
+    DeleteControlComponent,
+    MenuControlComponent
   ],
   imports: [
     BrowserModule,

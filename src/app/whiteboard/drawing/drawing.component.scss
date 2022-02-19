@@ -34,22 +34,30 @@ input:checked ~ .card {
 .controlWrapper {
     //width: 80%;
     width: auto;
-    margin: 0 auto;
     display: table;
     height: 100%;
     background-color: transparent;
     pointer-events: all;
     overflow: hidden;
+    box-shadow: 3px 3px 5px #00000028;
+    border: 1px solid #00000038;
+    border-radius: 5px;
+}
+
+.centerWrapper {
+    margin: 0 auto;
+}
+
+.leftWrapper {
+    margin: 0 0;
+}
+
+.rightWrapper {
+    float: right;
 }
 
 .control {
     float: left;
-}
-
-/*.card, */.controlWrapper {
-    box-shadow: 3px 3px 5px #00000028;
-    border: 1px solid #00000038;
-    border-radius: 5px;
 }
 
 .table {
@@ -64,6 +72,14 @@ input:checked ~ .card {
 
 .left, .right {
     width: 25%;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
 }
 
 .center {

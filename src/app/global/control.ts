@@ -1,25 +1,13 @@
 import { BoardModes, BoardService } from "../features/board.service";
+import { BottomControl } from "./bottomControl";
 
-export abstract class Control {
-    public active: boolean = false;
+export abstract class Control extends BottomControl {
 
-    public click(): void {
-        if (this.isOpen()) {
-            this.active = !this.active;
-        }
-        else {
-            this.active = false;
-            this.boardService.mode = this.mode;
-        }
-    }
-
-    public isOpen(): boolean {
-        return this.boardService.mode == this.mode;
-    }
-
-    constructor(public readonly boardService: BoardService, private readonly mode: BoardModes) {
-        this.boardService.onTouch.addListener(() => {
-            this.active = false;
-        });
+    constructor(boardService: BoardService, private readonly mode: BoardModes) {
+        super(boardService, () => {
+            return boardService.mode == this.mode;
+        }, () => {
+            boardService.mode = this.mode;
+        })
     }
 }
