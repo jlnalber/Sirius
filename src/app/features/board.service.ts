@@ -1,3 +1,4 @@
+import { Delete } from './../global/canvasElements/delete';
 import { Rectangle } from './../global/canvasElements/rectangle';
 import { Injectable } from '@angular/core';
 import { PassThrough } from 'stream';
@@ -17,7 +18,8 @@ const svgns = "http://www.w3.org/2000/svg";
 export enum BoardModes {
   Draw,
   Move,
-  Shape
+  Shape,
+  Delete
 }
 
 export enum Shapes {
@@ -46,8 +48,8 @@ export class BoardService {
   public stroke: Stroke = new Stroke(new Color(0, 0, 0));
   public fill: Color = new Color(0, 0, 0, 0);
   public canvas: CanvasComponent | undefined;
-  public mode: BoardModes = BoardModes.Shape;
-  public shapeMode: Shapes = Shapes.Rectangle;
+  public mode: BoardModes = BoardModes.Draw;
+  public shapeMode: Shapes = Shapes.Line;
   private currentCanvasItem: CanvasItem | undefined;
   public isOnActiveTouch: boolean = false;
   public onTouch: Event = new Event();
@@ -58,6 +60,7 @@ export class BoardService {
 
     switch (this.mode) {
       case BoardModes.Draw: this.currentCanvasItem = new Path(this); break;
+      case BoardModes.Delete: this.currentCanvasItem = new Delete(this); break;
       case BoardModes.Move: this.currentCanvasItem = new Move(this); break;
       case BoardModes.Shape: {
         switch (this.shapeMode) {
@@ -90,7 +93,38 @@ export class BoardService {
   public createElement(tag: string): SVGElement {
     let el = document.createElementNS(svgns, tag);
     this.canvas?.gElement?.appendChild(el);
+
+    el.addEventListener('click', (ev: MouseEvent) => {
+      this.onCanvasElementClick(el, ev);
+    });
+
+    el.addEventListener('mouseenter', (ev: MouseEvent) => {
+      this.onCanvasElementMouseEnter(el, ev);
+    })
+
+    el.addEventListener('mousemove', (ev: MouseEvent) => {
+      this.onCanvasElementMouseMove(el, ev);
+    })
+
     return el;
+  }
+
+  private onCanvasElementClick(el: SVGElement, ev: MouseEvent) {
+    this.removeElementWithDeleteMode(el, ev);
+  }
+
+  private onCanvasElementMouseEnter(el: SVGElement, ev: MouseEvent) {
+    this.removeElementWithDeleteMode(el, ev);
+  }
+
+  private onCanvasElementMouseMove(el: SVGElement, ev: MouseEvent) {
+    this.removeElementWithDeleteMode(el, ev);
+  }
+
+  private removeElementWithDeleteMode(el: SVGElement, ev: MouseEvent) {
+    if (ev.buttons != 0 && this.mode == BoardModes.Delete && this.canvas && this.canvas.gElement && this.canvas.gElement.contains(el)) {
+      this.canvas.gElement.removeChild(el);
+    }
   }
   
 }
