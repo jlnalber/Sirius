@@ -93,17 +93,25 @@ export class CanvasComponent implements AfterViewInit {
     }
 
     this.svgElement?.addEventListener('mouseup', (e: MouseEvent) => {
+      e.preventDefault();
       this.boardService.endTouch(getPosFromMouseEvent(e));
     })
     this.svgElement?.addEventListener('mouseleave', (e: MouseEvent) => {
+      e.preventDefault();
       if (e.buttons != 0) {
         this.boardService.endTouch(getPosFromMouseEvent(e));
       }
     })
     this.svgElement?.addEventListener('touchcancel', (e: any) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
       this.boardService.endTouch(getPosFromTouchEvent(e));
     });
     this.svgElement?.addEventListener('touchend', (e: any) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
       this.boardService.endTouch(getPosFromTouchEvent(e));
     });
 
@@ -111,7 +119,9 @@ export class CanvasComponent implements AfterViewInit {
     fromEvent(this.svgElement as SVGSVGElement, 'mousedown')
       .pipe(
         switchMap((e: any) => {
-          this.boardService.startTouch(getPosFromMouseEvent(e as MouseEvent));
+          let m = e as MouseEvent;
+          m.preventDefault();
+          this.boardService.startTouch(getPosFromMouseEvent(m));
 
           // after a mouse down, we'll record all mouse moves
           return fromEvent(this.svgElement as SVGSVGElement, 'mousemove')
@@ -128,6 +138,9 @@ export class CanvasComponent implements AfterViewInit {
         })
       )
       .subscribe((res: any) => {
+        res[0].preventDefault();
+        res[1].preventDefault();
+        
         const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
   
         // previous and current position with the offset
@@ -148,6 +161,7 @@ export class CanvasComponent implements AfterViewInit {
       fromEvent(this.svgElement as SVGSVGElement, 'touchstart')
         .pipe(
           switchMap((e) => {
+            e.preventDefault();
             this.boardService.startTouch(getPosFromTouchEvent(e));
   
             // after a mouse down, we'll record all mouse moves
@@ -165,6 +179,8 @@ export class CanvasComponent implements AfterViewInit {
           })
         )
         .subscribe((res: any) => {
+          res[0].preventDefault();
+          res[1].preventDefault();
           let res1: any = res[0].changedTouches[0];
           let res2: any = res[1].changedTouches[0];
 
