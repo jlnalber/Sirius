@@ -39,6 +39,10 @@ document.body.addEventListener('touchmove', function(evt: any) {
   }
 }, {passive: false})
 
+document.body.addEventListener('dblclick', (ev: MouseEvent) => {
+  ev.preventDefault();
+})
+
 if (environment.production) {
   enableProdMode();
 }

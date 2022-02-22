@@ -39,6 +39,14 @@ import { FillPickerComponent } from './whiteboard/drawing/fill-picker/fill-picke
 import { ShapePickerComponent } from './whiteboard/drawing/shape-picker/shape-picker.component';
 import { DeleteControlComponent } from './whiteboard/drawing/delete-control/delete-control.component';
 import { MenuControlComponent } from './whiteboard/drawing/menu-control/menu-control.component';
+import { ClearControlComponent } from './whiteboard/drawing/clear-control/clear-control.component';
+import { SelectControlComponent } from './whiteboard/drawing/select-control/select-control.component';
+import { NewPageControlComponent } from './whiteboard/drawing/new-page-control/new-page-control.component';
+import { LastPageControlComponent } from './whiteboard/drawing/last-page-control/last-page-control.component';
+import { NextPageControlComponent } from './whiteboard/drawing/next-page-control/next-page-control.component';
+import { FileControlComponent } from './whiteboard/drawing/file-control/file-control.component';
+import { BackControlComponent } from './whiteboard/drawing/back-control/back-control.component';
+import { ForwardControlComponent } from './whiteboard/drawing/forward-control/forward-control.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +73,15 @@ import { MenuControlComponent } from './whiteboard/drawing/menu-control/menu-con
     FillPickerComponent,
     ShapePickerComponent,
     DeleteControlComponent,
-    MenuControlComponent
+    MenuControlComponent,
+    ClearControlComponent,
+    SelectControlComponent,
+    NewPageControlComponent,
+    LastPageControlComponent,
+    NextPageControlComponent,
+    FileControlComponent,
+    BackControlComponent,
+    ForwardControlComponent
   ],
   imports: [
     BrowserModule,

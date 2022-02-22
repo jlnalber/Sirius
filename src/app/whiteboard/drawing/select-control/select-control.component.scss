@@ -10,15 +10,15 @@ $controlheight: 50px;
     overflow: visible;
 }
 
-.flyoutcontrol:hover, .inactive:hover {
+.inactive:hover {
     background-color: #eee;
 }
 
-.flyoutcontrol:active, .active {
+.active {
     background-color: dodgerblue;
 }
 
-.flyoutcontrol:active mat-icon, .active mat-icon {
+.active mat-icon {
     color: white;
 }
 
@@ -34,20 +34,4 @@ $controlheight: 50px;
     padding: calc(calc($controlheight - $iconsize) / 2);
     transition: all $animationtime ease-in-out;
     margin: 0px;
-}
-
-.card {
-    $width: auto;
-    $height: 50px;
-    $cardhoverabovecontrols: 15px;
-    position: fixed;
-    width: $width;
-    height: $height;
-    background-color: white;
-    display: block;
-    transform: translateY(calc(-1 * $height - $controlheight - $cardhoverabovecontrols));
-    box-shadow: 3px 3px 5px #00000028;
-    border: 1px solid #00000038;
-    border-radius: 5px;
-    overflow: hidden;
 }

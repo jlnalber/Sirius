@@ -13,6 +13,10 @@ export abstract class BottomControl {
         }
     }
 
+    public prevDef(ev: MouseEvent) {
+        ev.preventDefault();
+    }
+
     constructor(public readonly boardService: BoardService, public isOpen: () => boolean, private secondClick: () => void) {
         this.boardService.onTouch.addListener(() => {
             this.active = false;

@@ -19,7 +19,8 @@ export enum BoardModes {
   Draw,
   Move,
   Shape,
-  Delete
+  Delete,
+  Select
 }
 
 export enum Shapes {
