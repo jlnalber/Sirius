@@ -1,4 +1,4 @@
-<div class="control" [ngClass]="this.isOpen() ? 'active' : 'inactive'" (click)="this.click()">
+<div class="control" [ngClass]="this.getNgClasses()"  (click)="this.click()">
     <mat-icon>control_camera</mat-icon>
 </div>
 <div *ngIf="this.active && this.isOpen()" class="card">

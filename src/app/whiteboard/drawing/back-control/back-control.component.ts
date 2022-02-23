@@ -14,7 +14,7 @@ export class BackControlComponent extends BasicControl implements AfterViewInit 
   @Input() enabled = true;
 
   public onClick = () => {
-    
+    console.log('Back?!')
   }
 
   constructor() {

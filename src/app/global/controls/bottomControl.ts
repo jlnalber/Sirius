@@ -11,6 +11,9 @@ export abstract class BottomControl extends BasicControl {
     public onClick = () => {
         if (this.isOpen()) {
             this.active = !this.active;
+            if (this.firstClick) {
+                this.firstClick();
+            }
         }
         else {
             this.active = false;
@@ -18,9 +21,15 @@ export abstract class BottomControl extends BasicControl {
         }
     }
 
+    public override getNgClasses(): string {
+        return (this.isOpen() ? 'active' : 'inactive') + ' ' + (this.isEnabled() ? 'enabled' : 'disabled');
+    }
+
     public abstract isOpen: () => boolean;
 
     protected abstract secondClick: () => void;
+
+    protected abstract firstClick?: () => void;
 
     constructor() {
         super();

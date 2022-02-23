@@ -1,53 +1,10 @@
-$animationtime: 0.2s;
-$controlheight: 50px;
-
-.control {
-    background-color: white;
-    width: $controlheight;
-    height: $controlheight;
-    transition: all $animationtime ease-in-out;
-    position: relative;
-    overflow: visible;
-}
-
-.flyoutcontrol:hover, .inactive:hover {
-    background-color: #eee;
-}
-
-.flyoutcontrol:active, .active {
-    background-color: dodgerblue;
-}
-
-.flyoutcontrol:active mat-icon, .active mat-icon {
-    color: white;
-}
-
-.control mat-icon {
-    position: absolute;
-    bottom: 0;
-    top: 0;
-    right: 0;
-    left: 0;
-    cursor: pointer;
-    $iconsize: calc($controlheight / 2);
-    font-size: $iconsize;
-    padding: calc(calc($controlheight - $iconsize) / 2);
-    transition: all $animationtime ease-in-out;
-    margin: 0px;
-}
+@import "../../../global/styles/control";
 
 .card {
     $width: auto;
     $height: 50px;
     $cardhoverabovecontrols: 15px;
-    position: fixed;
     width: $width;
     height: $height;
-    background-color: white;
-    display: block;
     transform: translateY(calc(-1 * $height - $controlheight - $cardhoverabovecontrols));
-    box-shadow: 3px 3px 5px #00000028;
-    border: 1px solid #00000038;
-    border-radius: 5px;
-    overflow: hidden;
 }

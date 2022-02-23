@@ -21,6 +21,7 @@ export class DrawingComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.whiteboardConfig)
   }
 
 }

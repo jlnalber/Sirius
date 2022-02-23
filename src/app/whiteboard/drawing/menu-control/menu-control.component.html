@@ -1,9 +1,9 @@
-<div class="control" [ngClass]="this.active ? 'active' : 'inactive'" (click)="this.click()">
+<div class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
     <mat-icon>menu</mat-icon>
 </div>
-<div *ngIf="this.active && this.active" class="card">
+<div *ngIf="this.isOpen()" class="card">
     <div class="">
-        <div (click)="this.active = false; this.board.downloadWhiteboard()" class="control flyoutcontrol">
+        <div (click)="this.openPanel = false; this.board.downloadWhiteboard()" class="control flyoutcontrol">
             <mat-icon>save_alt</mat-icon>
         </div>
     </div>

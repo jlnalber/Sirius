@@ -11,6 +11,8 @@ export abstract class Control extends BottomControl {
         this.board.mode = this.mode;
     };
 
+    protected firstClick?: (() => void) | undefined;
+
     constructor(private readonly mode: BoardModes) {
         super();
     }

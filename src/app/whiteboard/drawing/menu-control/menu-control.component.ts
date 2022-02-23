@@ -14,11 +14,19 @@ export class MenuControlComponent extends BottomControl implements AfterViewInit
 
   @Input() enabled = true;
 
+  public openPanel: boolean = false;
+
   public override isOpen = () => {
-    return true;
+    return this.openPanel;
   }
 
-  protected override secondClick = () => { };
+  protected override secondClick = () => {
+    this.openPanel = true;
+  };
+
+  protected firstClick?: () => void = () => {
+    this.openPanel = false;
+  }
 
   constructor() {
     super();

@@ -16,18 +16,18 @@ export class WhiteboardComponent implements OnInit {
 
   @Input() whiteboardConfig: WhiteboardConfig = {
     showBottomBar: true,
-    enableBackControl: true,
-    enableClearControl: true,
+    enableBackControl: false,
+    enableClearControl: false,
     enableDeleteControl: true,
     enableMenuControl: true,
-    enableFileControl: true,
-    enableForwardControl: true,
-    enableLastPageControl: true,
+    enableFileControl: false,
+    enableForwardControl: false,
+    enableLastPageControl: false,
     enableMoveControl: true,
-    enableNewPageControl: true,
-    enableNextPageControl: true,
+    enableNewPageControl: false,
+    enableNextPageControl: false,
     enablePenControl: true,
-    enableSelectControl: true,
+    enableSelectControl: false,
     enableShapeControl: true
   }
 

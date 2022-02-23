@@ -5,27 +5,27 @@
         <div class="table">
             <div class="tc left">
                 <div class="controlWrapper leftWrapper">
-                    <app-menu-control [board]="this.board" class="control"></app-menu-control>
+                    <app-menu-control [enabled]="this.whiteboardConfig.enableMenuControl" [board]="this.board" class="control"></app-menu-control>
                 </div>
             </div>
             <div class="tc center">
                 <div class="controlWrapper centerWrapper">
-                    <app-select-control [board]="this.board" class="control"></app-select-control>
-                    <app-pen-control [board]="this.board" class="control"></app-pen-control>
-                    <app-delete-control [board]="this.board" class="control"></app-delete-control>
-                    <app-move-control [board]="this.board" class="control"></app-move-control>
-                    <app-shape-control [board]="this.board" class="control"></app-shape-control>
-                    <app-file-control [board]="this.board" class="control"></app-file-control>
-                    <app-clear-control [board]="this.board" class="control"></app-clear-control>
-                    <app-back-control [board]="this.board" class="control"></app-back-control>
-                    <app-forward-control [board]="this.board" class="control"></app-forward-control>
+                    <app-select-control [enabled]="this.whiteboardConfig.enableSelectControl" [board]="this.board" class="control"></app-select-control>
+                    <app-pen-control [enabled]="this.whiteboardConfig.enablePenControl" [board]="this.board" class="control"></app-pen-control>
+                    <app-delete-control [enabled]="this.whiteboardConfig.enableDeleteControl" [board]="this.board" class="control"></app-delete-control>
+                    <app-move-control [enabled]="this.whiteboardConfig.enableMoveControl" [board]="this.board" class="control"></app-move-control>
+                    <app-shape-control [enabled]="this.whiteboardConfig.enableShapeControl" [board]="this.board" class="control"></app-shape-control>
+                    <app-file-control [enabled]="this.whiteboardConfig.enableFileControl" [board]="this.board" class="control"></app-file-control>
+                    <app-clear-control [enabled]="this.whiteboardConfig.enableClearControl" [board]="this.board" class="control"></app-clear-control>
+                    <app-back-control [enabled]="this.whiteboardConfig.enableBackControl" [board]="this.board" class="control"></app-back-control>
+                    <app-forward-control [enabled]="this.whiteboardConfig.enableForwardControl" [board]="this.board" class="control"></app-forward-control>
                 </div>
             </div>
             <div class="tc right">
                 <div class="controlWrapper rightWrapper">
-                    <app-new-page-control [board]="this.board" class="control"></app-new-page-control>
-                    <app-last-page-control [board]="this.board" class="control"></app-last-page-control>
-                    <app-next-page-control [board]="this.board" class="control"></app-next-page-control>
+                    <app-new-page-control [enabled]="this.whiteboardConfig.enableNewPageControl" [board]="this.board" class="control"></app-new-page-control>
+                    <app-last-page-control [enabled]="this.whiteboardConfig.enableLastPageControl" [board]="this.board" class="control"></app-last-page-control>
+                    <app-next-page-control [enabled]="this.whiteboardConfig.enableNextPageControl" [board]="this.board" class="control"></app-next-page-control>
                 </div>
             </div>
         </div>
