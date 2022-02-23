@@ -1,13 +1,14 @@
 import { timingSafeEqual } from 'crypto';
 import { BoardService } from 'src/app/features/board.service';
+import { Board } from '../board/board';
 import { CanvasItem, Point } from "./canvasElement";
 import { Shape } from "./shape";
 
 export class Delete extends CanvasItem {
 
     public touchStart(p: Point): void {
-        if (this.boardService.canvas?.gElement) {
-            let children = this.boardService.canvas.gElement.children;
+        if (this.board.canvas?.gElement) {
+            let children = this.board.canvas.gElement.children;
             for (let i in children) {
                 let el = children[i] as SVGElement;
                 let ev = this.getListener(el);
@@ -26,8 +27,8 @@ export class Delete extends CanvasItem {
         return;
     }
     public touchEnd(p: Point): void {
-        if (this.boardService.canvas?.gElement) {
-            let children = this.boardService.canvas.gElement.children;
+        if (this.board.canvas?.gElement) {
+            let children = this.board.canvas.gElement.children;
             for (let i in children) {
                 let el = children[i];
 
@@ -42,16 +43,16 @@ export class Delete extends CanvasItem {
     }
 
     private removeElement(el: SVGElement, ev: MouseEvent): boolean {
-        if (ev.buttons != 0 && this.boardService.canvas && this.boardService.canvas.gElement && this.boardService.canvas.gElement.contains(el)) {
-            this.boardService.canvas.gElement.removeChild(el);
+        if (ev.buttons != 0 && this.board.canvas && this.board.canvas.gElement && this.board.canvas.gElement.contains(el)) {
+            this.board.canvas.gElement.removeChild(el);
             return true;
         }
         return false;
     }
 
     private removeElementTouch(el: SVGElement): boolean {
-        if (this.boardService.canvas && this.boardService.canvas.gElement && this.boardService.canvas.gElement.contains(el)) {
-            this.boardService.canvas.gElement.removeChild(el);
+        if (this.board.canvas && this.board.canvas.gElement && this.board.canvas.gElement.contains(el)) {
+            this.board.canvas.gElement.removeChild(el);
             return true;
         }
         return false;
@@ -65,7 +66,7 @@ export class Delete extends CanvasItem {
         return () => { return this.removeElementTouch(el); };
     }
 
-    constructor(private readonly boardService: BoardService) { 
+    constructor(private readonly board: Board) { 
         super()
     }
     

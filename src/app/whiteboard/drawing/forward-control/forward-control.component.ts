@@ -1,19 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { BasicControl } from 'src/app/global/controls/basicControl';
+import { Board } from 'src/app/global/board/board';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-forward-control',
   templateUrl: './forward-control.component.html',
   styleUrls: ['./forward-control.component.scss']
 })
-export class ForwardControlComponent implements OnInit {
+export class ForwardControlComponent extends BasicControl implements AfterViewInit {
 
-  public click() {
-    
+  @Input() board!: Board;
+
+  @Input() enabled = true;
+
+  public onClick = () => {
+    if (this.enabled) {
+      
+    }
   }
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.afterViewInit.emit();
   }
 
 }

@@ -1,22 +1,30 @@
+import { BasicControl } from 'src/app/global/controls/basicControl';
 import { BoardService } from 'src/app/features/board.service';
-import { Control } from 'src/app/global/control';
-import { Component, OnInit } from '@angular/core';
-import { BottomControl } from 'src/app/global/bottomControl';
+import { Control } from 'src/app/global/controls/control';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Board } from 'src/app/global/board/board';
 
 @Component({
   selector: 'app-clear-control',
   templateUrl: './clear-control.component.html',
   styleUrls: ['./clear-control.component.scss']
 })
-export class ClearControlComponent implements OnInit {
+export class ClearControlComponent extends BasicControl implements AfterViewInit {
 
-  public click() {
+  @Input() board!: Board;
 
+  @Input() enabled = true;
+
+  public onClick = () => {
+    
   }
 
-  constructor(public boardService: BoardService) { }
+  constructor() {
+    super();
+  }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.afterViewInit.emit();
   }
 
 }

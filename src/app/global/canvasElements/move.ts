@@ -1,4 +1,5 @@
 import { BoardService } from 'src/app/features/board.service';
+import { Board } from '../board/board';
 import { CanvasItem, Point } from "./canvasElement";
 
 export class Move extends CanvasItem {
@@ -7,16 +8,16 @@ export class Move extends CanvasItem {
         return;
     }
     public touchMove(from: Point, to: Point): void {
-        if (this.boardService.canvas) {
-          this.boardService.canvas.translateX += to.x - from.x;
-          this.boardService.canvas.translateY += to.y - from.y;
+        if (this.board.canvas) {
+          this.board.canvas.translateX += to.x - from.x;
+          this.board.canvas.translateY += to.y - from.y;
         }
     }
     public touchEnd(p: Point): void {
         return;
     }
     
-    constructor(private boardService: BoardService) {
+    constructor(private board: Board) {
         super();
     }
 }

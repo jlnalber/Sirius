@@ -1,5 +1,5 @@
+import { Board } from 'src/app/global/board/board';
 import { Component, Input, OnInit } from '@angular/core';
-import { BoardService } from 'src/app/features/board.service';
 import { Color } from 'src/app/global/color';
 
 @Component({
@@ -9,20 +9,22 @@ import { Color } from 'src/app/global/color';
 })
 export class FillPickerComponent implements OnInit {
 
+  @Input() board!: Board;
+
   @Input() listener: (c: Color) => void = () => {};
 
   currentColor = () => {
-    return this.boardService.fill;
+    return this.board.fill;
   }
   setColor = (c: Color) => {
-    this.boardService.fill = c;
+    this.board.fill = c;
     this.listener(c);
   }
   colors: Color[] = [
     new Color(0, 0, 0, 0)
   ]
 
-  constructor(public readonly boardService: BoardService) { }
+  constructor() { }
 
   ngOnInit(): void {
   }

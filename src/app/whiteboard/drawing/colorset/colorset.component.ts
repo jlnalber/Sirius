@@ -1,3 +1,4 @@
+import { Board } from 'src/app/global/board/board';
 import { Component, Input, OnInit } from '@angular/core';
 import { Color } from 'src/app/global/color';
 import { Stroke } from 'src/app/global/stroke';

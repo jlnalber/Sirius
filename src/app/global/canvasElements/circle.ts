@@ -1,4 +1,5 @@
 import { BoardService } from 'src/app/features/board.service';
+import { Board } from '../board/board';
 import { CanvasItem, Point } from "./canvasElement";
 import { Shape } from './shape';
 
@@ -7,18 +8,18 @@ export class Circle extends Shape {
     private start: Point = { x: 0, y: 0 };
 
     public touchStart(p: Point): void {
-        let realP = this.boardService.getActualPoint(p);
+        let realP = this.board.getActualPoint(p);
         this.start = realP;
         this.goTo(realP);
     }
 
     public touchMove(from: Point, to: Point): void {
-        let realTo = this.boardService.getActualPoint(to);
+        let realTo = this.board.getActualPoint(to);
         this.goTo(realTo);
     }
 
     public touchEnd(p: Point): void {
-        let realTo = this.boardService.getActualPoint(p);
+        let realTo = this.board.getActualPoint(p);
         this.goTo(realTo);
     }
 
@@ -45,7 +46,7 @@ export class Circle extends Shape {
         this.svgElement.setAttributeNS(null, 'r', r.toString());
     }
     
-    constructor(boardService: BoardService) {
-        super(boardService, 'circle');
+    constructor(board: Board) {
+        super(board, 'circle');
     }
 }

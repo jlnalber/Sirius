@@ -1,8 +1,9 @@
 import { ShapePickerComponent } from './../shape-picker/shape-picker.component';
-import { Control } from 'src/app/global/control';
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, ViewChildren } from '@angular/core';
+import { Control } from 'src/app/global/controls/control';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, ViewChildren, Input } from '@angular/core';
 import { BoardModes, BoardService } from 'src/app/features/board.service';
 import { Color } from 'src/app/global/color';
+import { Board } from 'src/app/global/board/board';
 
 const svgns = "http://www.w3.org/2000/svg";
 
@@ -11,14 +12,18 @@ const svgns = "http://www.w3.org/2000/svg";
   templateUrl: './shape-control.component.html',
   styleUrls: ['./shape-control.component.scss']
 })
-export class ShapeControlComponent extends Control implements OnInit {
+export class ShapeControlComponent extends Control implements AfterViewInit {
+
+  @Input() board!: Board;
+
+  @Input() enabled = true;
 
   @ViewChild('shapePicker')
   public sPicker!: ElementRef;
 
   cListener = (c: Color) => {
     if (this.active && this.isOpen() && this.sPicker) {
-      (this.sPicker as any as ShapePickerComponent).reloadShapes(this.boardService.stroke.getThickness())
+      (this.sPicker as any as ShapePickerComponent).reloadShapes(this.board.stroke.getThickness())
     }
   }
 
@@ -28,11 +33,12 @@ export class ShapeControlComponent extends Control implements OnInit {
     }
   }
 
-  constructor(boardService: BoardService) {
-    super(boardService, BoardModes.Shape);
+  constructor() {
+    super(BoardModes.Shape);
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.afterViewInit.emit();
   }
 
 }

@@ -4,6 +4,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
 
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise } from 'rxjs';
+import { Board } from 'src/app/global/board/board';
 
 @Component({
   selector: 'app-canvas',
@@ -11,6 +12,8 @@ import { switchMap, takeUntil, pairwise } from 'rxjs';
   styleUrls: ['./canvas.component.scss']
 })
 export class CanvasComponent implements AfterViewInit {
+
+  @Input() board!: Board;
 
   @ViewChild('canvas')
   public canvas!: ElementRef;
@@ -61,11 +64,12 @@ export class CanvasComponent implements AfterViewInit {
     this.justify();
   }
 
-  constructor(private readonly boardService: BoardService) {
-    this.boardService.canvas = this;
+  constructor(/*private readonly boardService: BoardService*/) {
+    //this.boardService.canvas = this;
   }
 
   ngAfterViewInit(): void {
+    this.board.canvas = this;
     this.svgElement = this.canvas.nativeElement as SVGSVGElement;
     this.gElement = this.g.nativeElement as SVGGElement;
     this.captureEvents();
@@ -94,25 +98,25 @@ export class CanvasComponent implements AfterViewInit {
 
     this.svgElement?.addEventListener('mouseup', (e: MouseEvent) => {
       e.preventDefault();
-      this.boardService.endTouch(getPosFromMouseEvent(e));
+      this.board.endTouch(getPosFromMouseEvent(e));
     })
     this.svgElement?.addEventListener('mouseleave', (e: MouseEvent) => {
       e.preventDefault();
       if (e.buttons != 0) {
-        this.boardService.endTouch(getPosFromMouseEvent(e));
+        this.board.endTouch(getPosFromMouseEvent(e));
       }
     })
     this.svgElement?.addEventListener('touchcancel', (e: any) => {
       if (e.preventDefault) {
         e.preventDefault();
       }
-      this.boardService.endTouch(getPosFromTouchEvent(e));
+      this.board.endTouch(getPosFromTouchEvent(e));
     });
     this.svgElement?.addEventListener('touchend', (e: any) => {
       if (e.preventDefault) {
         e.preventDefault();
       }
-      this.boardService.endTouch(getPosFromTouchEvent(e));
+      this.board.endTouch(getPosFromTouchEvent(e));
     });
 
     // this will capture all mousedown events from the canvas element
@@ -121,7 +125,7 @@ export class CanvasComponent implements AfterViewInit {
         switchMap((e: any) => {
           let m = e as MouseEvent;
           m.preventDefault();
-          this.boardService.startTouch(getPosFromMouseEvent(m));
+          this.board.startTouch(getPosFromMouseEvent(m));
 
           // after a mouse down, we'll record all mouse moves
           return fromEvent(this.svgElement as SVGSVGElement, 'mousemove')
@@ -154,7 +158,7 @@ export class CanvasComponent implements AfterViewInit {
           y: res[1].clientY - rect.top
         };
   
-        this.boardService.moveTouch(prevPos, currentPos);
+        this.board.moveTouch(prevPos, currentPos);
       });
       
       // this will capture all mousedown events from the canvas element
@@ -162,7 +166,7 @@ export class CanvasComponent implements AfterViewInit {
         .pipe(
           switchMap((e) => {
             e.preventDefault();
-            this.boardService.startTouch(getPosFromTouchEvent(e));
+            this.board.startTouch(getPosFromTouchEvent(e));
   
             // after a mouse down, we'll record all mouse moves
             return fromEvent(this.svgElement as SVGSVGElement, 'touchmove')
@@ -197,7 +201,7 @@ export class CanvasComponent implements AfterViewInit {
             y: res2.clientY - rect.top
           };
     
-          this.boardService.moveTouch(prevPos, currentPos);
+          this.board.moveTouch(prevPos, currentPos);
         });
   }
 

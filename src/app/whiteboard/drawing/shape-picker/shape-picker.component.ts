@@ -1,5 +1,6 @@
 import { BoardService, Shapes } from 'src/app/features/board.service';
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, Input } from '@angular/core';
+import { Board } from 'src/app/global/board/board';
 
 @Component({
   selector: 'app-shape-picker',
@@ -7,6 +8,8 @@ import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angula
   styleUrls: ['./shape-picker.component.scss']
 })
 export class ShapePickerComponent implements AfterViewInit {
+  
+  @Input() board!: Board;
   
   @ViewChild('line')
   public line!: ElementRef;
@@ -17,38 +20,38 @@ export class ShapePickerComponent implements AfterViewInit {
   @ViewChild('ellipse')
   public ellipse!: ElementRef;
 
-  constructor(private readonly boardService: BoardService) { }
+  constructor() { }
 
   public isLine(): boolean {
-    return this.boardService.shapeMode == Shapes.Line;
+    return this.board.shapeMode == Shapes.Line;
   }
   public setLine(): void {
-    this.boardService.shapeMode = Shapes.Line;
+    this.board.shapeMode = Shapes.Line;
   }
 
   public isCircle(): boolean {
-    return this.boardService.shapeMode == Shapes.Circle;
+    return this.board.shapeMode == Shapes.Circle;
   }
   public setCircle(): void {
-    this.boardService.shapeMode = Shapes.Circle;
+    this.board.shapeMode = Shapes.Circle;
   }
 
   public isRect(): boolean {
-    return this.boardService.shapeMode == Shapes.Rectangle;
+    return this.board.shapeMode == Shapes.Rectangle;
   }
   public setRect(): void {
-    this.boardService.shapeMode = Shapes.Rectangle;
+    this.board.shapeMode = Shapes.Rectangle;
   }
 
   public isEllipse(): boolean {
-    return this.boardService.shapeMode == Shapes.Ellipse;
+    return this.board.shapeMode == Shapes.Ellipse;
   }
   public setEllipse(): void {
-    this.boardService.shapeMode = Shapes.Ellipse;
+    this.board.shapeMode = Shapes.Ellipse;
   }
 
   ngAfterViewInit(): void {
-    this.reloadShapes(this.boardService.stroke.getThickness());
+    this.reloadShapes(this.board.stroke.getThickness());
   }
 
   public reloadShapes(strokeWidth: number) {
@@ -57,8 +60,8 @@ export class ShapePickerComponent implements AfterViewInit {
     let circle = this.circle.nativeElement as SVGLineElement;
     let rectangle = this.rect.nativeElement as SVGLineElement;
 
-    let stroke = this.boardService.stroke.color.toString();
-    let fill = this.boardService.fill.toString();
+    let stroke = this.board.stroke.color.toString();
+    let fill = this.board.fill.toString();
 
     line.setAttributeNS(null, 'stroke', stroke);
     rectangle.setAttributeNS(null, 'stroke', stroke);

@@ -1,31 +1,31 @@
 <div class="canvasWrapper" [ngStyle]="{ 'width.%': this.width, 'height.%': this.height }">
-    <app-canvas></app-canvas>
+    <app-canvas [board]="this.board"></app-canvas>
 
-    <div class="bottomElements">
+    <div *ngIf="this.whiteboardConfig.showBottomBar" class="bottomElements">
         <div class="table">
             <div class="tc left">
                 <div class="controlWrapper leftWrapper">
-                    <app-menu-control class="control"></app-menu-control>
+                    <app-menu-control [board]="this.board" class="control"></app-menu-control>
                 </div>
             </div>
             <div class="tc center">
                 <div class="controlWrapper centerWrapper">
-                    <app-select-control class="control"></app-select-control>
-                    <app-pen-control class="control"></app-pen-control>
-                    <app-delete-control class="control"></app-delete-control>
-                    <app-move-control class="control"></app-move-control>
-                    <app-shape-control class="control"></app-shape-control>
-                    <app-file-control class="control"></app-file-control>
-                    <app-clear-control class="control"></app-clear-control>
-                    <app-back-control class="control"></app-back-control>
-                    <app-forward-control class="control"></app-forward-control>
+                    <app-select-control [board]="this.board" class="control"></app-select-control>
+                    <app-pen-control [board]="this.board" class="control"></app-pen-control>
+                    <app-delete-control [board]="this.board" class="control"></app-delete-control>
+                    <app-move-control [board]="this.board" class="control"></app-move-control>
+                    <app-shape-control [board]="this.board" class="control"></app-shape-control>
+                    <app-file-control [board]="this.board" class="control"></app-file-control>
+                    <app-clear-control [board]="this.board" class="control"></app-clear-control>
+                    <app-back-control [board]="this.board" class="control"></app-back-control>
+                    <app-forward-control [board]="this.board" class="control"></app-forward-control>
                 </div>
             </div>
             <div class="tc right">
                 <div class="controlWrapper rightWrapper">
-                    <app-new-page-control class="control"></app-new-page-control>
-                    <app-last-page-control class="control"></app-last-page-control>
-                    <app-next-page-control class="control"></app-next-page-control>
+                    <app-new-page-control [board]="this.board" class="control"></app-new-page-control>
+                    <app-last-page-control [board]="this.board" class="control"></app-last-page-control>
+                    <app-next-page-control [board]="this.board" class="control"></app-next-page-control>
                 </div>
             </div>
         </div>

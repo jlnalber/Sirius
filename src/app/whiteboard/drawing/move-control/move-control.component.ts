@@ -1,6 +1,7 @@
-import { Control } from 'src/app/global/control';
+import { Board } from 'src/app/global/board/board';
+import { Control } from 'src/app/global/controls/control';
 import { MatSliderChange } from '@angular/material/slider';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import { BoardModes, BoardService } from 'src/app/features/board.service';
 
 const multiplier = 220;
@@ -11,7 +12,11 @@ const addition = 250;
   templateUrl: './move-control.component.html',
   styleUrls: ['./move-control.component.scss']
 })
-export class MoveControlComponent extends Control implements OnInit {
+export class MoveControlComponent extends Control implements AfterViewInit {
+
+  @Input() board!: Board;
+
+  @Input() enabled = true;
 
   public zoomToSlider(zoom: number): number {
     return (Math.pow(Math.E, zoom) * multiplier - addition);
@@ -19,8 +24,8 @@ export class MoveControlComponent extends Control implements OnInit {
   }
 
   public getSliderValue(): number {
-    if (this.boardService.canvas) {
-      return this.zoomToSlider(this.boardService.canvas.zoom);
+    if (this.board.canvas) {
+      return this.zoomToSlider(this.board.canvas.zoom);
     }
     return 1;
   }
@@ -30,17 +35,18 @@ export class MoveControlComponent extends Control implements OnInit {
     return Math.log((slider + addition) / multiplier)
   }
 
-  constructor(boardService: BoardService) {
-    super(boardService, BoardModes.Move);
+  constructor() {
+    super(BoardModes.Move);
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.afterViewInit.emit();
   }
 
   public onSliderChange(event: MatSliderChange): void {
-    if (event.value && this.boardService.canvas) {
+    if (event.value && this.board.canvas) {
       let realValue = this.sliderToZoom(event.value);
-      this.boardService.canvas.zoom = realValue;
+      this.board.canvas.zoom = realValue;
     }
   }
 

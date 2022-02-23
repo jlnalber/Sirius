@@ -1,4 +1,5 @@
 import { BoardService } from 'src/app/features/board.service';
+import { Board } from '../board/board';
 import { CanvasItem, Point } from "./canvasElement";
 import { Shape } from './shape';
 
@@ -7,16 +8,16 @@ export class Rectangle extends Shape {
     private start: Point = { x: 0, y: 0 };
 
     public touchStart(p: Point): void {
-        let realP = this.boardService.getActualPoint(p);
+        let realP = this.board.getActualPoint(p);
         this.start = realP;
         this.moveTo(realP);
     }
     public touchMove(from: Point, to: Point): void {
-        let realTo = this.boardService.getActualPoint(to);
+        let realTo = this.board.getActualPoint(to);
         this.expandTo(realTo);
     }
     public touchEnd(p: Point): void {
-        let realTo = this.boardService.getActualPoint(p);
+        let realTo = this.board.getActualPoint(p);
         this.expandTo(realTo);
 
     }
@@ -45,7 +46,7 @@ export class Rectangle extends Shape {
         this.svgElement.setAttributeNS(null, 'height', (endY - startY).toString());
     }
     
-    constructor(boardService: BoardService) {
-        super(boardService, 'rect');
+    constructor(board: Board) {
+        super(board, 'rect');
     }
 }

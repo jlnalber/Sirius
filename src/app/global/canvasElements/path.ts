@@ -1,6 +1,7 @@
 import { BoardService } from "../../features/board.service";
 import { Point, CanvasItem } from "./canvasElement";
 import { Stroke } from "../stroke";
+import { Board } from "../board/board";
 
 export class Path extends CanvasItem {
 
@@ -21,11 +22,11 @@ export class Path extends CanvasItem {
     private pathElement: SVGPathElement;
     private stroke: Stroke;
 
-    constructor(private boardService: BoardService) {
+    constructor(private board: Board) {
         super();
 
-        this.stroke = this.boardService.stroke;
-        this.pathElement = this.boardService.createElement('path') as SVGPathElement;
+        this.stroke = this.board.stroke;
+        this.pathElement = this.board.createElement('path') as SVGPathElement;
 
         this.intialize();
     }
@@ -82,17 +83,17 @@ export class Path extends CanvasItem {
     }
 
     public touchStart(p: Point): void {
-        let realPoint = this.boardService.getActualPoint(p);
+        let realPoint = this.board.getActualPoint(p);
         this.addPoint(realPoint);
     }
 
     public touchMove(from: Point, to: Point): void {
-        let realCurr = this.boardService.getActualPoint(to);
+        let realCurr = this.board.getActualPoint(to);
         this.addPoint(realCurr);
     }
 
     public touchEnd(p: Point): void {
-        let realPoint = this.boardService.getActualPoint(p);
+        let realPoint = this.board.getActualPoint(p);
         this.addPoint(realPoint);
         this.finalize();
     }

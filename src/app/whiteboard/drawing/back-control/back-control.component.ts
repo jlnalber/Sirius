@@ -1,19 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Board } from 'src/app/global/board/board';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { BasicControl } from 'src/app/global/controls/basicControl';
 
 @Component({
   selector: 'app-back-control',
   templateUrl: './back-control.component.html',
   styleUrls: ['./back-control.component.scss']
 })
-export class BackControlComponent implements OnInit {
+export class BackControlComponent extends BasicControl implements AfterViewInit {
 
-  public click() {
+  @Input() board!: Board;
+
+  @Input() enabled = true;
+
+  public onClick = () => {
     
   }
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    this.afterViewInit.emit();
   }
 
 }
