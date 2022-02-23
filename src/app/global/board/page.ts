@@ -2,28 +2,30 @@ import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.compon
 import { Board } from "./board";
 import { Stack } from "../stack";
 
+const maxStepsBack = 15;
+
 export class Page {
 
     public get canvas(): CanvasComponent | undefined {
         return this.board.canvas;
     }
 
-    public lastContent: Stack<string> = new Stack();
+    public lastContent: Stack<string> = new Stack(maxStepsBack);
     private _currentContent: string = "";
     public get currentContent(): string {
         return this._currentContent;
     }
     public set currentContent(value: string) {
-        if (this.canvas && this.canvas.svgElement) {
-            this.canvas.svgElement.innerHTML = value;
+        if (this.canvas && this.canvas.gElement) {
+            this.canvas.gElement.innerHTML = value;
         }
         this._currentContent = value;
     }
-    public nextContent: Stack<string> = new Stack();
+    public nextContent: Stack<string> = new Stack(maxStepsBack);
 
     private save(): void {
-        if (this.canvas && this.canvas.svgElement) {
-            let newContent = this.canvas.svgElement.innerHTML;
+        if (this.canvas && this.canvas.gElement) {
+            let newContent = this.canvas.gElement.innerHTML;
 
             if (this.currentContent != newContent) {
                 this.lastContent.push(this.currentContent);
@@ -38,10 +40,10 @@ export class Page {
     }
 
     public goBack(): void {
-        if (this.canvas && this.canvas.svgElement && this.lastContent.size() != 0) {
+        if (this.canvas && this.canvas.gElement && this.lastContent.size() != 0) {
             let c = this.lastContent.pop();
             
-            if (c) {
+            if (c != undefined) {
                 this.nextContent.push(this.currentContent);
                 this.currentContent = c;
             }
@@ -53,7 +55,7 @@ export class Page {
     }
 
     public goForward(): void {
-        if (this.canvas && this.canvas.svgElement && this.nextContent.size() != 0) {
+        if (this.canvas && this.canvas.gElement && this.nextContent.size() != 0) {
             let c = this.nextContent.pop();
 
             if (c) {

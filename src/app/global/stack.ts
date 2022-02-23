@@ -1,10 +1,14 @@
 export class Stack<T> {
     private storage: T[] = [];
   
-    constructor() {}
+    constructor(private maxSize: number = Infinity) {}
   
     push(item: T): void {
       this.storage.push(item);
+
+      if (this.size() > this.maxSize) {
+        this.storage.splice(0, 1);
+      }
     }
 
     empty(): void {
