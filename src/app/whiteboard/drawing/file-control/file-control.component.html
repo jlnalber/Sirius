@@ -1,3 +1,6 @@
 <div class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
-    <mat-icon>perm_media</mat-icon>
+    <label>
+        <mat-icon>perm_media</mat-icon>
+        <input id="inp" type="file" (change)="this.openFile()">
+    </label>
 </div>

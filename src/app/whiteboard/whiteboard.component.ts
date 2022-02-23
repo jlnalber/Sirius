@@ -20,7 +20,7 @@ export class WhiteboardComponent implements OnInit {
     enableClearControl: true,
     enableDeleteControl: true,
     enableMenuControl: true,
-    enableFileControl: false,
+    enableFileControl: true,
     enableForwardControl: true,
     enableLastPageControl: false,
     enableMoveControl: true,
