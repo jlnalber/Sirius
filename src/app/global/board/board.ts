@@ -11,6 +11,8 @@ import { Ellipse } from "../canvasElements/ellipse";
 import { Line } from "../canvasElements/line";
 import { Rectangle } from "../canvasElements/rectangle";
 import { Page } from "./page";
+import { jsPDF } from "jspdf";
+import 'svg2pdf.js';
 
 const svgns = "http://www.w3.org/2000/svg";
 
@@ -114,6 +116,19 @@ export class Board {
 
   public downloadWhiteboard() {
     this.doDownload('whiteboard.svg', this.getSVG());
+  }
+
+  public downloadPDF() {
+    if (this.canvas && this.canvas.svgElement) {
+      let rect = this.currentPage.getSizeRect();
+
+      const doc = new jsPDF('l', 'px', [ rect.width - rect.x, rect.height - rect.y ]);
+      doc
+        .svg(this.canvas.svgElement, rect)
+        .then(() => {
+          doc.save('whiteboard.pdf');
+        })
+    }
   }
 
   public getSVG(): string {

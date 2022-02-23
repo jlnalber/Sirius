@@ -47,6 +47,8 @@ import { NextPageControlComponent } from './whiteboard/drawing/next-page-control
 import { FileControlComponent } from './whiteboard/drawing/file-control/file-control.component';
 import { BackControlComponent } from './whiteboard/drawing/back-control/back-control.component';
 import { ForwardControlComponent } from './whiteboard/drawing/forward-control/forward-control.component';
+import { SaveControlComponent } from './whiteboard/drawing/menu-control/save-control/save-control.component';
+import { ExportAsPdfControlComponent } from './whiteboard/drawing/menu-control/export-as-pdf-control/export-as-pdf-control.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +83,9 @@ import { ForwardControlComponent } from './whiteboard/drawing/forward-control/fo
     NextPageControlComponent,
     FileControlComponent,
     BackControlComponent,
-    ForwardControlComponent
+    ForwardControlComponent,
+    SaveControlComponent,
+    ExportAsPdfControlComponent
   ],
   imports: [
     BrowserModule,

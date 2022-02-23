@@ -1,8 +1,9 @@
+import { Rect } from './../../interfaces/rect';
 import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.component";
 import { Board } from "./board";
 import { Stack } from "../stack";
 
-const maxStepsBack = 15;
+const maxStepsBack = 30;
 
 export class Page {
 
@@ -66,7 +67,46 @@ export class Page {
     }
     
     constructor(private board: Board) {
-        this.board.onTouchEnd.addListener(() => this.save());
+        this.board.onTouchEnd.addListener(() => {
+            if (this.board.currentPage == this) this.save();
+        });
+    }
+
+    public getSizeRect(): Rect {
+        let rect = {
+            x: 0,
+            y: 0,
+            width: 100,
+            height: 100
+        };
+
+        let max = (a: number, b: number) => {
+            return a > b ? a : b;
+        }
+        let min = (a: number, b: number) => {
+            return a < b ? a : b;
+        }
+
+        if (this.canvas && this.canvas.gElement) {
+            for (let i in this.canvas.gElement.children) {
+                let el = this.canvas.gElement.children[i];
+                if (el) {
+                    try {
+                        let r = (this.canvas.gElement.children[i] as SVGElement).getBoundingClientRect();
+                        rect.x = min(r.left, rect.x);
+                        rect.y = min(r.top, rect.y);
+                        rect.width = max(rect.width, r.width + r.left);
+                        rect.height = max(rect.height, r.height + r.top);
+                    }
+                    catch { }
+                }
+            }
+        }
+
+        rect.width += 20;
+        rect.height += 20;
+
+        return rect;
     }
 
     public clear() {
