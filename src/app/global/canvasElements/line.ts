@@ -10,6 +10,7 @@ export class Line extends Shape {
         let realP = this.board.getActualPoint(p);
         this.svgElement.setAttributeNS(null, 'x1', realP.x.toString());
         this.svgElement.setAttributeNS(null, 'y1', realP.y.toString());
+        this.svgElement.setAttributeNS(null, 'stroke-linecap', this.board.stroke.strokeLineCap);
         this.goTo(realP);
     }
 

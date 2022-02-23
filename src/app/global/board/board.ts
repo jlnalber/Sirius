@@ -142,6 +142,10 @@ export class Board {
   public canGoForward() {
     return this.currentPage.canGoForward();
   }
+
+  public clear() {
+    this.currentPage.clear();
+  }
   
   private doDownload(filename: string, text: string) {
     var element = document.createElement('a');

@@ -32,10 +32,6 @@ export class Page {
                 this._currentContent = newContent;
                 this.nextContent.empty();
             }
-
-            console.log(this.lastContent);
-            console.log(this._currentContent);
-            console.log(this.nextContent);
         }
     }
 
@@ -58,7 +54,7 @@ export class Page {
         if (this.canvas && this.canvas.gElement && this.nextContent.size() != 0) {
             let c = this.nextContent.pop();
 
-            if (c) {
+            if (c != undefined) {
                 this.lastContent.push(this.currentContent);
                 this.currentContent = c;
             }
@@ -71,5 +67,13 @@ export class Page {
     
     constructor(private board: Board) {
         this.board.onTouchEnd.addListener(() => this.save());
+    }
+
+    public clear() {
+        if (this.canvas && this.canvas.gElement) {
+            this.canvas.gElement.innerHTML = '';
+
+            this.save();
+        }
     }
 }

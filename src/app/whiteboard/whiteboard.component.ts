@@ -17,7 +17,7 @@ export class WhiteboardComponent implements OnInit {
   @Input() whiteboardConfig: WhiteboardConfig = {
     showBottomBar: true,
     enableBackControl: true,
-    enableClearControl: false,
+    enableClearControl: true,
     enableDeleteControl: true,
     enableMenuControl: true,
     enableFileControl: false,

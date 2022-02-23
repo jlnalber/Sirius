@@ -16,7 +16,7 @@ export class ClearControlComponent extends BasicControl implements AfterViewInit
   @Input() enabled = true;
 
   public onClick = () => {
-    
+    this.board.clear();
   }
 
   constructor() {

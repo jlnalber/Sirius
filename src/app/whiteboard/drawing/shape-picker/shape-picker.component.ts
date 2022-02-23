@@ -76,6 +76,8 @@ export class ShapePickerComponent implements AfterViewInit {
     rectangle.setAttributeNS(null, 'fill', fill);
     circle.setAttributeNS(null, 'fill', fill);
     ellipse.setAttributeNS(null, 'fill', fill);
+
+    line.setAttributeNS(null, 'stroke-linecap', this.board.stroke.strokeLineCap);
   }
 
 }
