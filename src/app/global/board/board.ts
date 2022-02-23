@@ -126,6 +126,22 @@ export class Board {
     }
     return '';
   }
+
+  public goBack() {
+    this.currentPage.goBack();
+  }
+
+  public canGoBack() {
+    return this.currentPage.canGoBack();
+  }
+
+  public goForward() {
+    this.currentPage.goForward();
+  }
+
+  public canGoForward() {
+    return this.currentPage.canGoForward();
+  }
   
   private doDownload(filename: string, text: string) {
     var element = document.createElement('a');

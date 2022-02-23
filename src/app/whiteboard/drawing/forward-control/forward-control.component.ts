@@ -14,13 +14,15 @@ export class ForwardControlComponent extends BasicControl implements AfterViewIn
   @Input() enabled = true;
 
   public onClick = () => {
-    if (this.enabled) {
-      
-    }
+    this.board.goForward();
   }
 
   constructor() {
     super();
+
+    this.enabledRules.addRule(() => {
+      return this.board.canGoForward();
+    })
   }
 
   ngAfterViewInit(): void {

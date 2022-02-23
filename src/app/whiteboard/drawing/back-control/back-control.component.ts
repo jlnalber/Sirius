@@ -14,11 +14,15 @@ export class BackControlComponent extends BasicControl implements AfterViewInit 
   @Input() enabled = true;
 
   public onClick = () => {
-    console.log('Back?!')
+    this.board.goBack();
   }
 
   constructor() {
     super();
+    
+    this.enabledRules.addRule(() => {
+      return this.board.canGoBack();
+    })
   }
 
   ngAfterViewInit(): void {

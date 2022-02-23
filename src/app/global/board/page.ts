@@ -5,7 +5,6 @@ import { Stack } from "../stack";
 export class Page {
 
     public get canvas(): CanvasComponent | undefined {
-        console.log(this.board);
         return this.board.canvas;
     }
 
@@ -28,9 +27,13 @@ export class Page {
 
             if (this.currentContent != newContent) {
                 this.lastContent.push(this.currentContent);
-                this.currentContent = newContent;
+                this._currentContent = newContent;
                 this.nextContent.empty();
             }
+
+            console.log(this.lastContent);
+            console.log(this._currentContent);
+            console.log(this.nextContent);
         }
     }
 
@@ -45,6 +48,10 @@ export class Page {
         }
     }
 
+    public canGoBack() {
+        return this.lastContent.size() != 0;
+    }
+
     public goForward(): void {
         if (this.canvas && this.canvas.svgElement && this.nextContent.size() != 0) {
             let c = this.nextContent.pop();
@@ -55,8 +62,12 @@ export class Page {
             }
         }
     }
+
+    public canGoForward() {
+        return this.nextContent.size() != 0;
+    }
     
     constructor(private board: Board) {
-        this.board.onTouchEnd.addListener(() => this.save);
+        this.board.onTouchEnd.addListener(() => this.save());
     }
 }
