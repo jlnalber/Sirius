@@ -14,13 +14,15 @@ export class LastPageControlComponent extends BasicControl implements AfterViewI
   @Input() enabled = true;
 
   public onClick = () => {
-    if (this.enabled) {
-      
-    }
+    this.board.currentPageIndex--;
   }
 
   constructor() {
     super();
+
+    this.enabledRules.addRule(() => {
+      return this.board.currentPageIndex > 0;
+    });
   }
 
   ngAfterViewInit(): void {

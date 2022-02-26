@@ -59,12 +59,23 @@ export class Board {
   public readonly onTouchEnd: Event = new Event();
 
   public pages: Page[] = [ new Page(this) ]
-  public currentPageIndex = 0;
+  private _currentPageIndex = 0;
+  public get currentPageIndex(): number {
+    return this._currentPageIndex;
+  }
+  public set currentPageIndex(value: number) {
+    if (value >= 0 && value < this.pages.length) {
+      console.log('niah')
+      this.currentPage.close();
+      this._currentPageIndex = value;
+      this.currentPage.open();
+    } 
+  }
   public get currentPage(): Page {
       return this.pages[this.currentPageIndex];
   };
 
-  public startTouch(p: Point) {
+  public async startTouch(p: Point) {
     if (!this.isOnActiveTouch) {
         this.isOnActiveTouch = true;
         this.onTouch.emit();
@@ -90,7 +101,7 @@ export class Board {
     }
   }
 
-  public moveTouch(from: Point, to: Point) {
+  public async moveTouch(from: Point, to: Point) {
     if (this.isOnActiveTouch) {
       this.currentCanvasItem?.touchMove(from, to);
 
@@ -98,7 +109,7 @@ export class Board {
     }
   }
 
-  public endTouch(p: Point) {
+  public async endTouch(p: Point) {
     if (this.isOnActiveTouch) {
       this.currentCanvasItem?.touchEnd(p);
 
@@ -173,6 +184,11 @@ export class Board {
     element.click();
   
     document.body.removeChild(element);
+  }
+
+  public addPage() {
+    this.pages.push(new Page(this));
+    this.currentPageIndex = this.pages.length - 1;
   }
   
 }

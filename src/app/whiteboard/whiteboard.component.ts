@@ -22,10 +22,10 @@ export class WhiteboardComponent implements OnInit {
     enableMenuControl: true,
     enableFileControl: true,
     enableForwardControl: true,
-    enableLastPageControl: false,
+    enableLastPageControl: true,
     enableMoveControl: true,
-    enableNewPageControl: false,
-    enableNextPageControl: false,
+    enableNewPageControl: true,
+    enableNextPageControl: true,
     enablePenControl: true,
     enableSelectControl: false,
     enableShapeControl: true

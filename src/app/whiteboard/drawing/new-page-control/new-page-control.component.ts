@@ -14,7 +14,7 @@ export class NewPageControlComponent extends BasicControl implements AfterViewIn
   @Input() enabled = true;
 
   public onClick = () => {
-    
+    this.board.addPage();
   }
 
   constructor() {

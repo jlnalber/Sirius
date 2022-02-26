@@ -116,4 +116,17 @@ export class Page {
             this.save();
         }
     }
+
+    public open() {
+        if (this.canvas && this.canvas.gElement) {
+            this.canvas.gElement.innerHTML = this.currentContent;
+        }
+    }
+
+    public close() {
+        this.save();
+        if (this.canvas && this.canvas.gElement) {
+            this.canvas.gElement.innerHTML = '';
+        }
+    }
 }

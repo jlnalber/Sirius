@@ -96,27 +96,27 @@ export class CanvasComponent implements AfterViewInit {
       };
     }
 
-    this.svgElement?.addEventListener('mouseup', (e: MouseEvent) => {
+    this.svgElement?.addEventListener('mouseup', async (e: MouseEvent) => {
       e.preventDefault();
-      this.board.endTouch(getPosFromMouseEvent(e));
+      await this.board.endTouch(getPosFromMouseEvent(e));
     })
-    this.svgElement?.addEventListener('mouseleave', (e: MouseEvent) => {
+    this.svgElement?.addEventListener('mouseleave', async (e: MouseEvent) => {
       e.preventDefault();
       if (e.buttons != 0) {
-        this.board.endTouch(getPosFromMouseEvent(e));
+        await this.board.endTouch(getPosFromMouseEvent(e));
       }
     })
-    this.svgElement?.addEventListener('touchcancel', (e: any) => {
+    this.svgElement?.addEventListener('touchcancel', async (e: any) => {
       if (e.preventDefault) {
         e.preventDefault();
       }
-      this.board.endTouch(getPosFromTouchEvent(e));
+      await this.board.endTouch(getPosFromTouchEvent(e));
     });
-    this.svgElement?.addEventListener('touchend', (e: any) => {
+    this.svgElement?.addEventListener('touchend', async (e: any) => {
       if (e.preventDefault) {
         e.preventDefault();
       }
-      this.board.endTouch(getPosFromTouchEvent(e));
+      await this.board.endTouch(getPosFromTouchEvent(e));
     });
 
     // this will capture all mousedown events from the canvas element
@@ -141,7 +141,7 @@ export class CanvasComponent implements AfterViewInit {
             )
         })
       )
-      .subscribe((res: any) => {
+      .subscribe(async (res: any) => {
         res[0].preventDefault();
         res[1].preventDefault();
         
@@ -158,7 +158,7 @@ export class CanvasComponent implements AfterViewInit {
           y: res[1].clientY - rect.top
         };
   
-        this.board.moveTouch(prevPos, currentPos);
+        await this.board.moveTouch(prevPos, currentPos);
       });
       
       // this will capture all mousedown events from the canvas element
@@ -182,7 +182,7 @@ export class CanvasComponent implements AfterViewInit {
               )
           })
         )
-        .subscribe((res: any) => {
+        .subscribe(async (res: any) => {
           res[0].preventDefault();
           res[1].preventDefault();
           let res1: any = res[0].changedTouches[0];
@@ -201,7 +201,7 @@ export class CanvasComponent implements AfterViewInit {
             y: res2.clientY - rect.top
           };
     
-          this.board.moveTouch(prevPos, currentPos);
+          await this.board.moveTouch(prevPos, currentPos);
         });
   }
 
