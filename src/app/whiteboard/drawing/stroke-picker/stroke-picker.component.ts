@@ -16,6 +16,17 @@ export class StrokePickerComponent implements OnInit {
   @Input() listener: (c: Color) => void = () => {};
   @Input() strokeWidthListener: (strokeThickness: number) => void = () => {};
 
+  getSliderValue(): number {
+    return Math.sqrt(this.board.stroke.getThickness());
+  }
+
+  setThickness(value: number) {
+    this.board.stroke.thickness = Math.pow(value, 2);
+  }
+
+  colors: Color[] = [
+  ];
+
   currentColor = () => {
     return this.board.stroke.color;
   }
@@ -26,7 +37,8 @@ export class StrokePickerComponent implements OnInit {
 
   triggerSWL(event: MatSliderChange) {
     if (event.value != null) {
-      this.strokeWidthListener(event.value);
+      this.setThickness(event.value);
+      this.strokeWidthListener(this.board.stroke.thickness ?? 1);
     }
   }
 

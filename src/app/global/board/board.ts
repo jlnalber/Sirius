@@ -65,7 +65,6 @@ export class Board {
   }
   public set currentPageIndex(value: number) {
     if (value >= 0 && value < this.pages.length) {
-      console.log('niah')
       this.currentPage.close();
       this._currentPageIndex = value;
       this.currentPage.open();
