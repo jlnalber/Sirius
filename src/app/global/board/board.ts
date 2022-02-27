@@ -1,3 +1,7 @@
+import { BackgroundImageCross } from './background/cross.backgroundImage copy';
+import { BackgroundImageKaro } from './background/karo.backgroundImage';
+import { BackgroundImageLine } from './background/line.backgroundImage';
+import { BackgroundImageNone } from './background/none.bgImage';
 import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.component";
 import { CanvasItem, Point } from "../canvasElements/canvasElement";
 import { Color } from "../color";
@@ -13,6 +17,7 @@ import { Rectangle } from "../canvasElements/rectangle";
 import { Page } from "./page";
 import { jsPDF } from "jspdf";
 import 'svg2pdf.js';
+import { BackgroundImage } from "./background/backgroundImage";
 
 const svgns = "http://www.w3.org/2000/svg";
 
@@ -53,6 +58,7 @@ export class Board {
   private currentCanvasItem: CanvasItem | undefined;
   public isOnActiveTouch: boolean = false;
   public backgroundColor: Color = new Color(18, 52, 19);
+  public backgroundImage: BackgroundImage = new BackgroundImageCross();
 
   public readonly onTouch: Event = new Event();
   public readonly onTouchStart: Event = new Event();
@@ -146,7 +152,7 @@ export class Board {
     if (this.canvas && this.canvas.svgElement) {
       return `<?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.backgroundColor.toString()}">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.backgroundColor.toString()}; background-image: url('${this.backgroundImage.url}');">
       ${this.canvas.svgElement.innerHTML}
       </svg>`;
     }

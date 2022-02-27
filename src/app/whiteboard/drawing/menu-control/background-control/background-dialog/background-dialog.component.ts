@@ -1,3 +1,7 @@
+import { BackgroundImageCross } from './../../../../../global/board/background/cross.backgroundImage copy';
+import { BackgroundImageNone } from './../../../../../global/board/background/none.bgImage';
+import { BackgroundImageKaro } from './../../../../../global/board/background/karo.backgroundImage';
+import { BackgroundImageLine } from './../../../../../global/board/background/line.backgroundImage';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Board } from 'src/app/global/board/board';
@@ -49,4 +53,41 @@ export class BackgroundDialogComponent {
     new Color(45, 178, 178),
     new Color(178, 45, 178)
   ]
+
+  lineBG = new BackgroundImageLine();
+  karoBG = new BackgroundImageKaro();
+  noneBG = new BackgroundImageNone();
+  crossBG = new BackgroundImageCross();
+
+  isLine() {
+    return this.data.board.backgroundImage instanceof BackgroundImageLine;
+  }
+
+  isKaro() {
+    return this.data.board.backgroundImage instanceof BackgroundImageKaro;
+  }
+
+  isNone() {
+    return this.data.board.backgroundImage instanceof BackgroundImageNone;
+  }
+
+  isCross() {
+    return this.data.board.backgroundImage instanceof BackgroundImageCross;
+  }
+
+  setLine() {
+    this.data.board.backgroundImage = new BackgroundImageLine();
+  }
+
+  setKaro() {
+    this.data.board.backgroundImage = new BackgroundImageKaro();
+  }
+
+  setNone() {
+    this.data.board.backgroundImage = new BackgroundImageNone();
+  }
+
+  setCross() {
+    this.data.board.backgroundImage = new BackgroundImageCross();
+  }
 }

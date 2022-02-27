@@ -1,0 +1,41 @@
+$widthCard: 100px;
+$heightCard: $widthCard;
+
+.pickerContainer {
+    margin: 20px 6px;
+    float: none;
+}
+
+.cardContainer {
+    width: $widthCard;
+    height: $heightCard;
+    float: left;
+    overflow: hidden;
+    display: inline;
+    margin: 6px;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid #00000038;
+    border-radius: 5px;
+}
+
+.cardContainer * {
+    transition: stroke 0.2s ease-in-out, fill 0.2s ease-in-out;
+}
+
+.inactive:hover {
+    transform: translateY(-4px);
+    box-shadow: 1px 1px 5px #00000028;
+}
+
+.inactive {
+    box-shadow: 3px 3px 5px #00000028;
+}
+
+.active {
+    transform: translateY(-14px);
+    box-shadow: 3px 10px 5px #00000028;
+}
+
+.active:hover {
+    box-shadow: 1px 1px 5px #00000028;
+}

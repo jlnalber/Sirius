@@ -1,5 +1,5 @@
 <div class="svgWrapper">
-    <svg #canvas [ngStyle]="{'background-color': this.board.backgroundColor.toString()}">
+    <svg #canvas [ngStyle]="{'background-color': this.board.backgroundColor.toString(), 'background-image': 'url(\'' + this.board.backgroundImage.url + '\')'}">
         <g #g>
 
         </g>
