@@ -6,26 +6,26 @@ import { BasicControl } from "./basicControl";
 
 export abstract class BottomControl extends BasicControl {
 
-    public active: boolean = false;
+    public cardOpen: boolean = false;
 
     public onClick = () => {
-        if (this.isOpen()) {
-            this.active = !this.active;
+        if (this.isActive()) {
+            this.cardOpen = !this.cardOpen;
             if (this.firstClick) {
                 this.firstClick();
             }
         }
         else {
-            this.active = false;
+            this.cardOpen = false;
             this.secondClick();
         }
     }
 
     public override getNgClasses(): string {
-        return (this.isOpen() ? 'active' : 'inactive') + ' ' + (this.isEnabled() ? 'enabled' : 'disabled');
+        return (this.isActive() ? 'active' : 'inactive') + ' ' + (this.isEnabled() ? 'enabled' : 'disabled');
     }
 
-    public abstract isOpen: () => boolean;
+    public abstract isActive: () => boolean;
 
     protected abstract secondClick: () => void;
 
@@ -36,7 +36,7 @@ export abstract class BottomControl extends BasicControl {
         
         this.afterViewInit.addListener(() => {
             this.board.onTouch.addListener(() => {
-                this.active = false;
+                this.cardOpen = false;
             })
         })
     }

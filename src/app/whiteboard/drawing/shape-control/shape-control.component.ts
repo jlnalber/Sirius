@@ -22,13 +22,13 @@ export class ShapeControlComponent extends Control implements AfterViewInit {
   public sPicker!: ElementRef;
 
   cListener = (c: Color) => {
-    if (this.active && this.isOpen() && this.sPicker) {
+    if (this.cardOpen && this.isActive() && this.sPicker) {
       (this.sPicker as any as ShapePickerComponent).reloadShapes(this.board.stroke.getThickness())
     }
   }
 
   sListener = (s: number) => {
-    if (this.active && this.isOpen() && this.sPicker) {
+    if (this.cardOpen && this.isActive() && this.sPicker) {
       (this.sPicker as any as ShapePickerComponent).reloadShapes(s)
     }
   }

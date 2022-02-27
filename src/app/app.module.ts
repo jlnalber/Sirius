@@ -49,6 +49,8 @@ import { BackControlComponent } from './whiteboard/drawing/back-control/back-con
 import { ForwardControlComponent } from './whiteboard/drawing/forward-control/forward-control.component';
 import { SaveControlComponent } from './whiteboard/drawing/menu-control/save-control/save-control.component';
 import { ExportAsPdfControlComponent } from './whiteboard/drawing/menu-control/export-as-pdf-control/export-as-pdf-control.component';
+import { BackgroundControlComponent } from './whiteboard/drawing/menu-control/background-control/background-control.component';
+import { BackgroundDialogComponent } from './whiteboard/drawing/menu-control/background-control/background-dialog/background-dialog.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +87,9 @@ import { ExportAsPdfControlComponent } from './whiteboard/drawing/menu-control/e
     BackControlComponent,
     ForwardControlComponent,
     SaveControlComponent,
-    ExportAsPdfControlComponent
+    ExportAsPdfControlComponent,
+    BackgroundControlComponent,
+    BackgroundDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -45,13 +45,14 @@ export class Board {
   constructor() {
   }
 
-  public stroke: Stroke = new Stroke(new Color(0, 0, 0));
+  public stroke: Stroke = new Stroke(new Color(255, 255, 255), 5);
   public fill: Color = new Color(0, 0, 0, 0);
   public canvas: CanvasComponent | undefined;
   public mode: BoardModes = BoardModes.Draw;
   public shapeMode: Shapes = Shapes.Line;
   private currentCanvasItem: CanvasItem | undefined;
   public isOnActiveTouch: boolean = false;
+  public backgroundColor: Color = new Color(18, 52, 19);
 
   public readonly onTouch: Event = new Event();
   public readonly onTouchStart: Event = new Event();
@@ -145,7 +146,7 @@ export class Board {
     if (this.canvas && this.canvas.svgElement) {
       return `<?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.backgroundColor.toString()}">
       ${this.canvas.svgElement.innerHTML}
       </svg>`;
     }

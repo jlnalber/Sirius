@@ -1,7 +1,7 @@
 <div class="control" [ngClass]="this.getNgClasses()"  (click)="this.click()">
     <mat-icon>control_camera</mat-icon>
 </div>
-<div *ngIf="this.active && this.isOpen()" class="card">
+<div *ngIf="this.cardOpen && this.isActive()" class="card">
     <div class="">
         <mat-slider color="primary" [min]="1" [max]="2000" [value]="this.getSliderValue()" value="400" (input)="this.onSliderChange($event)"></mat-slider>
     </div>

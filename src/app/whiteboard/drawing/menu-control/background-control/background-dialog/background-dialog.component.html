@@ -1,0 +1,7 @@
+<h1 mat-dialog-title class="fill">Hintergrundfarbe</h1>
+<div mat-dialog-content class="fill">
+    <app-colorset [defaultColors]="this.colors" [listener]="this.listener" [currentColor]="this.currentColor"></app-colorset>
+</div>
+<div mat-dialog-actions align="end" class="fill">
+  <button cdkFocusInitial mat-button (click)="onNoClick()">Schließen</button>
+</div>

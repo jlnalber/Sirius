@@ -1,7 +1,7 @@
 <div class="control" [ngClass]="this.getNgClasses()"  (click)="this.click()">
     <mat-icon>border_color</mat-icon>
 </div>
-<div *ngIf="this.active && this.isOpen()" class="card">
+<div *ngIf="this.cardOpen && this.isActive()" class="card">
     <div class="">
         <app-stroke-picker [board]="this.board"></app-stroke-picker>
     </div>

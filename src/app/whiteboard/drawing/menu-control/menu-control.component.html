@@ -1,9 +1,10 @@
 <div class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
     <mat-icon>menu</mat-icon>
 </div>
-<div *ngIf="this.isOpen()" class="card">
-    <div class="">
+<div *ngIf="this.isActive()" class="card">
+    <div class="controlWrapper">
         <app-save-control [board]="this.board" class="control"></app-save-control>
         <app-export-as-pdf-control [board]="this.board" class="control"></app-export-as-pdf-control>
+        <app-background-control [board]="this.board" class="control" #bgcontrol></app-background-control>
     </div>
 </div>

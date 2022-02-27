@@ -1,26 +1,26 @@
 <div class="shapesContainer">
-    <div class="shapeContainer" [ngClass]="this.isLine() ? 'active' : 'inactive'" (click)="this.setLine()">
+    <div class="shapeContainer" [ngStyle]="{'background-color': this.board.backgroundColor.toString()}" [ngClass]="this.isLine() ? 'active' : 'inactive'" (click)="this.setLine()">
         <svg>
             <line x1="12.5" x2="87.5" y1="12.5" y2="87.5" stroke="red" #line>
 
             </line>
         </svg>
     </div>
-    <div class="shapeContainer" [ngClass]="this.isRect() ? 'active' : 'inactive'" (click)="this.setRect()">
+    <div class="shapeContainer" [ngStyle]="{'background-color': this.board.backgroundColor.toString()}" [ngClass]="this.isRect() ? 'active' : 'inactive'" (click)="this.setRect()">
         <svg>
             <rect #rect>
 
             </rect>
         </svg>
     </div>
-    <div class="shapeContainer" [ngClass]="this.isCircle() ? 'active' : 'inactive'" (click)="this.setCircle()">
+    <div class="shapeContainer" [ngStyle]="{'background-color': this.board.backgroundColor.toString()}" [ngClass]="this.isCircle() ? 'active' : 'inactive'" (click)="this.setCircle()">
         <svg>
             <circle #circle>
 
             </circle>
         </svg>
     </div>
-    <div class="shapeContainer" [ngClass]="this.isEllipse() ? 'active' : 'inactive'" (click)="this.setEllipse()">
+    <div class="shapeContainer" [ngStyle]="{'background-color': this.board.backgroundColor.toString()}" [ngClass]="this.isEllipse() ? 'active' : 'inactive'" (click)="this.setEllipse()">
         <svg>
             <ellipse #ellipse>
 

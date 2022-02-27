@@ -16,7 +16,7 @@ export class MenuControlComponent extends BottomControl implements AfterViewInit
 
   public openPanel: boolean = false;
 
-  public override isOpen = () => {
+  public override isActive = () => {
     return this.openPanel;
   }
 

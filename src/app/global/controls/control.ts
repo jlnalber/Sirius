@@ -3,7 +3,7 @@ import { BottomControl } from "./bottomControl";
 
 export abstract class Control extends BottomControl {
 
-    public isOpen = () => {
+    public isActive = () => {
         return this.board.mode == this.mode;
     };
 
