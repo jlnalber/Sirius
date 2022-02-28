@@ -4,8 +4,9 @@ import { Board, BoardModes } from '../board/board';
 import { CanvasItem, Point } from "./canvasElement";
 import { Shape } from "./shape";
 
-export class Delete {
-
+export class Select {
+    
+    // gibt an, ob gerade das select aktiv ist
     private active: boolean = false;
 
     public start(): void {
@@ -14,13 +15,9 @@ export class Delete {
             for (let i in children) {
                 let el = children[i] as SVGElement;
                 let ev = this.getListener(el);
-                let evt = this.getListenerTouch(el);
 
                 try {
-                    el.addEventListener('mousemove', ev);
-                    el.addEventListener('mousedown', ev)
-                    el.addEventListener('touchstart', evt);
-                    el.addEventListener('touchmove', evt);
+                    el.addEventListener('click', ev);
                 } catch { }
             }
         }
@@ -33,48 +30,53 @@ export class Delete {
                 let el = children[i];
 
                 if (el.removeAllListeners) {
-                    el.removeAllListeners('mousemove');
-                    el.removeAllListeners('mousedown');
-                    el.removeAllListeners('touchstart');
-                    el.removeAllListeners('touchmove');
+                    el.removeAllListeners('click');
                 }
             }
         }
-    }
 
-    private removeElement(el: SVGElement, ev: MouseEvent): boolean {
-        if (ev.buttons != 0 && this.board.canvas && this.board.canvas.gElement && this.board.canvas.gElement.contains(el)) {
-            this.board.canvas.gElement.removeChild(el);
-            return true;
+        if (this.board.selector) {
+            this.board.selector.svgEl = undefined;
         }
-        return false;
     }
 
-    private removeElementTouch(el: SVGElement): boolean {
-        if (this.board.canvas && this.board.canvas.gElement && this.board.canvas.gElement.contains(el)) {
-            this.board.canvas.gElement.removeChild(el);
+    private captureElement(el: SVGElement, ev: MouseEvent): boolean {
+        if (this.board.selector) {
+            this.board.selector.svgEl = el;
             return true;
         }
         return false;
     }
 
     private getListener(el: SVGElement): (ev: MouseEvent) => void {
-        return (ev: MouseEvent) => { return this.removeElement(el, ev) };
-    }
-
-    private getListenerTouch(el: SVGElement): () => void {
-        return () => { return this.removeElementTouch(el); };
+        return (ev: MouseEvent) => { return this.captureElement(el, ev) };
     }
 
     constructor(private readonly board: Board) {
+        // startet/endet das select
         this.board.onBoardModeChange.addListener(() => {
-            if (this.board.mode == BoardModes.Delete && !this.active) {
+            if (this.board.mode == BoardModes.Select && !this.active) {
                 this.start();
                 this.active = true;
             }
             else if (this.active) {
                 this.end();
                 this.active = false;
+            }
+        });
+
+        // endet das select, wenn eine Seite geschlossen wird
+        this.board.beforePageSwitched.addListener(() => {
+            if (this.active) {
+                this.end();
+                if (this.board.selector) this.board.selector.svgEl = undefined;
+            }
+        })
+
+        // startet das select wieder, wenn eine andere Seite geöffnet wird
+        this.board.onPageSwitched.addListener(() => {
+            if (this.active) {
+                this.start();
             }
         })
     }

@@ -27,7 +27,7 @@ export class WhiteboardComponent implements OnInit {
     enableNewPageControl: true,
     enableNextPageControl: true,
     enablePenControl: true,
-    enableSelectControl: false,
+    enableSelectControl: true,
     enableShapeControl: true
   }
 

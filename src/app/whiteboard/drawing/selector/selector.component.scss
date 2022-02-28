@@ -1,0 +1,82 @@
+$color: rgb(24, 245, 24);
+$size: 15px;
+$turntop: 30px;
+
+.wrapper {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: #ffffff00;
+    top: 70px;
+    left: 100px;
+    border: 3px dashed $color;
+}
+
+.touch {
+    pointer-events: none;
+}
+
+.point {
+    position: absolute;
+    width: $size;
+    height: $size;
+    background-color: $color;
+    border-radius: 50%;
+    pointer-events: all;
+}
+
+.inside {
+    position: absolute;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    cursor: move;
+}
+
+.ne {
+    cursor: ne-resize;
+}
+
+.nw {
+    cursor: nw-resize;
+}
+
+.left {
+    left: calc($size / -2);
+}
+
+.center, .turn {
+    margin: 0 auto;
+    position: relative;
+}
+
+.line {
+    width: 0px;
+    height: calc($turntop / 3);
+    border: 2px dashed $color;
+    transform: translateY(-$turntop);
+}
+
+.turn {
+    transform: translateY(-$turntop);
+    cursor: grab;
+}
+
+.top {
+    top: calc($size / -2);
+}
+
+.right {
+    float: right;
+    right: calc($size / -2);
+}
+
+.bottom {
+    bottom: calc($size / -2);
+}
+
+.inactive {
+    display: none;
+}

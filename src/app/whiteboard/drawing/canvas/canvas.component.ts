@@ -5,6 +5,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise } from 'rxjs';
 import { Board } from 'src/app/global/board/board';
+import { SelectorComponent } from '../selector/selector.component';
 
 @Component({
   selector: 'app-canvas',

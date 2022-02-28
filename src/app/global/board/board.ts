@@ -1,7 +1,8 @@
+import { SelectorComponent } from './../../whiteboard/drawing/selector/selector.component';
+import { SelectControlComponent } from './../../whiteboard/drawing/select-control/select-control.component';
+import { EmptyCanvasElement } from './../canvasElements/emptyCanvasElement';
+import { Select } from './../canvasElements/select';
 import { BackgroundImageCross } from './background/cross.backgroundImage copy';
-import { BackgroundImageKaro } from './background/karo.backgroundImage';
-import { BackgroundImageLine } from './background/line.backgroundImage';
-import { BackgroundImageNone } from './background/none.bgImage';
 import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.component";
 import { CanvasItem, Point } from "../canvasElements/canvasElement";
 import { Color } from "../color";
@@ -48,22 +49,37 @@ export class Board {
   }
 
   constructor() {
+    new Delete(this);
+    new Select(this);
   }
 
   public stroke: Stroke = new Stroke(new Color(255, 255, 255), 5);
   public fill: Color = new Color(0, 0, 0, 0);
   public canvas: CanvasComponent | undefined;
-  public mode: BoardModes = BoardModes.Draw;
+  public selector: SelectorComponent | undefined;
+
+  private _mode: BoardModes = BoardModes.Draw;
+  public get mode(): BoardModes {
+    return this._mode;
+  }
+  public set mode(value: BoardModes) {
+    this._mode = value;
+    this.onBoardModeChange.emit();
+  }
+
   public shapeMode: Shapes = Shapes.Line;
   private currentCanvasItem: CanvasItem | undefined;
   public isOnActiveTouch: boolean = false;
   public backgroundColor: Color = new Color(18, 52, 19);
   public backgroundImage: BackgroundImage = new BackgroundImageCross();
 
+  public readonly onBoardModeChange: Event = new Event();
   public readonly onTouch: Event = new Event();
   public readonly onTouchStart: Event = new Event();
   public readonly onTouchMove: Event = new Event();
   public readonly onTouchEnd: Event = new Event();
+  public readonly onPageSwitched: Event = new Event();
+  public readonly beforePageSwitched: Event = new Event();
 
   public pages: Page[] = [ new Page(this) ]
   private _currentPageIndex = 0;
@@ -71,10 +87,12 @@ export class Board {
     return this._currentPageIndex;
   }
   public set currentPageIndex(value: number) {
-    if (value >= 0 && value < this.pages.length) {
+    if (value >= 0 && value < this.pages.length && this._currentPageIndex != value) {
+      this.beforePageSwitched.emit();
       this.currentPage.close();
       this._currentPageIndex = value;
       this.currentPage.open();
+      this.onPageSwitched.emit();
     } 
   }
   public get currentPage(): Page {
@@ -88,14 +106,15 @@ export class Board {
 
         switch (this.mode) {
         case BoardModes.Draw: this.currentCanvasItem = new Path(this); break;
-        case BoardModes.Delete: this.currentCanvasItem = new Delete(this); break;
+        case BoardModes.Delete: this.currentCanvasItem = new EmptyCanvasElement(); break;
         case BoardModes.Move: this.currentCanvasItem = new Move(this); break;
+        case BoardModes.Select: this.currentCanvasItem = new EmptyCanvasElement(); break;
         case BoardModes.Shape: {
             switch (this.shapeMode) {
-            case Shapes.Circle: this.currentCanvasItem = new Circle(this); break;
-            case Shapes.Ellipse: this.currentCanvasItem = new Ellipse(this); break;
-            case Shapes.Line: this.currentCanvasItem = new Line(this); break;
-            case Shapes.Rectangle: this.currentCanvasItem = new Rectangle(this); break;
+              case Shapes.Circle: this.currentCanvasItem = new Circle(this); break;
+              case Shapes.Ellipse: this.currentCanvasItem = new Ellipse(this); break;
+              case Shapes.Line: this.currentCanvasItem = new Line(this); break;
+              case Shapes.Rectangle: this.currentCanvasItem = new Rectangle(this); break;
             }
             break;
         } 

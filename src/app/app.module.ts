@@ -51,6 +51,7 @@ import { SaveControlComponent } from './whiteboard/drawing/menu-control/save-con
 import { ExportAsPdfControlComponent } from './whiteboard/drawing/menu-control/export-as-pdf-control/export-as-pdf-control.component';
 import { BackgroundControlComponent } from './whiteboard/drawing/menu-control/background-control/background-control.component';
 import { BackgroundDialogComponent } from './whiteboard/drawing/menu-control/background-control/background-dialog/background-dialog.component';
+import { SelectorComponent } from './whiteboard/drawing/selector/selector.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { BackgroundDialogComponent } from './whiteboard/drawing/menu-control/bac
     SaveControlComponent,
     ExportAsPdfControlComponent,
     BackgroundControlComponent,
-    BackgroundDialogComponent
+    BackgroundDialogComponent,
+    SelectorComponent
   ],
   imports: [
     BrowserModule,
