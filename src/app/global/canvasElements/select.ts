@@ -80,6 +80,7 @@ export class Select {
             }
         })
 
+        // füge das select auch zu neu hinzugefügeten Element hinzu
         this.board.onAddElement.addListener(() => {
             if (this.active) {
                 this.end();
@@ -87,6 +88,7 @@ export class Select {
             }
         });
 
+        // entferne das select von neu entfernten Element
         this.board.onRemoveElement.addListener(() => {
             if (this.active) {
                 this.end();
