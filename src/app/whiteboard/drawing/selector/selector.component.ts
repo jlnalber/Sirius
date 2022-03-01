@@ -131,13 +131,13 @@ export class SelectorComponent implements AfterViewInit {
         if (translate) {
           let params = translate.split(' ');
           if (params.length == 1) {
-            let num = Number.parseInt(params[0]);
+            let num = Number.parseFloat(params[0]);
             this._translateX = num;
             this._translateY = num;
           }
           else if (params.length == 2) {
-            this._translateX = Number.parseInt(params[0]);
-            this._translateY = Number.parseInt(params[1]);
+            this._translateX = Number.parseFloat(params[0]);
+            this._translateY = Number.parseFloat(params[1]);
           }
         }
         else {
@@ -149,13 +149,13 @@ export class SelectorComponent implements AfterViewInit {
         if (scale) {
           let params = scale.split(' ');
           if (params.length == 1) {
-            let num = Number.parseInt(params[0]);
+            let num = Number.parseFloat(params[0]);
             this._scaleX = num;
             this._scaleY = num;
           }
           else if (params.length == 2) {
-            this._scaleX = Number.parseInt(params[0]);
-            this._scaleY = Number.parseInt(params[1]);
+            this._scaleX = Number.parseFloat(params[0]);
+            this._scaleY = Number.parseFloat(params[1]);
           }
         }
         else {
@@ -169,6 +169,8 @@ export class SelectorComponent implements AfterViewInit {
         this._scaleX = 1;
         this._scaleY = 1;
       }
+
+      console.log(this._translateX, this.translateY, this.scaleX, this._scaleY, this);
     }
   }
   //#endregion
