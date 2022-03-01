@@ -1,6 +1,7 @@
 $color: rgb(24, 245, 24);
 $size: 15px;
-$turntop: 30px;
+$turntop: 40px;
+$borderthickness: 3px;
 
 .wrapper {
     position: absolute;
@@ -9,7 +10,7 @@ $turntop: 30px;
     background-color: #ffffff00;
     top: 70px;
     left: 100px;
-    border: 3px dashed $color;
+    border: $borderthickness dashed $color;
 }
 
 .touch {
@@ -43,6 +44,14 @@ $turntop: 30px;
     cursor: nw-resize;
 }
 
+.n {
+    cursor: n-resize;
+}
+
+.w {
+    cursor: w-resize;
+}
+
 .left {
     left: calc($size / -2);
 }
@@ -54,7 +63,7 @@ $turntop: 30px;
 
 .line {
     width: 0px;
-    height: calc($turntop / 3);
+    height: calc($turntop - $size - 3 * $borderthickness - 1px);
     border: 2px dashed $color;
     transform: translateY(-$turntop);
 }
@@ -62,6 +71,8 @@ $turntop: 30px;
 .turn {
     transform: translateY(-$turntop);
     cursor: grab;
+    background-color: #ffffff00;
+    border: $borderthickness solid $color;
 }
 
 .top {

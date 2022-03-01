@@ -1,9 +1,10 @@
 <div class="wrapper" [class]="this.svgEl ? '' : 'inactive'" [style]="this.getStyle()">
+    <div class="point turn" #turn></div>
+    <div class="line center"></div>
+    <div class="inside" #wrapper></div>
     <div class="point left top nw" #ltr></div>
     <div class="point left bottom ne" #lbr></div>
     <div class="point right top ne" #rtr></div>
     <div class="point right bottom nw" #rbr></div>
-    <div class="point turn" #turn></div>
-    <div class="line center"></div>
-    <div class="inside" #wrapper></div>
+    <!--<div class="point center top n" #ctr></div>-->
 </div>
