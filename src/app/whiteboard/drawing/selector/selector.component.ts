@@ -94,6 +94,15 @@ export class SelectorComponent implements AfterViewInit {
     this.reloadTransform();
   }
 
+  private _rotate: number | undefined;
+  public get rotate(): number | undefined {
+    return this._rotate;
+  }
+  public set rotate(value: number | undefined) {
+    this._rotate = !value || value == Infinity ? 0 : value;
+    this.reloadTransform();
+  }
+
   private reloadTransform(): void {
     if (this.svgEl) {
       let transform = '';
@@ -103,18 +112,23 @@ export class SelectorComponent implements AfterViewInit {
       if (this.scaleX != undefined && this.scaleY != undefined) {
         transform += ` scale(${this.scaleX} ${this.scaleY})`
       }
+      if (this.rotate != undefined) {
+        transform += ` rotate(${this.rotate})`;
+      }
       this.svgEl.setAttributeNS(null, 'transform', transform);
     }
   }
 
   private readTransform(): void {
-    let getFuncParams = (str: string, func: string): string | undefined => {
+    // funktion, die die parameter einer Funktion zurückgibt
+    let getFuncParams = (str: string, func: string): string[] | undefined => {
       let ind = str.indexOf(func + '(');
       if (ind != -1) {
         try {
           ind += func.length + 1;
           let indEnd = str.indexOf(')', ind);
-          return str.substring(ind, indEnd);
+          let substr = str.substring(ind, indEnd); // in 'substr' ist jetzt das innere von den Klammern
+          return substr.split(/(?: |,)/); // Und hier wird an den ','/' ' getrennt
         } catch { }
       }
       return undefined;
@@ -126,18 +140,18 @@ export class SelectorComponent implements AfterViewInit {
       if (transform != null) {
         let translate = getFuncParams(transform, 'translate');
         let scale = getFuncParams(transform, 'scale');
+        let rotate = getFuncParams(transform, 'rotate');
 
         // set the translate properties
         if (translate) {
-          let params = translate.split(' ');
-          if (params.length == 1) {
-            let num = Number.parseFloat(params[0]);
+          if (translate.length == 1) {
+            let num = Number.parseFloat(translate[0]);
             this._translateX = num;
             this._translateY = num;
           }
-          else if (params.length == 2) {
-            this._translateX = Number.parseFloat(params[0]);
-            this._translateY = Number.parseFloat(params[1]);
+          else if (translate.length == 2) {
+            this._translateX = Number.parseFloat(translate[0]);
+            this._translateY = Number.parseFloat(translate[1]);
           }
         }
         else {
@@ -147,20 +161,27 @@ export class SelectorComponent implements AfterViewInit {
 
         // set the scale properties
         if (scale) {
-          let params = scale.split(' ');
-          if (params.length == 1) {
-            let num = Number.parseFloat(params[0]);
+          if (scale.length == 1) {
+            let num = Number.parseFloat(scale[0]);
             this._scaleX = num;
             this._scaleY = num;
           }
-          else if (params.length == 2) {
-            this._scaleX = Number.parseFloat(params[0]);
-            this._scaleY = Number.parseFloat(params[1]);
+          else if (scale.length == 2) {
+            this._scaleX = Number.parseFloat(scale[0]);
+            this._scaleY = Number.parseFloat(scale[1]);
           }
         }
         else {
           this._scaleX = 1;
           this._scaleY = 1;
+        }
+
+        // set the rotate propertie
+        if (rotate && rotate.length == 1) {
+          this._rotate = Number.parseFloat(rotate[0]);
+        }
+        else {
+          this._rotate = 0;
         }
       }
       else {
@@ -168,9 +189,8 @@ export class SelectorComponent implements AfterViewInit {
         this._translateY = 0;
         this._scaleX = 1;
         this._scaleY = 1;
+        this._rotate = 0;
       }
-
-      console.log(this._translateX, this.translateY, this.scaleX, this._scaleY, this);
     }
   }
   //#endregion
@@ -190,6 +210,10 @@ export class SelectorComponent implements AfterViewInit {
 
   private getRectRealPosInCanvas(rect: DOMRect): Rect {
     return this.board.getActualRect(this.getRectRealPos(rect));
+  }
+  
+  private getSVGElPos(): Rect {
+    return this.getRectRealPosInCanvas((this.svgEl as SVGElement).getBoundingClientRect());
   }
 
   public get rect(): Rect {
@@ -214,17 +238,14 @@ export class SelectorComponent implements AfterViewInit {
   private resize(dir: Resize, p: Point): void {
     // kann das Element größer/kleiner machen, basierend auf einer Richtung und einem Punkt (wohin)
     if (this.svgEl) {
-      let getSVGElPos: () => Rect = () => {
-        return this.getRectRealPosInCanvas((this.svgEl as SVGElement).getBoundingClientRect());
-      }
 
-      let rect = getSVGElPos();
+      let rect = this.getSVGElPos();
 
       if (dir == Resize.Bottom && this.scaleY != undefined && this.translateY != undefined) {
         let factor =  (p.y - rect.y) / (rect.height);
         if (factor > 0) {
           this.scaleY *= factor;
-          let newRect = getSVGElPos();
+          let newRect = this.getSVGElPos();
           this.translateY -= newRect.y - rect.y;
         }
       }
@@ -232,7 +253,7 @@ export class SelectorComponent implements AfterViewInit {
         let factor =  (rect.y + rect.height - p.y) / (rect.height);
         if (factor > 0) {
           this.scaleY *= factor;
-          let newRect = getSVGElPos();
+          let newRect = this.getSVGElPos();
           this.translateY -= (newRect.y + newRect.height) - (rect.y + rect.height);
         }
       }
@@ -240,7 +261,7 @@ export class SelectorComponent implements AfterViewInit {
         let factor =  (rect.x + rect.width - p.x) / (rect.width);
         if (factor > 0) {
           this.scaleX *= factor;
-          let newRect = getSVGElPos();
+          let newRect = this.getSVGElPos();
           this.translateX -= (newRect.x + newRect.width) - (rect.x + rect.width);
         }
       }
@@ -248,10 +269,56 @@ export class SelectorComponent implements AfterViewInit {
         let factor =  (p.x - rect.x) / (rect.width);
         if (factor > 0) {
           this.scaleX *= factor;
-          let newRect = getSVGElPos();
+          let newRect = this.getSVGElPos();
           this.translateX -= newRect.x - rect.x;
         }
       }
+    }
+  }
+
+  private turnByPoints(prev: Point, curr: Point): void {
+
+    // function, that calculates the angle of a vector between two points --> with respecting the flip at pi
+    let getAngleByTwoPoints = (p1: Point, p2: Point): number => {
+      let deltaY = p1.y - p2.y;
+      let deltaX = p1.x - p2.x;
+      let firstAngle = Math.atan(deltaY / deltaX); // first angle, that is only calculated by atan (no flip yet)
+      let finalAngle = firstAngle + (deltaX < 0 ? Math.PI : 0); // now with flip
+
+      return finalAngle;
+    }
+
+    // function that returns the center point of the svgEl
+    let getSVGElCenter = (): Point => {
+      if (this.svgEl) {
+        let svgElRect = this.getSVGElPos();
+        return {
+          x: svgElRect.x + svgElRect.width / 2,
+          y: svgElRect.y + svgElRect.height / 2
+        };
+      }
+      return {
+        x: 0,
+        y: 0
+      };
+    }
+
+    if (this.svgEl && this.rotate != undefined && this.scaleX != undefined && this.scaleY != undefined && this.translateX != undefined && this.translateY != undefined) {
+      // firstly, rotate the svgEl
+      let center = getSVGElCenter();
+
+      let anglePrev = getAngleByTwoPoints(prev, center);
+      let angleCurr = getAngleByTwoPoints(curr, center);
+
+      let angleDiff = (angleCurr - anglePrev) * Math.sign(this.scaleX * this.scaleY);
+      let angleDeg = angleDiff * 180 / Math.PI;
+
+      this.rotate += angleDeg;
+
+      // secondly, move the svgEl so that it remains in its original position
+      let newCenter = getSVGElCenter();
+      this.translateX += center.x - newCenter.x;
+      this.translateY += center.y - newCenter.y;
     }
   }
 
@@ -279,11 +346,11 @@ export class SelectorComponent implements AfterViewInit {
     });
 
     this.captureEvent(this.turnEl as HTMLDivElement, (p: Point) => {
-
+      return;
     }, (orig: Point, prev: Point, curr: Point) => {
-      
+      this.turnByPoints(prev, curr);
     }, (orig: Point, p: Point) => {
-
+      return;
     })
 
     this.captureEvent(this.ltrEl as HTMLDivElement, (p: Point) => {
