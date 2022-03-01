@@ -434,8 +434,19 @@ export class SelectorComponent implements AfterViewInit {
       }
     };
 
+    let endTouch = (e: any) => {
+      if (activeTouch) {
+        activeTouch = false;
+        end(origPos, this.board.getActualPoint(getPosFromTouchEvent(e)));
+
+        this.board.onTouchEnd.emit();
+      }
+    }
+
     document.addEventListener('mouseup', endMouse);
     document.addEventListener('mouseleave', endMouse);
+    document.addEventListener('touchcancel', endTouch);
+    document.addEventListener('touchend', endTouch);
 
     // this will capture all mousedown events from the canvas element
     fromEvent(el, 'mousedown')
@@ -481,6 +492,59 @@ export class SelectorComponent implements AfterViewInit {
           const currentPos = {
             x: res[1].clientX - rect.left,
             y: res[1].clientY - rect.top
+          };
+    
+          await move(origPos, this.board.getActualPoint(prevPos), this.board.getActualPoint(currentPos));
+
+          this.board.onTouchMove.emit();
+        }
+      });
+
+    // this will capture all touchdown events from the canvas element
+    fromEvent(el, 'touchstart')
+      .pipe(
+        switchMap((e: any) => {
+          e.preventDefault();
+          let origPos = this.board.getActualPoint(getPosFromTouchEvent(e));
+          if (!activeTouch) {
+            this.board.onTouch.emit();
+            start(origPos);
+            activeTouch = true;
+            this.board.onTouchStart.emit();
+          }
+
+          // after a touch start, we'll record all touch moves
+          return fromEvent(document, 'touchmove')
+            .pipe(
+              // we'll stop (and unsubscribe) once the user releases the touch
+              // this will trigger a 'touchend' event    
+              takeUntil(fromEvent(document, 'touchend')),
+              // we'll also stop (and unsubscribe) once the touch is cancelled (touchcancel event)
+              takeUntil(fromEvent(document, 'touchcancel')),
+              // pairwise lets us get the previous value to draw a line from
+              // the previous point to the current point 
+              pairwise()
+            )
+        })
+      )
+      .subscribe(async (res: any) => {
+        if (activeTouch) {
+          res[0].preventDefault();
+          res[1].preventDefault();
+          let res1: any = res[0].changedTouches[0];
+          let res2: any = res[1].changedTouches[0];
+          
+          const rect = this.board.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
+    
+          // previous and current position with the offset
+          const prevPos = {
+            x: res1.clientX - rect.left,
+            y: res1.clientY - rect.top
+          };
+    
+          const currentPos = {
+            x: res2.clientX - rect.left,
+            y: res2.clientY - rect.top
           };
     
           await move(origPos, this.board.getActualPoint(prevPos), this.board.getActualPoint(currentPos));
