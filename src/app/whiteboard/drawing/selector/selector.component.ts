@@ -213,19 +213,10 @@ export class SelectorComponent implements AfterViewInit {
     // kann das Element größer/kleiner machen, basierend auf einer Richtung und einem Punkt (wohin)
     if (this.svgEl) {
       let getSVGElPos: () => Rect = () => {
-        if (this.svgEl) {
-          return this.getRectRealPosInCanvas(this.svgEl.getBoundingClientRect());
-        }
-        return {
-          x: 0,
-          y: 0,
-          width: 0, 
-          height: 0
-        };
+        return this.getRectRealPosInCanvas((this.svgEl as SVGElement).getBoundingClientRect());
       }
 
       let rect = getSVGElPos();
-      console.log(rect);
 
       if (dir == Resize.Bottom && this.scaleY != undefined && this.translateY != undefined) {
         let factor =  (p.y - rect.y) / (rect.height);
