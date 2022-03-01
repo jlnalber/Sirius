@@ -1,3 +1,4 @@
+import { Rect } from './../../interfaces/rect';
 import { SelectorComponent } from './../../whiteboard/drawing/selector/selector.component';
 import { SelectControlComponent } from './../../whiteboard/drawing/select-control/select-control.component';
 import { EmptyCanvasElement } from './../canvasElements/emptyCanvasElement';
@@ -40,12 +41,32 @@ export enum Shapes {
 export class Board {
 
   public getActualPoint(p: Point): Point {
+    // berechne die Position eines Punktes im canvas
     if (this.canvas) {
       let x = (p.x - this.canvas.translateX) / this.canvas.zoom;
       let y = (p.y - this.canvas.translateY) / this.canvas.zoom;
       return { x: x, y: y };
     }
     return { x: 0, y: 0 };
+  }
+
+  public getActualRect(rect: Rect): Rect {
+    // berechne die Position eines Rects im canvas
+    if (this.canvas) {
+      let startPoint = this.getActualPoint(rect);
+      return {
+        x: startPoint.x,
+        y: startPoint.y,
+        width: rect.width / this.canvas.zoom,
+        height: rect.height / this.canvas.zoom
+      }
+    }
+    return {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
+    }
   }
 
   constructor() {

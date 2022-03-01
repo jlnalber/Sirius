@@ -186,6 +186,10 @@ export class SelectorComponent implements AfterViewInit {
     return rect;
   }
 
+  private getRectRealPosInCanvas(rect: DOMRect): Rect {
+    return this.board.getActualRect(this.getRectRealPos(rect));
+  }
+
   public get rect(): Rect {
     if (this.svgEl != undefined) {
       return this.getRectRealPos(this.svgEl.getBoundingClientRect());
@@ -208,13 +212,26 @@ export class SelectorComponent implements AfterViewInit {
   private resize(dir: Resize, p: Point): void {
     // kann das Element größer/kleiner machen, basierend auf einer Richtung und einem Punkt (wohin)
     if (this.svgEl) {
-      let rect = this.getRectRealPos(this.svgEl.getBoundingClientRect());
+      let getSVGElPos: () => Rect = () => {
+        if (this.svgEl) {
+          return this.getRectRealPosInCanvas(this.svgEl.getBoundingClientRect());
+        }
+        return {
+          x: 0,
+          y: 0,
+          width: 0, 
+          height: 0
+        };
+      }
+
+      let rect = getSVGElPos();
+      console.log(rect);
 
       if (dir == Resize.Bottom && this.scaleY != undefined && this.translateY != undefined) {
         let factor =  (p.y - rect.y) / (rect.height);
         if (factor > 0) {
           this.scaleY *= factor;
-          let newRect = this.getRectRealPos(this.svgEl.getBoundingClientRect());
+          let newRect = getSVGElPos();
           this.translateY -= newRect.y - rect.y;
         }
       }
@@ -222,7 +239,7 @@ export class SelectorComponent implements AfterViewInit {
         let factor =  (rect.y + rect.height - p.y) / (rect.height);
         if (factor > 0) {
           this.scaleY *= factor;
-          let newRect = this.getRectRealPos(this.svgEl.getBoundingClientRect());
+          let newRect = getSVGElPos();
           this.translateY -= (newRect.y + newRect.height) - (rect.y + rect.height);
         }
       }
@@ -230,7 +247,7 @@ export class SelectorComponent implements AfterViewInit {
         let factor =  (rect.x + rect.width - p.x) / (rect.width);
         if (factor > 0) {
           this.scaleX *= factor;
-          let newRect = this.getRectRealPos(this.svgEl.getBoundingClientRect());
+          let newRect = getSVGElPos();
           this.translateX -= (newRect.x + newRect.width) - (rect.x + rect.width);
         }
       }
@@ -238,7 +255,7 @@ export class SelectorComponent implements AfterViewInit {
         let factor =  (p.x - rect.x) / (rect.width);
         if (factor > 0) {
           this.scaleX *= factor;
-          let newRect = this.getRectRealPos(this.svgEl.getBoundingClientRect());
+          let newRect = getSVGElPos();
           this.translateX -= newRect.x - rect.x;
         }
       }
@@ -352,6 +369,8 @@ export class SelectorComponent implements AfterViewInit {
       if (activeTouch) {
         activeTouch = false;
         end(origPos, this.board.getActualPoint(getPosFromMouseEvent(e)));
+
+        this.board.onTouchEnd.emit();
       }
     };
 
@@ -365,8 +384,12 @@ export class SelectorComponent implements AfterViewInit {
           let m = e as MouseEvent;
           m.preventDefault();
           let origPos = this.board.getActualPoint(getPosFromMouseEvent(m));
-          if (!activeTouch) start(origPos);
-          activeTouch = true;
+          if (!activeTouch) {
+            this.board.onTouch.emit();
+            start(origPos);
+            activeTouch = true;
+            this.board.onTouchStart.emit();
+          }
 
           // after a mouse down, we'll record all mouse moves
           return fromEvent(document, 'mousemove')
@@ -401,6 +424,8 @@ export class SelectorComponent implements AfterViewInit {
           };
     
           await move(origPos, this.board.getActualPoint(prevPos), this.board.getActualPoint(currentPos));
+
+          this.board.onTouchMove.emit();
         }
       });
   }
