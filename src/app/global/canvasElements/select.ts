@@ -79,6 +79,20 @@ export class Select {
                 this.start();
             }
         })
+
+        this.board.onAddElement.addListener(() => {
+            if (this.active) {
+                this.end();
+                this.start();
+            }
+        });
+
+        this.board.onRemoveElement.addListener(() => {
+            if (this.active) {
+                this.end();
+                this.start();
+            }
+        })
     }
     
 }

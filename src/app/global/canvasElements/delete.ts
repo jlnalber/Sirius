@@ -44,16 +44,14 @@ export class Delete {
 
     private removeElement(el: SVGElement, ev: MouseEvent): boolean {
         if (ev.buttons != 0 && this.board.canvas && this.board.canvas.gElement && this.board.canvas.gElement.contains(el)) {
-            this.board.canvas.gElement.removeChild(el);
-            return true;
+            return this.board.removeElement(el);
         }
         return false;
     }
 
     private removeElementTouch(el: SVGElement): boolean {
         if (this.board.canvas && this.board.canvas.gElement && this.board.canvas.gElement.contains(el)) {
-            this.board.canvas.gElement.removeChild(el);
-            return true;
+            return this.board.removeElement(el);
         }
         return false;
     }
@@ -75,6 +73,13 @@ export class Delete {
             else if (this.active) {
                 this.end();
                 this.active = false;
+            }
+        })
+
+        this.board.onAddElement.addListener(() => {
+            if (this.active) {
+                this.end();
+                this.start();
             }
         })
     }

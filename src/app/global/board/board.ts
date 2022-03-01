@@ -101,6 +101,8 @@ export class Board {
   public readonly onTouchEnd: Event = new Event();
   public readonly onPageSwitched: Event = new Event();
   public readonly beforePageSwitched: Event = new Event();
+  public readonly onAddElement: Event = new Event();
+  public readonly onRemoveElement: Event = new Event();
 
   public pages: Page[] = [ new Page(this) ]
   private _currentPageIndex = 0;
@@ -168,7 +170,20 @@ export class Board {
     let el = document.createElementNS(svgns, tag);
     this.canvas?.gElement?.appendChild(el);
 
+    this.onAddElement.emit();
+
     return el;
+  }
+
+  public removeElement(el: SVGElement): boolean {
+    if (this.canvas && this.canvas.gElement && this.canvas.gElement.contains(el)) {
+      this.canvas.gElement.removeChild(el);
+
+      this.onRemoveElement.emit();
+
+      return true;
+    }
+    return false;
   }
 
   public downloadWhiteboard() {
