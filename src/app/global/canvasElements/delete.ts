@@ -1,4 +1,3 @@
-import { timingSafeEqual } from 'crypto';
 import { BoardService } from 'src/app/features/board.service';
 import { Board, BoardModes } from '../board/board';
 import { CanvasItem, Point } from "./canvasElement";
@@ -7,6 +6,15 @@ import { Shape } from "./shape";
 export class Delete {
 
     private active: boolean = false;
+
+    public globalListener = (ev: any): boolean => {
+        let p = this.board.getActualPoint(this.board.getPosFromTouchEvent(ev));
+        let elem = document.elementFromPoint(p.x, p.y);
+        if (elem instanceof SVGElement) {
+            return this.board.removeElement(elem);
+        }
+        return false;
+    }
 
     public start(): void {
         if (this.board.canvas?.gElement) {
@@ -23,6 +31,8 @@ export class Delete {
                     el.addEventListener('touchmove', evt);
                 } catch { }
             }
+
+            this.board.canvas.svgElement?.addEventListener('touchmove', this.globalListener);
         }
     }
     
@@ -39,6 +49,8 @@ export class Delete {
                     el.removeAllListeners('touchmove');
                 }
             }
+
+            this.board.canvas.svgElement?.removeEventListener('touchmove', this.globalListener);
         }
     }
 

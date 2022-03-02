@@ -99,4 +99,15 @@ export class Color {
     public sameColorAs(color: Color): boolean {
         return this._r == color._r && this._g == color._g && this._b == color._b && (this._a == color._a || (!this._a && color._a == 255) || (!color._a && this._a == 255));
     }
+
+    public copy(): Color {
+        return new Color(this.r as number, this.g as number, this.b as number, this.a);
+    }
+
+    public setTo(c: Color) {
+        this.r = c.r;
+        this.g = c.g;
+        this.b = c.b;
+        this.a = c.a;
+    }
 }

@@ -69,6 +69,26 @@ export class Board {
     }
   }
 
+  public  getPosFromMouseEvent(e: MouseEvent): Point {
+    const rect = this.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
+
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+  public getPosFromTouchEvent(e: any): Point {
+    let res1: any = e.changedTouches[0];
+
+    const rect = this.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
+    
+    return {
+      x: res1.clientX - rect.left,
+      y: res1.clientY - rect.top
+    };
+  }
+
   constructor() {
     new Delete(this);
     new Select(this);
@@ -196,7 +216,13 @@ export class Board {
 
       const doc = new jsPDF('l', 'px', [ rect.width - rect.x, rect.height - rect.y ]);
       doc
-        .svg(this.canvas.svgElement, rect)
+        .svg(this.canvas.svgElement, {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height,
+          loadExternalStyleSheets: true
+        })
         .then(() => {
           doc.save('whiteboard.pdf');
         })
@@ -207,7 +233,7 @@ export class Board {
     if (this.canvas && this.canvas.svgElement) {
       return `<?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.backgroundColor.toString()}; background-image: url('${this.backgroundImage.url}');">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="${this.backgroundColor.toString()}" style="background-color: ${this.backgroundColor.toString()}; background-image: url('${this.backgroundImage.url}');">
       ${this.canvas.svgElement.innerHTML}
       </svg>`;
     }

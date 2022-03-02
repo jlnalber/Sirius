@@ -1,0 +1,8 @@
+<h1 mat-dialog-title class="fill">Farbe auswählen</h1>
+<div mat-dialog-content class="fill">
+    <app-color-picker [color]="this.data.color"></app-color-picker>
+</div>
+<div mat-dialog-actions align="end" class="fill">
+  <button color="accent" mat-button (click)="onNoClick()">Abbrechen</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Bestätigen</button>
+</div>

@@ -52,6 +52,8 @@ import { ExportAsPdfControlComponent } from './whiteboard/drawing/menu-control/e
 import { BackgroundControlComponent } from './whiteboard/drawing/menu-control/background-control/background-control.component';
 import { BackgroundDialogComponent } from './whiteboard/drawing/menu-control/background-control/background-dialog/background-dialog.component';
 import { SelectorComponent } from './whiteboard/drawing/selector/selector.component';
+import { ColorPickerComponent } from './whiteboard/drawing/colorset/color-picker/color-picker.component';
+import { ColorPickerDialogComponent } from './whiteboard/drawing/colorset/color-picker-dialog/color-picker-dialog.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +93,9 @@ import { SelectorComponent } from './whiteboard/drawing/selector/selector.compon
     ExportAsPdfControlComponent,
     BackgroundControlComponent,
     BackgroundDialogComponent,
-    SelectorComponent
+    SelectorComponent,
+    ColorPickerComponent,
+    ColorPickerDialogComponent
   ],
   imports: [
     BrowserModule,

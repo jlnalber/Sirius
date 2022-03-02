@@ -1,0 +1,21 @@
+<div class="preview" [style]="'background-color: ' + this.color.toString() + ';'">
+
+</div>
+<div>
+    <mat-form-field appearance="outline">
+        <mat-label>R</mat-label>
+        <input type="number" max="255" min="0" matInput [(ngModel)]="this.color.r" class="fill">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>G</mat-label>
+        <input type="number" max="255" min="0" matInput [(ngModel)]="this.color.g" class="fill">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>B</mat-label>
+        <input type="number" max="255" min="0" matInput [(ngModel)]="this.color.b" class="fill">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>A</mat-label>
+        <input type="number" max="255" min="0" matInput [(ngModel)]="this.color.a" class="fill">
+    </mat-form-field>
+</div>
