@@ -65,6 +65,11 @@ export class CanvasComponent implements AfterViewInit {
     this.justify();
   }
 
+  public setZoomWithoutTranslate(value: number) {
+    this._zoom = value;
+    this.justify();
+  }
+
   constructor(/*private readonly boardService: BoardService*/) {
     //this.boardService.canvas = this;
   }

@@ -43,8 +43,8 @@ export class Board {
   public getActualPoint(p: Point): Point {
     // berechne die Position eines Punktes im canvas
     if (this.canvas) {
-      let x = (p.x - this.canvas.translateX) / this.canvas.zoom;
-      let y = (p.y - this.canvas.translateY) / this.canvas.zoom;
+      let x = (p.x - this.translateX) / this.zoom;
+      let y = (p.y - this.translateY) / this.zoom;
       return { x: x, y: y };
     }
     return { x: 0, y: 0 };
@@ -57,8 +57,8 @@ export class Board {
       return {
         x: startPoint.x,
         y: startPoint.y,
-        width: rect.width / this.canvas.zoom,
-        height: rect.height / this.canvas.zoom
+        width: rect.width / this.zoom,
+        height: rect.height / this.zoom
       }
     }
     return {
@@ -141,6 +141,29 @@ export class Board {
   public get currentPage(): Page {
       return this.pages[this.currentPageIndex];
   };
+
+
+  // translate and zoom (actually managed by page)
+  public get translateX(): number {
+    return this.currentPage.translateX;
+  }
+  public set translateX(value: number) {
+    this.currentPage.translateX = value;
+  }
+
+  public get translateY(): number {
+    return this.currentPage.translateY;
+  }
+  public set translateY(value: number) {
+    this.currentPage.translateY = value;
+  }
+
+  public get zoom(): number {
+    return this.currentPage.zoom;
+  }
+  public set zoom(value: number) {
+    this.currentPage.zoom = value;
+  }
 
   public async startTouch(p: Point) {
     if (!this.isOnActiveTouch) {

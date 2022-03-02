@@ -8,10 +8,12 @@ export class Delete {
     private active: boolean = false;
 
     public globalListener = (ev: any): boolean => {
-        let p = this.board.getActualPoint(this.board.getPosFromTouchEvent(ev));
-        let elem = document.elementFromPoint(p.x, p.y);
-        if (elem instanceof SVGElement) {
-            return this.board.removeElement(elem);
+        if (this.board.mode == BoardModes.Delete) {
+            let p = this.board.getActualPoint(this.board.getPosFromTouchEvent(ev));
+            let elem = document.elementFromPoint(p.x, p.y);
+            if (elem instanceof SVGElement) {
+                return this.board.removeElement(elem);
+            }
         }
         return false;
     }
@@ -31,8 +33,6 @@ export class Delete {
                     el.addEventListener('touchmove', evt);
                 } catch { }
             }
-
-            this.board.canvas.svgElement?.addEventListener('touchmove', this.globalListener);
         }
     }
     
@@ -50,7 +50,7 @@ export class Delete {
                 }
             }
 
-            this.board.canvas.svgElement?.removeEventListener('touchmove', this.globalListener);
+            // this.board.canvas.svgElement?.removeEventListener('touchmove', this.globalListener);
         }
     }
 
@@ -94,6 +94,8 @@ export class Delete {
                 this.start();
             }
         })
+
+        this.board.canvas?.svgElement?.addEventListener('touchmove', this.globalListener);
     }
     
 }

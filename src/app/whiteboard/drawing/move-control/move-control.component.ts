@@ -25,7 +25,7 @@ export class MoveControlComponent extends Control implements AfterViewInit {
 
   public getSliderValue(): number {
     if (this.board.canvas) {
-      return this.zoomToSlider(this.board.canvas.zoom);
+      return this.zoomToSlider(this.board.zoom);
     }
     return 1;
   }
@@ -44,9 +44,9 @@ export class MoveControlComponent extends Control implements AfterViewInit {
   }
 
   public onSliderChange(event: MatSliderChange): void {
-    if (event.value && this.board.canvas) {
+    if (event.value) {
       let realValue = this.sliderToZoom(event.value);
-      this.board.canvas.zoom = realValue;
+      this.board.zoom = realValue;
     }
   }
 

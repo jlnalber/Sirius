@@ -9,8 +9,8 @@ export class Move extends CanvasItem {
     }
     public touchMove(from: Point, to: Point): void {
         if (this.board.canvas) {
-          this.board.canvas.translateX += to.x - from.x;
-          this.board.canvas.translateY += to.y - from.y;
+          this.board.translateX += to.x - from.x;
+          this.board.translateY += to.y - from.y;
         }
     }
     public touchEnd(p: Point): void {

@@ -11,7 +11,10 @@ export class Page {
         return this.board.canvas;
     }
 
+    // lastContent: Stack, der die Rückgängig-Funktion bereitstellt
     public lastContent: Stack<string> = new Stack(maxStepsBack);
+
+    // currentContent: hält den aktuellen Inhalt
     private _currentContent: string = "";
     public get currentContent(): string {
         return this._currentContent;
@@ -22,10 +25,64 @@ export class Page {
         }
         this._currentContent = value;
     }
+
+    // nextContent: Stack, der die Vorwärts-Funktion bereitstellt
     public nextContent: Stack<string> = new Stack(maxStepsBack);
 
+    private _translateX: number = 0;
+    public get translateX(): number {
+        if (this.board.currentPage == this && this.canvas) {
+            return this.canvas.translateX;
+        }
+        else {
+            return this._translateX;
+        }
+    }
+    public set translateX(value: number) {
+        if (this.board.currentPage == this && this.canvas) {
+            this.canvas.translateX = value;
+        }
+        this._translateX = value;
+    }
+
+    private _translateY: number = 0;
+    public get translateY(): number {
+        if (this.board.currentPage == this && this.canvas) {
+            return this.canvas.translateY;
+        }
+        else {
+            return this._translateY;
+        }
+    }
+    public set translateY(value: number) {
+        if (this.board.currentPage == this && this.canvas) {
+            this.canvas.translateY = value;
+        }
+        this._translateY = value;
+    }
+
+    private _zoom: number = 1;
+    public get zoom(): number {
+        if (this.board.currentPage == this && this.canvas) {
+            return this.canvas.zoom;
+        }
+        else {
+            return this._zoom;
+        }
+    }
+    public set zoom(value: number) {
+        if (this.board.currentPage == this && this.canvas) {
+            this.canvas.zoom = value; // Attention: Zoom setter on canvas tries to center the svg again
+            this._zoom = this.canvas.zoom;
+        }
+        else {
+            this._zoom = value;
+        }
+    }
+
+
     private save(): void {
-        if (this.canvas && this.canvas.gElement) {
+        if (this.board.currentPage == this && this.canvas && this.canvas.gElement) {
             let newContent = this.canvas.gElement.innerHTML;
 
             if (this.currentContent != newContent) {
@@ -33,6 +90,10 @@ export class Page {
                 this._currentContent = newContent;
                 this.nextContent.empty();
             }
+
+            this._translateX = this.canvas.translateX;
+            this._translateY = this.canvas.translateY;
+            this._zoom = this.canvas.zoom;
         }
     }
 
@@ -120,6 +181,9 @@ export class Page {
     public open() {
         if (this.canvas && this.canvas.gElement) {
             this.canvas.gElement.innerHTML = this.currentContent;
+            this.canvas.translateX = this._translateX;
+            this.canvas.translateY = this._translateY;
+            this.canvas.setZoomWithoutTranslate(this._zoom);
         }
     }
 
