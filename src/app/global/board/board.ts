@@ -69,7 +69,7 @@ export class Board {
     }
   }
 
-  public  getPosFromMouseEvent(e: MouseEvent): Point {
+  public getPosFromMouseEvent(e: MouseEvent): Point {
     const rect = this.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
 
     return {
@@ -230,7 +230,7 @@ export class Board {
   }
 
   public downloadWhiteboard() {
-    this.doDownload('whiteboard.svg', this.getSVG());
+    this.doDownload('whiteboard.svg', this.currentPage.getSVG(), 'svg');
   }
 
   public downloadPDF() {
@@ -250,17 +250,6 @@ export class Board {
           doc.save('whiteboard.pdf');
         })
     }
-  }
-
-  public getSVG(): string {
-    if (this.canvas && this.canvas.svgElement) {
-      return `<?xml version="1.0" encoding="UTF-8"?>
-      <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="${this.backgroundColor.toString()}" style="background-color: ${this.backgroundColor.toString()}; background-image: url('${this.backgroundImage.url}');">
-      ${this.canvas.svgElement.innerHTML}
-      </svg>`;
-    }
-    return '';
   }
 
   public goBack() {
@@ -283,15 +272,17 @@ export class Board {
     this.currentPage.clear();
   }
   
-  private doDownload(filename: string, text: string) {
+  private doDownload(filename: string, text: string, type?: string) {
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('href', `data:${type ?? 'text'}/plain;charset=utf-8,` + encodeURIComponent(text));
     element.setAttribute('download', filename);
   
     element.style.display = 'none';
     document.body.appendChild(element);
   
     element.click();
+
+    console.log(element, element.innerHTML, element.outerHTML)
   
     document.body.removeChild(element);
   }
