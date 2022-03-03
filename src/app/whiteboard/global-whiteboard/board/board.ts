@@ -1,6 +1,6 @@
 import { EmptyCanvasElement } from './../canvasElements/emptyCanvasElement';
 import { Select } from './../canvasElements/select';
-import { BackgroundImageCross } from './background/cross.backgroundImage copy';
+import { BackgroundImageCross } from './background/cross.backgroundImage';
 import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.component";
 import { CanvasItem } from "../canvasElements/canvasElement";
 import { Stroke } from "../essentials/stroke";

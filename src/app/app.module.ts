@@ -20,12 +20,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatSliderModule } from '@angular/material/slider';
 
-import { FaecherDialogComponent, FaecherComponent } from './faecher/faecher.component';
-import { FachComponent } from './faecher/fach/fach.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { TaskDialogComponent, TasksComponent } from './faecher/tasks/tasks.component';
-import { FilesComponent } from './faecher/files/files.component';
-import { EinheitenDialogComponent, EinheitenComponent } from './faecher/einheiten/einheiten.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { NgxElectronModule } from 'ngx-electron';
 

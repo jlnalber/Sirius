@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BackgroundImageCross } from 'src/app/whiteboard/global-whiteboard/board/background/cross.backgroundImage copy';
+import { BackgroundImageCross } from 'src/app/whiteboard/global-whiteboard/board/background/cross.backgroundImage';
 import { BackgroundImageKaro } from 'src/app/whiteboard/global-whiteboard/board/background/karo.backgroundImage';
 import { BackgroundImageLine } from 'src/app/whiteboard/global-whiteboard/board/background/line.backgroundImage';
 import { BackgroundImageNone } from 'src/app/whiteboard/global-whiteboard/board/background/none.bgImage';
