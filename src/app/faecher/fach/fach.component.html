@@ -14,20 +14,20 @@
     </mat-form-field>
 
     <div class="marginBottom">
-        <app-tasks *ngIf="this.fach" [tasks]="this.fach?.tasks">
+        <faecher-tasks *ngIf="this.fach" [tasks]="this.fach?.tasks">
 
-        </app-tasks>
+        </faecher-tasks>
     </div>
 
     <div class="marginBottom">
-        <app-files *ngIf="this.fach" [files]="this.fach?.files">
+        <faecher-files *ngIf="this.fach" [files]="this.fach?.files">
 
-        </app-files>
+        </faecher-files>
     </div>
 
     <div class="marginBottom">
-        <app-einheiten *ngIf="this.fach" [einheiten]="this.fach?.einheiten">
+        <faecher-einheiten *ngIf="this.fach" [einheiten]="this.fach?.einheiten">
             
-        </app-einheiten>
+        </faecher-einheiten>
     </div>
 </div>

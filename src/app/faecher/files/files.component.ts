@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-files',
+  selector: 'faecher-files',
   templateUrl: './files.component.html',
   styleUrls: ['./files.component.scss']
 })

@@ -1,3 +1,4 @@
+import { FaecherModule } from './faecher/faecher.module';
 import { WhiteboardModule } from './whiteboard/whiteboard.module';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -31,15 +32,7 @@ import { NgxElectronModule } from 'ngx-electron';
 @NgModule({
   declarations: [
     AppComponent,
-    FaecherComponent,
-    FaecherDialogComponent,
-    FachComponent,
     PageNotFoundComponent,
-    TasksComponent,
-    FilesComponent,
-    TaskDialogComponent,
-    EinheitenComponent,
-    EinheitenDialogComponent,
     SidenavComponent
   ],
   imports: [
@@ -60,7 +53,8 @@ import { NgxElectronModule } from 'ngx-electron';
     MatListModule,
     MatSliderModule,
     NgxElectronModule,
-    WhiteboardModule
+    WhiteboardModule,
+    FaecherModule
   ],
   providers: [],
   bootstrap: [AppComponent]

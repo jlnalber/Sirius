@@ -1,11 +1,11 @@
 import { BoardService } from './../whiteboard/services/board.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Fach } from '../interfaces/fach';
+import { Fach } from './global/interfaces/fach';
 import { FaecherManagerService } from '../shared/faecher-manager.service';
 
 @Component({
-  selector: 'app-faecher',
+  selector: 'faecher-faecher',
   templateUrl: './faecher.component.html',
   styleUrls: ['./faecher.component.scss']
 })
@@ -42,7 +42,7 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-faecher-dialog',
+  selector: 'faecher-faecher-dialog',
   templateUrl: 'faecher-dialog.html',
   styleUrls: ['faecher-dialog.scss']
 })

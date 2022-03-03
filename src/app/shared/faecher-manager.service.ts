@@ -1,7 +1,7 @@
-import { SiriusConfig } from './../interfaces/sirius.config';
+import { SiriusConfig } from '../faecher/global/interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Fach } from '../interfaces/fach';
+import { Fach } from '../faecher/global/interfaces/fach';
 
 const siriusConfigPath: string = 'sirius.config.json';
 const onSiriusConfigFileChannel: string = 'siriusConfigFile';

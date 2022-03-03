@@ -1,9 +1,9 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { Task } from 'src/app/interfaces/fach';
+import { Task } from 'src/app/faecher/global/interfaces/fach';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-tasks',
+  selector: 'faecher-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss']
 })
@@ -57,7 +57,7 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-task-dialog',
+  selector: 'faecher-task-dialog',
   styleUrls: ['tasks-dialog.scss'],
   templateUrl: 'tasks-dialog.html',
 })

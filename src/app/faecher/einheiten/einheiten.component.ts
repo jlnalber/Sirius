@@ -1,9 +1,9 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Einheit } from 'src/app/interfaces/fach';
+import { Einheit } from 'src/app/faecher/global/interfaces/fach';
 
 @Component({
-  selector: 'app-einheiten',
+  selector: 'faecher-einheiten',
   templateUrl: './einheiten.component.html',
   styleUrls: ['./einheiten.component.scss']
 })
@@ -60,7 +60,7 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-einheiten-dialog',
+  selector: 'faecher-einheiten-dialog',
   templateUrl: 'einheiten-dialog.html',
   styleUrls: ['einheiten-dialog.scss']
 })

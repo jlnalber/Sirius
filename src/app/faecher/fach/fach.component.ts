@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Fach } from 'src/app/interfaces/fach';
+import { Fach } from 'src/app/faecher/global/interfaces/fach';
 import { FaecherManagerService } from 'src/app/shared/faecher-manager.service';
 
 @Component({
-  selector: 'app-fach',
+  selector: 'faecher-fach',
   templateUrl: './fach.component.html',
   styleUrls: ['./fach.component.scss']
 })

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Fach } from '../interfaces/fach';
+import { Fach } from '../faecher/global/interfaces/fach';
 import { FaecherManagerService } from '../shared/faecher-manager.service';
 
 @Component({
