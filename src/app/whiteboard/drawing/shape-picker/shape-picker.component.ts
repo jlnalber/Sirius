@@ -1,9 +1,8 @@
-import { BoardService, Shapes } from 'src/app/features/board.service';
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, Input } from '@angular/core';
-import { Board } from 'src/app/global/board/board';
+import { Component, ElementRef, ViewChild, AfterViewInit, Input } from '@angular/core';
+import { Board, Shapes } from '../../global-whiteboard/board/board';
 
 @Component({
-  selector: 'app-shape-picker',
+  selector: 'whiteboard-shape-picker',
   templateUrl: './shape-picker.component.html',
   styleUrls: ['./shape-picker.component.scss']
 })

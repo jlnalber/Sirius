@@ -1,0 +1,19 @@
+@import "../../../global-whiteboard/styles/control";
+
+.card {
+    $width: 200px;
+    $height: 50px;
+    $cardhoverabovecontrols: 15px;
+    width: $width;
+    height: $height;
+    transform: translateY(calc(-1 * $height - $controlheight - $cardhoverabovecontrols)) translateX(calc(calc($width - $controlheight) / -2));
+}
+
+mat-slider {
+    width: 90%;
+    margin-left: 5%;
+}
+
+.wrapper {
+    padding: 6px;
+}

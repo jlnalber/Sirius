@@ -1,13 +1,13 @@
-import { Color } from 'src/app/global/color';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
 
 export interface DialogData {
   color: Color
 }
 
 @Component({
-  selector: 'app-color-picker-dialog',
+  selector: 'whiteboard-color-picker-dialog',
   templateUrl: './color-picker-dialog.component.html',
   styleUrls: ['./color-picker-dialog.component.scss']
 })

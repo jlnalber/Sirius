@@ -1,9 +1,9 @@
-import { Board } from 'src/app/global/board/board';
 import { Component, Input, OnInit } from '@angular/core';
-import { Color } from 'src/app/global/color';
+import { Board } from '../../global-whiteboard/board/board';
+import { Color } from '../../global-whiteboard/essentials/color';
 
 @Component({
-  selector: 'app-fill-picker',
+  selector: 'whiteboard-fill-picker',
   templateUrl: './fill-picker.component.html',
   styleUrls: ['./fill-picker.component.scss']
 })

@@ -1,10 +1,8 @@
-import { Board } from 'src/app/global/board/board';
 import { Component, Input, OnInit } from '@angular/core';
-import { Color } from 'src/app/global/color';
-import { Stroke } from 'src/app/global/stroke';
+import { Color } from '../../global-whiteboard/essentials/color';
 
 @Component({
-  selector: 'app-colorset',
+  selector: 'whiteboard-colorset',
   templateUrl: './colorset.component.html',
   styleUrls: ['./colorset.component.scss']
 })

@@ -1,0 +1,10 @@
+<div class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
+    <mat-icon>view_quilt</mat-icon>
+</div>
+<div *ngIf="this.cardOpen && this.isActive()" class="card">
+    <div class="">
+        <whiteboard-shape-picker [board]="this.board" #shapePicker></whiteboard-shape-picker>
+        <whiteboard-stroke-picker [board]="this.board" [listener]="this.cListener" [strokeWidthListener]="this.sListener"></whiteboard-stroke-picker>
+        <whiteboard-fill-picker [board]="this.board" [listener]="this.cListener"></whiteboard-fill-picker>
+    </div>
+</div>

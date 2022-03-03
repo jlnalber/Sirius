@@ -1,14 +1,12 @@
-import { Point } from './../../../global/canvasElements/canvasElement';
-import { BoardService } from './../../../features/board.service';
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise } from 'rxjs';
-import { Board } from 'src/app/global/board/board';
-import { SelectorComponent } from '../selector/selector.component';
+import { Board } from '../../global-whiteboard/board/board';
+import { Point } from '../../global-whiteboard/interfaces/point';
 
 @Component({
-  selector: 'app-canvas',
+  selector: 'whiteboard-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })

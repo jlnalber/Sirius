@@ -1,11 +1,10 @@
-import { BoardService } from './../../../features/board.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { Color } from 'src/app/global/color';
 import { MatSliderChange } from '@angular/material/slider';
-import { Board } from 'src/app/global/board/board';
+import { Board } from '../../global-whiteboard/board/board';
+import { Color } from '../../global-whiteboard/essentials/color';
 
 @Component({
-  selector: 'app-stroke-picker',
+  selector: 'whiteboard-stroke-picker',
   templateUrl: './stroke-picker.component.html',
   styleUrls: ['./stroke-picker.component.scss']
 })

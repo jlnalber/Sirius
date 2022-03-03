@@ -1,12 +1,10 @@
 import { ColorPickerDialogComponent, DialogData } from './../color-picker-dialog/color-picker-dialog.component';
-import { BoardService } from './../../../../features/board.service';
 import { Component, OnInit, Input } from '@angular/core';
-import { Stroke } from 'src/app/global/stroke';
-import { Color } from 'src/app/global/color';
 import { MatDialog } from '@angular/material/dialog';
+import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
 
 @Component({
-  selector: 'app-color',
+  selector: 'whiteboard-color',
   templateUrl: './color.component.html',
   styleUrls: ['./color.component.scss']
 })

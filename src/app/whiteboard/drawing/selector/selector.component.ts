@@ -1,9 +1,8 @@
-import { CanvasComponent } from 'src/app/whiteboard/drawing/canvas/canvas.component';
-import { Board } from 'src/app/global/board/board';
-import { Rect } from './../../../interfaces/rect';
-import { Component, OnInit, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { Point } from 'src/app/global/canvasElements/canvasElement';
-import { fromEvent, fromEventPattern, pairwise, switchMap, takeUntil } from 'rxjs';
+import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
+import { Board } from '../../global-whiteboard/board/board';
+import { Point } from '../../global-whiteboard/interfaces/point';
+import { Rect } from '../../global-whiteboard/interfaces/rect';
 
 enum Resize {
   Top,
@@ -13,7 +12,7 @@ enum Resize {
 }
 
 @Component({
-  selector: 'app-selector',
+  selector: 'whiteboard-selector',
   templateUrl: './selector.component.html',
   styleUrls: ['./selector.component.scss']
 })

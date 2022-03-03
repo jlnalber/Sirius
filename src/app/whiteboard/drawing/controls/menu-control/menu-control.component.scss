@@ -1,0 +1,10 @@
+@import "../../../global-whiteboard/styles/control";
+
+.card {
+    $width: 50px;
+    $height: 150px;
+    $cardhoverabovecontrols: 15px;
+    width: $width;
+    height: $height;
+    transform: translateY(calc(-1 * $height - $controlheight - $cardhoverabovecontrols));
+}

@@ -1,12 +1,10 @@
-import { WhiteboardConfig } from './../interfaces/whiteboard.config';
-import { BoardService } from 'src/app/features/board.service';
 import { Component, Input, OnInit, enableProdMode } from '@angular/core';
-import { Color } from '../global/color';
-import { Stroke } from '../global/stroke';
-import { Board } from '../global/board/board';
+import { Board } from './global-whiteboard/board/board';
+import { WhiteboardConfig } from './global-whiteboard/interfaces/whiteboard.config';
+import { BoardService } from './services/board.service';
 
 @Component({
-  selector: 'app-whiteboard',
+  selector: 'whiteboard-whiteboard',
   templateUrl: './whiteboard.component.html',
   styleUrls: ['./whiteboard.component.scss']
 })

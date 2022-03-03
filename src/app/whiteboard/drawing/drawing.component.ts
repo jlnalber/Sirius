@@ -1,11 +1,9 @@
-import { WhiteboardConfig } from './../../interfaces/whiteboard.config';
 import { Component, Input, OnInit } from '@angular/core';
-import { Board } from 'src/app/global/board/board';
-import { Color } from 'src/app/global/color';
-import { Stroke } from 'src/app/global/stroke';
+import { Board } from '../global-whiteboard/board/board';
+import { WhiteboardConfig } from '../global-whiteboard/interfaces/whiteboard.config';
 
 @Component({
-  selector: 'app-drawing',
+  selector: 'whiteboard-drawing',
   templateUrl: './drawing.component.html',
   styleUrls: ['./drawing.component.scss']
 })

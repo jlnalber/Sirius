@@ -1,0 +1,10 @@
+<div class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
+    <mat-icon>menu</mat-icon>
+</div>
+<div *ngIf="this.isActive()" class="card">
+    <div class="controlWrapper">
+        <whiteboard-save-control [board]="this.board" class="control"></whiteboard-save-control>
+        <whiteboard-export-as-pdf-control [board]="this.board" class="control"></whiteboard-export-as-pdf-control>
+        <whiteboard-background-control [board]="this.board" class="control" #bgcontrol></whiteboard-background-control>
+    </div>
+</div>

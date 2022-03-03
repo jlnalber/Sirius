@@ -1,3 +1,4 @@
+import { BoardService } from './../whiteboard/services/board.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Fach } from '../interfaces/fach';
