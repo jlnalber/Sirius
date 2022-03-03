@@ -7,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class FilesComponent implements OnInit {
   @Input()
-  files: string[] = [];
+  files: string[] | undefined = [];
 
   @Input()
   isAbleToAddFiles: boolean = true;

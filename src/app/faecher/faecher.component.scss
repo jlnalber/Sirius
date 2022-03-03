@@ -1,3 +1,5 @@
+@import "./global/styles/global";
+
 mat-card {
     margin-bottom: 16px;
 }
@@ -9,11 +11,6 @@ mat-card {
 
 .faecherContainer {
     margin-top: 5px;
-}
-
-.floatRight {
-    float: right;
-    margin-right: 0px;
 }
 
 h1 {

@@ -1,0 +1,10 @@
+<h1 mat-dialog-title class="fill">{{ data.header }}</h1>
+<div mat-dialog-content class="fill">
+  <div>
+      {{ data.description }}
+  </div>
+</div>
+<div mat-dialog-actions align="end" class="fill">
+  <button color="accent" mat-button (click)="onNoClick()" cdkFocusInitial>Abbrechen</button>
+  <button mat-button [mat-dialog-close]="data">Bestätigen</button>
+</div>

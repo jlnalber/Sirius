@@ -9,7 +9,7 @@ import { Einheit } from 'src/app/faecher/global/interfaces/fach';
 })
 export class EinheitenComponent implements OnInit {
   @Input()
-  einheiten: Einheit[] = [];
+  einheiten: Einheit[] | undefined = [];
 
   constructor(public dialog: MatDialog) { }
 
@@ -17,7 +17,7 @@ export class EinheitenComponent implements OnInit {
   }
 
   public addEinheit(topic: string, description: string): void {
-    this.einheiten.push({
+    this.einheiten?.push({
       topic: topic,
       description: description,
       tasks: [],
@@ -27,9 +27,9 @@ export class EinheitenComponent implements OnInit {
   }
 
   public removeEinheit(einheit: Einheit): boolean {
-    const index: number = this.einheiten.indexOf(einheit, 0) as number;
-    if (index > -1) {
-      this.einheiten.splice(index, 1);
+    const index = this.einheiten?.indexOf(einheit, 0);
+    if (index != undefined && index > -1) {
+      this.einheiten?.splice(index, 1);
       return true;
     }
     return false;

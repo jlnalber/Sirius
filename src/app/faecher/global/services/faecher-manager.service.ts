@@ -1,7 +1,7 @@
-import { SiriusConfig } from '../faecher/global/interfaces/sirius.config';
+import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Fach } from '../faecher/global/interfaces/fach';
+import { Fach } from '../interfaces/fach';
 
 const siriusConfigPath: string = 'sirius.config.json';
 const onSiriusConfigFileChannel: string = 'siriusConfigFile';
@@ -185,5 +185,14 @@ export class FaecherManagerService {
       einheiten: [],
       files: []
     })
+  }
+
+  public removeFach(fach: Fach): boolean {
+    let index = this.faecher.indexOf(fach);
+    if (index > -1) {
+      this.faecher.splice(index, 1);
+      return true;
+    }
+    return false;
   }
 }

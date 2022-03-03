@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Fach } from '../faecher/global/interfaces/fach';
-import { FaecherManagerService } from '../shared/faecher-manager.service';
+import { FaecherManagerService } from '../faecher/global/services/faecher-manager.service';
 
 @Component({
   selector: 'app-sidenav',

@@ -1,4 +1,4 @@
-import { FaecherManagerService } from 'src/app/shared/faecher-manager.service';
+import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { Component, HostListener, OnInit } from '@angular/core';
 
 @Component({

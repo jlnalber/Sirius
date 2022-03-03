@@ -19,8 +19,9 @@ import { WhiteboardModule } from './../whiteboard/whiteboard.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FaecherManagerService } from '../shared/faecher-manager.service';
+import { FaecherManagerService } from './global/services/faecher-manager.service';
 import { AppRoutingModule } from '../app-routing.module';
+import { AcceptDialogComponent } from './accept-dialog/accept-dialog.component';
 
 
 
@@ -33,7 +34,8 @@ import { AppRoutingModule } from '../app-routing.module';
     FilesComponent,
     FachComponent,
     EinheitenComponent,
-    EinheitenDialogComponent
+    EinheitenDialogComponent,
+    AcceptDialogComponent
   ],
   imports: [
     CommonModule,
