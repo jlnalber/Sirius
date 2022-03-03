@@ -9,6 +9,7 @@ export interface Fach {
 }
 
 export interface Einheit {
+    id: string,
     topic: string,
     description: string,
     notes: string,

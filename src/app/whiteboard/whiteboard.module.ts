@@ -73,7 +73,6 @@ import { MatInputModule } from '@angular/material/input';
   ],
   imports: [
     CommonModule,
-    BrowserModule,
     FormsModule,
     MatIconModule,
     MatSliderModule,

@@ -1,5 +1,5 @@
 import { BoardService } from './../whiteboard/services/board.service';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Fach } from './global/interfaces/fach';
 import { FaecherManagerService } from './global/services/faecher-manager.service';
@@ -12,6 +12,11 @@ import { FaecherManagerService } from './global/services/faecher-manager.service
 export class FaecherComponent implements OnInit {
 
   constructor(public faecherManager: FaecherManagerService, public dialog: MatDialog) { }
+
+  @HostListener('window:beforeunload', [ '$event' ])
+  beforeUnloadHandler(_event: any) {
+    this.faecherManager.saveInCache();
+  }
 
   ngOnInit(): void {
     

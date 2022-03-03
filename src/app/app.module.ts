@@ -40,8 +40,6 @@ import { NgxElectronModule } from 'ngx-electron';
     MatSidenavModule,
     MatCardModule,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatCheckboxModule,
     MatDialogModule,
     MatExpansionModule,

@@ -20,9 +20,28 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FaecherManagerService } from './global/services/faecher-manager.service';
-import { AppRoutingModule } from '../app-routing.module';
 import { AcceptDialogComponent } from './accept-dialog/accept-dialog.component';
+import { EinheitComponent } from './einheit/einheit.component';
+import { Route, RouterModule } from '@angular/router';
 
+const routes: Route[] = [
+  {
+    path: '',
+    component: FaecherComponent
+  },
+  {
+    path: ':fachid',
+    component: FachComponent
+  },
+  {
+    path: ':fachid/einheiten/:einheitid',
+    component: EinheitComponent
+  },
+  {
+    path: ':fachid/einheiten',
+    redirectTo: '../'
+  }
+]
 
 
 @NgModule({
@@ -35,14 +54,13 @@ import { AcceptDialogComponent } from './accept-dialog/accept-dialog.component';
     FachComponent,
     EinheitenComponent,
     EinheitenDialogComponent,
-    AcceptDialogComponent
+    AcceptDialogComponent,
+    EinheitComponent
   ],
   imports: [
     CommonModule,
-    BrowserModule,
     WhiteboardModule,
     FormsModule,
-    BrowserAnimationsModule,
     MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -53,13 +71,14 @@ import { AcceptDialogComponent } from './accept-dialog/accept-dialog.component';
     MatSliderModule,
     MatIconModule,
     NgxElectronModule,
-    AppRoutingModule
+    RouterModule.forChild(routes)
   ],
   providers: [
     FaecherManagerService
   ],
   exports: [
-    FaecherComponent
+    FaecherComponent,
+    RouterModule
   ]
 })
 export class FaecherModule { }

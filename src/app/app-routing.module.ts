@@ -1,4 +1,5 @@
-import { NgModule, Component } from '@angular/core';
+import { FaecherModule } from './faecher/faecher.module';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FachComponent } from './faecher/fach/fach.component';
 import { FaecherComponent } from './faecher/faecher.component';
@@ -13,11 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'faecher',
-    component: FaecherComponent
-  },
-  {
-    path: 'faecher/:id',
-    component: FachComponent
+    loadChildren: () => import('./faecher/faecher.module').then(m => m.FaecherModule)
   },
   {
     path: 'whiteboard',

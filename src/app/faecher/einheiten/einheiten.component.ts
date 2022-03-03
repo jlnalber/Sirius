@@ -18,6 +18,7 @@ export class EinheitenComponent implements OnInit {
 
   public addEinheit(topic: string, description: string): void {
     this.einheiten?.push({
+      id: topic,
       topic: topic,
       description: description,
       tasks: [],

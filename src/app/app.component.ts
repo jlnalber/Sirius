@@ -10,10 +10,5 @@ export class AppComponent {
   title = 'Sirius';
   opened = false;
 
-  @HostListener('window:beforeunload', [ '$event' ])
-  beforeUnloadHandler(_event: any) {
-    this.faecherManager.saveInCache();
-  }
-
-  constructor(private readonly faecherManager: FaecherManagerService) { }
+  constructor() { }
 }

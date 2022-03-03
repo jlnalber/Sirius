@@ -1,7 +1,7 @@
 import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Fach } from '../interfaces/fach';
+import { Einheit, Fach } from '../interfaces/fach';
 
 const siriusConfigPath: string = 'sirius.config.json';
 const onSiriusConfigFileChannel: string = 'siriusConfigFile';
@@ -24,6 +24,7 @@ export class FaecherManagerService {
     notes: '',
     einheiten: [
       {
+        id: 'Dramen',
         topic: 'Dramen',
         description: '',
         notes: '',
@@ -43,6 +44,7 @@ export class FaecherManagerService {
     notes: '',
     einheiten: [
       {
+        id: 'Trigonometrie',
         topic: 'Trigonometrie',
         description: '',
         notes: '',
@@ -50,6 +52,7 @@ export class FaecherManagerService {
         files: []
       },
       {
+        id: 'Analysis',
         topic: 'Analysis',
         description: 'Kurvendiskussion, Funktionen, ...',
         notes: '',
@@ -70,7 +73,6 @@ export class FaecherManagerService {
   }
 
   public loadFromCache() {
-    console.log("I'm here already!");
     let cache = localStorage[cacheVariable];
     this.faecher = cache ? JSON.parse(cache) : [];
   }
@@ -167,6 +169,16 @@ export class FaecherManagerService {
   public getFachById(id: string): Fach | undefined {
     for (let fach of this.faecher) {
       if (fach.id == id) return fach;
+    }
+    return undefined;
+  }
+
+  public getEinheitById(fachId: string, einheitId: string): Einheit | undefined {
+    let fach = this.getFachById(fachId);
+    if (fach != undefined) {
+      for (let einheit of fach.einheiten) {
+        if (einheit.id == einheitId) return einheit;
+      }
     }
     return undefined;
   }

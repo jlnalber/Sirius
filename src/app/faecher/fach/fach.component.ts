@@ -22,7 +22,7 @@ export class FachComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params: any) => {
-      this.fach = this.faecherService.getFachById(params.id);
+      this.fach = this.faecherService.getFachById(params.fachid);
       if (this.fach == undefined) {
         this.router.navigateByUrl('/faecher')
       }
