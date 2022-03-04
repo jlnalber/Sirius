@@ -29,9 +29,11 @@ export class FaecherManagerService {
         description: '',
         notes: '',
         tasks: [],
-        files: []
+        files: [],
+        whiteboards: []
       }
-    ]
+    ],
+    whiteboards: []
   }, {
     id: "m",
     name: "Mathematik",
@@ -49,7 +51,8 @@ export class FaecherManagerService {
         description: '',
         notes: '',
         tasks: [],
-        files: []
+        files: [],
+        whiteboards: []
       },
       {
         id: 'Analysis',
@@ -57,9 +60,11 @@ export class FaecherManagerService {
         description: 'Kurvendiskussion, Funktionen, ...',
         notes: '',
         tasks: [],
-        files: []
+        files: [],
+        whiteboards: []
       }
-    ]
+    ],
+    whiteboards: []
   }];
 
   constructor(private readonly electron: ElectronService) {
@@ -199,8 +204,25 @@ export class FaecherManagerService {
       notes: '',
       tasks: [],
       einheiten: [],
-      files: []
+      files: [],
+      whiteboards: []
     })
+  }
+
+  public addEinheitWithData(fach: Fach, topic: string, description: string): void {
+    fach.einheiten.push(this.getEinheitFromData(topic, description));
+  }
+
+  public getEinheitFromData(topic: string, description: string): Einheit {
+    return {
+      id: topic.trim().replace(' ', '').toLowerCase(),
+      topic: topic,
+      description: description,
+      tasks: [],
+      notes: '',
+      files: [],
+      whiteboards: []
+    };
   }
 
   public removeFach(fach: Fach): boolean {

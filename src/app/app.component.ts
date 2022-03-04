@@ -21,7 +21,6 @@ export class AppComponent {
     let path = this.location.path();
     let index = path.lastIndexOf('/')
     if (index > -1) {
-      console.log(path.substring(0, index));
       return path.substring(0, index);
     }
     return '..';

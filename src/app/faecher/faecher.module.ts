@@ -23,6 +23,8 @@ import { FaecherManagerService } from './global/services/faecher-manager.service
 import { AcceptDialogComponent } from './accept-dialog/accept-dialog.component';
 import { EinheitComponent } from './einheit/einheit.component';
 import { Route, RouterModule } from '@angular/router';
+import { WhiteboardsComponent } from './whiteboards/whiteboards.component';
+import { WhiteboardWrapperComponent } from './whiteboard-wrapper/whiteboard-wrapper.component';
 
 const routes: Route[] = [
   {
@@ -40,7 +42,25 @@ const routes: Route[] = [
   {
     path: ':fachid/einheiten',
     pathMatch: 'full',
-    redirectTo: '/faecher/:fachid'
+    redirectTo: ':fachid'
+  },
+  {
+    path: ':fachid/whiteboards/:whiteboardid',
+    component: WhiteboardWrapperComponent
+  },
+  {
+    path: ':fachid/einheiten/:einheitid/whiteboards/:whiteboardid',
+    component: WhiteboardWrapperComponent
+  },
+  {
+    path: ':fachid/whiteboards',
+    pathMatch: 'full',
+    redirectTo: ':fachid'
+  },
+  {
+    path: ':fachid/einheiten/:einheitid/whiteboards',
+    pathMatch: 'full',
+    redirectTo: ':fachid/einheiten/:einheitid'
   }
 ]
 
@@ -56,7 +76,9 @@ const routes: Route[] = [
     EinheitenComponent,
     EinheitenDialogComponent,
     AcceptDialogComponent,
-    EinheitComponent
+    EinheitComponent,
+    WhiteboardsComponent,
+    WhiteboardWrapperComponent
   ],
   imports: [
     CommonModule,

@@ -1,3 +1,4 @@
+import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Einheit } from 'src/app/faecher/global/interfaces/fach';
@@ -11,20 +12,13 @@ export class EinheitenComponent implements OnInit {
   @Input()
   einheiten: Einheit[] | undefined = [];
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, private readonly faecherService: FaecherManagerService) { }
 
   ngOnInit(): void {
   }
 
   public addEinheit(topic: string, description: string): void {
-    this.einheiten?.push({
-      id: topic.trim().replace(' ', '').toLowerCase(),
-      topic: topic,
-      description: description,
-      tasks: [],
-      notes: '',
-      files: []
-    });
+    this.einheiten?.push(this.faecherService.getEinheitFromData(topic, description));
   }
   
   public openDialog(): void {

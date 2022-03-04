@@ -1,11 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BackgroundImageCross } from 'src/app/whiteboard/global-whiteboard/board/background/cross.backgroundImage';
-import { BackgroundImageKaro } from 'src/app/whiteboard/global-whiteboard/board/background/karo.backgroundImage';
-import { BackgroundImageLine } from 'src/app/whiteboard/global-whiteboard/board/background/line.backgroundImage';
-import { BackgroundImageNone } from 'src/app/whiteboard/global-whiteboard/board/background/none.bgImage';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
+import { cross, karo, line, none } from 'src/app/whiteboard/global-whiteboard/board/background/backgroundImage';
 
 export interface DialogData {
   board: Board
@@ -54,40 +51,35 @@ export class BackgroundDialogComponent {
     new Color(178, 45, 178)
   ]
 
-  lineBG = new BackgroundImageLine();
-  karoBG = new BackgroundImageKaro();
-  noneBG = new BackgroundImageNone();
-  crossBG = new BackgroundImageCross();
-
   isLine() {
-    return this.data.board.backgroundImage instanceof BackgroundImageLine;
+    return this.data.board.backgroundImage == line;
   }
 
   isKaro() {
-    return this.data.board.backgroundImage instanceof BackgroundImageKaro;
+    return this.data.board.backgroundImage == karo;
   }
 
   isNone() {
-    return this.data.board.backgroundImage instanceof BackgroundImageNone;
+    return this.data.board.backgroundImage == none;
   }
 
   isCross() {
-    return this.data.board.backgroundImage instanceof BackgroundImageCross;
+    return this.data.board.backgroundImage == cross;
   }
 
   setLine() {
-    this.data.board.backgroundImage = new BackgroundImageLine();
+    this.data.board.backgroundImage = line;
   }
 
   setKaro() {
-    this.data.board.backgroundImage = new BackgroundImageKaro();
+    this.data.board.backgroundImage = karo;
   }
 
   setNone() {
-    this.data.board.backgroundImage = new BackgroundImageNone();
+    this.data.board.backgroundImage = none;
   }
 
   setCross() {
-    this.data.board.backgroundImage = new BackgroundImageCross();
+    this.data.board.backgroundImage = cross;
   }
 }

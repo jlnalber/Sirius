@@ -1,0 +1,14 @@
+<mat-card>
+    <mat-card-title>
+        <h3>Whiteboards</h3>
+    </mat-card-title>
+    <mat-card-content>
+        <div class="fileContainer">
+            <div *ngFor="let whiteboard of this.whiteboards" class="task">
+            </div>
+        </div>
+    </mat-card-content>
+    <mat-card-actions *ngIf="this.isAbleToAddWhiteboards" align="end">
+        <button routerLink="whiteboards/w1" (click)="this.newWhiteboard()" mat-flat-button>Hinzufügen</button>
+    </mat-card-actions>
+</mat-card>

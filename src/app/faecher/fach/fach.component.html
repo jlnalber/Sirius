@@ -27,6 +27,12 @@
     </div>
 
     <div class="marginBottom">
+        <faecher-whiteboards *ngIf="this.fach" [whiteboards]="this.fach?.whiteboards">
+
+        </faecher-whiteboards>
+    </div>
+
+    <div class="marginBottom">
         <faecher-einheiten *ngIf="this.fach" [einheiten]="this.fach?.einheiten">
             
         </faecher-einheiten>

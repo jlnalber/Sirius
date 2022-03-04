@@ -5,7 +5,8 @@ export interface Fach {
     files: string[],
     einheiten: Einheit[],
     notes: string,
-    tasks: Task[]
+    tasks: Task[],
+    whiteboards: string[]
 }
 
 export interface Einheit {
@@ -14,7 +15,8 @@ export interface Einheit {
     description: string,
     notes: string,
     tasks: Task[],
-    files: string[]
+    files: string[],
+    whiteboards: string[]
 }
 
 export interface Task {

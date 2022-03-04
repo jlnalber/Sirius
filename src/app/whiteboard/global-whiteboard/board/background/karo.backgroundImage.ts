@@ -1,5 +1,5 @@
-import { BackgroundImage } from "./backgroundImage";
+/*import { BackgroundImage } from "./backgroundImage";
 
 export class BackgroundImageKaro extends BackgroundImage {
     public readonly url: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABLCAYAAAA4TnrqAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAL9JREFUeJzt3EENwDAQA8GmHI8/lJRC9hVVmkFgLQCvmdkPZ8Q6MzP7vT3iT8QKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxArECsQKxAqWU9dzH+p4CIuYNlsTAAAAAElFTkSuQmCC';
-}
+}*/

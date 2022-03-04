@@ -1,6 +1,5 @@
 import { EmptyCanvasElement } from './../canvasElements/emptyCanvasElement';
 import { Select } from './../canvasElements/select';
-import { BackgroundImageCross } from './background/cross.backgroundImage';
 import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.component";
 import { CanvasItem } from "../canvasElements/canvasElement";
 import { Stroke } from "../essentials/stroke";
@@ -14,7 +13,6 @@ import { Rectangle } from "../canvasElements/rectangle";
 import { Page } from "./page";
 import { jsPDF } from "jspdf";
 import 'svg2pdf.js';
-import { BackgroundImage } from "./background/backgroundImage";
 import { Rect } from '../interfaces/rect';
 import { Point } from '../interfaces/point';
 import { Color } from '../essentials/color';
@@ -112,7 +110,7 @@ export class Board {
   private currentCanvasItem: CanvasItem | undefined;
   public isOnActiveTouch: boolean = false;
   public backgroundColor: Color = new Color(18, 52, 19);
-  public backgroundImage: BackgroundImage = new BackgroundImageCross();
+  public backgroundImage: string = '';
 
   public readonly onBoardModeChange: Event = new Event();
   public readonly onTouch: Event = new Event();
