@@ -39,7 +39,8 @@ const routes: Route[] = [
   },
   {
     path: ':fachid/einheiten',
-    redirectTo: '../'
+    pathMatch: 'full',
+    redirectTo: '/faecher/:fachid'
   }
 ]
 

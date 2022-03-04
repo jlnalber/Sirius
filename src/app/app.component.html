@@ -3,7 +3,7 @@
     <button mat-icon-button class="icon" (click)="this.opened = !this.opened">
       <mat-icon>menu</mat-icon>
     </button>
-    <button mat-icon-button class="icon" routerLink="..">
+    <button mat-icon-button class="icon" [routerLink]="this.goBackUrl()">
       <mat-icon>arrow_back</mat-icon>
     </button>
     <span>Sirius</span>

@@ -18,22 +18,13 @@ export class EinheitenComponent implements OnInit {
 
   public addEinheit(topic: string, description: string): void {
     this.einheiten?.push({
-      id: topic,
+      id: topic.trim().replace(' ', '').toLowerCase(),
       topic: topic,
       description: description,
       tasks: [],
       notes: '',
       files: []
     });
-  }
-
-  public removeEinheit(einheit: Einheit): boolean {
-    const index = this.einheiten?.indexOf(einheit, 0);
-    if (index != undefined && index > -1) {
-      this.einheiten?.splice(index, 1);
-      return true;
-    }
-    return false;
   }
   
   public openDialog(): void {
@@ -51,6 +42,43 @@ export class EinheitenComponent implements OnInit {
         this.addEinheit(res.topic, res.description);
       }
     });
+  }
+
+  getText(einheit: Einheit): string {
+
+    let getUnfinishedTasksLength = (einheit: Einheit): number => {
+      let counter = 0;
+      for (let task of einheit.tasks) {
+        if (!task.closed) counter++;
+      }
+      return counter;
+    }
+  
+    let getFinishedTasksLength = (einheit: Einheit): number => {
+      let counter = 0;
+      for (let task of einheit.tasks) {
+        if (task.closed) counter++;
+      }
+      return counter;
+    }
+
+    let res = '';
+    let tasks = einheit.tasks.length;
+    let files = einheit.files.length;
+
+    if (tasks == 0) {
+      res += 'Keine Aufgaben, '
+    }
+    else {
+      res += `${tasks} Aufgaben, davon ${getUnfinishedTasksLength(einheit)} noch offen und ${getFinishedTasksLength(einheit)} abgeschlossen, `;
+    }
+    if (files == 0) {
+      res += 'keine Dateien.'
+    }
+    else {
+      res += `${files} Dateien.`;
+    }
+    return res;
   }
 
 }

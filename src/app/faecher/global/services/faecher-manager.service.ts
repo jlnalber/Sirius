@@ -68,6 +68,10 @@ export class FaecherManagerService {
       this.loadSiriusConfig();
     }*/
 
+    window.addEventListener('beforeunload', () => {
+      this.saveInCache();
+    })
+
     //setTimeout(() => this.loadFromCache(), 2000)
     this.loadFromCache();
   }
@@ -189,7 +193,7 @@ export class FaecherManagerService {
 
   public addFachWithData(id: string, name: string, description: string): void {
     this.addFach({
-      id: id,
+      id: id.trim().replace(' ', '').toLowerCase(),
       name: name,
       description: description,
       notes: '',
@@ -203,6 +207,15 @@ export class FaecherManagerService {
     let index = this.faecher.indexOf(fach);
     if (index > -1) {
       this.faecher.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  public removeEinheit(fach: Fach, einheit: Einheit): boolean {
+    let index = fach.einheiten.indexOf(einheit);
+    if (index > -1) {
+      fach.einheiten.splice(index, 1);
       return true;
     }
     return false;

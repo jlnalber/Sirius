@@ -13,21 +13,14 @@
                         {{ einheit.description }}
                     </mat-panel-description>
                 </mat-expansion-panel-header>
-                <mat-form-field appearance="outline" class="fill">
-                    <mat-label>Notizen</mat-label>
-                    <textarea matInput [(ngModel)]="einheit.notes"></textarea>
-                </mat-form-field>
 
                 <div class="marginBottom">
-                    <faecher-tasks [tasks]="einheit.tasks">
-
-                    </faecher-tasks>
-                </div>
-
-                <div class="marginBottom">
-                    <faecher-files [files]="einheit.files">
-
-                    </faecher-files>
+                    <button mat-icon-button class="floatRight" [routerLink]="'einheiten/' + einheit.id">
+                        <mat-icon></mat-icon>
+                    </button>
+                    <p>
+                        {{ this.getText(einheit) }}
+                    </p>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>

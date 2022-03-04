@@ -13,11 +13,6 @@ export class FaecherComponent implements OnInit {
 
   constructor(public faecherManager: FaecherManagerService, public dialog: MatDialog) { }
 
-  @HostListener('window:beforeunload', [ '$event' ])
-  beforeUnloadHandler(_event: any) {
-    this.faecherManager.saveInCache();
-  }
-
   ngOnInit(): void {
     
   }

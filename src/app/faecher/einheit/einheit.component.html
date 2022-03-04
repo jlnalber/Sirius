@@ -1,1 +1,27 @@
-<p>einheit works!</p>
+<div class="einheitContainer">
+    <button mat-button color="accent" class="floatRight" (click)="this.onDeleteClick()">Löschen</button>
+    <h1>
+        {{ this.fach?.name + ' > ' + this.einheit?.topic }}
+    </h1>
+
+    <p>
+        {{ this.einheit?.description }}
+    </p>
+
+    <mat-form-field appearance="outline" class="fill">
+        <mat-label>Notizen</mat-label>
+        <textarea *ngIf="this.einheit" matInput [(ngModel)]="this.einheit.notes"></textarea>
+    </mat-form-field>
+
+    <div class="marginBottom">
+        <faecher-tasks *ngIf="this.einheit" [tasks]="this.einheit?.tasks">
+
+        </faecher-tasks>
+    </div>
+
+    <div class="marginBottom">
+        <faecher-files *ngIf="this.einheit" [files]="this.einheit?.files">
+
+        </faecher-files>
+    </div>
+</div>

@@ -1,20 +1,9 @@
-.fill {
-    width: 100%;
-}
-
-.marginBottom {
-    margin-bottom: 16px;
-}
+@import "../global/styles/global";
 
 h2 {
     width: fit-content;
     display: inline-block;
     font-weight: normal;
-}
-
-.floatRight {
-    float: right;
-    margin-right: 0px;
 }
 
 .einheitenContainer {
