@@ -1,3 +1,4 @@
+import { Whiteboard as WhiteboardExport, Page as PageExport } from './../interfaces/whiteboard';
 import { EmptyCanvasElement } from './../canvasElements/emptyCanvasElement';
 import { Select } from './../canvasElements/select';
 import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.component";
@@ -121,6 +122,7 @@ export class Board {
   public readonly beforePageSwitched: Event = new Event();
   public readonly onAddElement: Event = new Event();
   public readonly onRemoveElement: Event = new Event();
+  public readonly onImport: Event = new Event();
 
   public pages: Page[] = [ new Page(this) ]
   private _currentPageIndex = 0;
@@ -228,7 +230,8 @@ export class Board {
   }
 
   public downloadWhiteboard() {
-    this.doDownload('whiteboard.svg', this.currentPage.getSVG(), 'svg');
+    this.doDownload('whiteboard.json', JSON.stringify(this.export()));
+    // this.doDownload('whiteboard.svg', this.currentPage.getSVG(), 'svg');
   }
 
   public downloadPDF() {
@@ -301,6 +304,49 @@ export class Board {
   public addPage() {
     this.pages.push(new Page(this));
     this.currentPageIndex = this.pages.length - 1;
+  }
+
+  public import(whiteboard: WhiteboardExport): boolean {
+    // Lade das Whiteboard aus einer Datei
+    try {
+      this.backgroundImage = whiteboard.backgroundImage;
+      this.backgroundColor.from(whiteboard.backgroundColor);
+
+      this.pages.splice(0);
+      for (let page of whiteboard.pages) {
+        let p = new Page(this);
+        p.import(page);
+        this.pages.push(p);
+      }
+      if (this.pages.length == 0) {
+        this.pages.push(new Page(this));
+      }
+
+      let pageIndex = whiteboard.pageIndex >= this.pages.length ? 0 : whiteboard.pageIndex;
+      this.pages[pageIndex].reload();
+      this.currentPageIndex = pageIndex;
+
+      this.onImport.emit();
+
+      return true;
+    }
+    catch {
+      return false;
+    }
+  }
+
+  public export(): WhiteboardExport {
+    // Exportiere dieses Whiteboard
+    let pages: PageExport[] = [];
+    for (let page of this.pages) {
+      pages.push(page.export());
+    }
+    return {
+      backgroundImage: this.backgroundImage,
+      backgroundColor: this.backgroundColor.export(),
+      pageIndex: this.currentPageIndex,
+      pages: pages
+    };
   }
   
 }

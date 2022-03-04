@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
@@ -30,6 +30,11 @@ export class BackgroundDialogComponent {
   currentColor = () => {
     return this.data.board.backgroundColor;
   }
+
+  @Input()
+  backgroundImages: string[] = [
+    none, line, karo, cross
+  ]
 
   colors: Color[] = [
     new Color(18, 52, 19),

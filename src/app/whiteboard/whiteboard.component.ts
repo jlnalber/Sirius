@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, enableProdMode } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, AfterContentInit } from '@angular/core';
 import { Board } from './global-whiteboard/board/board';
 import { WhiteboardConfig } from './global-whiteboard/interfaces/whiteboard.config';
 import { BoardService } from './services/board.service';
@@ -8,9 +8,11 @@ import { BoardService } from './services/board.service';
   templateUrl: './whiteboard.component.html',
   styleUrls: ['./whiteboard.component.scss']
 })
-export class WhiteboardComponent implements OnInit {
+export class WhiteboardComponent implements AfterViewInit, AfterContentInit {
 
   public board: Board;
+
+  @Input() onInit: (board: Board) => void = (b: Board) => { };
 
   @Input() whiteboardConfig: WhiteboardConfig = {
     showBottomBar: true,
@@ -34,6 +36,15 @@ export class WhiteboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //this.onInit(this.board);
+  }
+
+  ngAfterViewInit(): void {
+    this.onInit(this.board);
+  }
+
+  ngAfterContentInit(): void {
+    // this.onInit(this.board);
   }
 
 }

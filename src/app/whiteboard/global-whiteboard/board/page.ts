@@ -2,6 +2,7 @@ import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.compon
 import { Stack } from "../essentials/stack";
 import { Rect } from "../interfaces/rect";
 import { Board } from "./board";
+import { Page as PageExport } from "../interfaces/whiteboard";
 
 const maxStepsBack = 30;
 
@@ -94,6 +95,12 @@ export class Page {
             this._translateX = this.canvas.translateX;
             this._translateY = this.canvas.translateY;
             this._zoom = this.canvas.zoom;
+        }
+    }
+
+    public reload(): void {
+        if (this.canvas && this.canvas.gElement) {
+            this.canvas.gElement.innerHTML = this.currentContent;
         }
     }
 
@@ -203,5 +210,24 @@ export class Page {
         </svg>`;
       }
       return '';
+    }
+
+    public import(value: PageExport): void {
+        this._currentContent = value.content;
+        this.lastContent.empty();
+        this.nextContent.empty();
+        this.zoom = value.zoom;
+        this.translateX = value.translateX;
+        this.translateY = value.translateY;
+    }
+
+    public export(): PageExport {
+        // export this page
+        return {
+            translateX: this.translateX,
+            translateY: this.translateY,
+            zoom: this.zoom,
+            content: this.currentContent
+        };
     }
 }

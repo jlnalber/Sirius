@@ -1,4 +1,5 @@
 import { Event } from "./event";
+import { Color as ColorExport } from "../interfaces/whiteboard";
 
 export class Color {
 
@@ -105,9 +106,27 @@ export class Color {
     }
 
     public setTo(c: Color) {
-        this.r = c.r;
-        this.g = c.g;
-        this.b = c.b;
-        this.a = c.a;
+        this._r = c._r;
+        this._g = c._g;
+        this._b = c._b;
+        this._a = c._a;
+        this.onchange.emit();
+    }
+
+    public export(): ColorExport {
+        return {
+            r: this._r,
+            g: this._g,
+            b: this._b,
+            a: this._a
+        };
+    }
+
+    public from(value: ColorExport): void {
+        this._r = value.r;
+        this._g = value.g;
+        this._b = value.b;
+        this._a = value.a;
+        this.onchange.emit();
     }
 }

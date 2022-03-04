@@ -77,6 +77,9 @@ export class CanvasComponent implements AfterViewInit {
     this.svgElement = this.canvas.nativeElement as SVGSVGElement;
     this.gElement = this.g.nativeElement as SVGGElement;
     this.captureEvents();
+
+    this.board.onImport.addListener(() => {
+    })
   }
 
   private captureEvents() {
