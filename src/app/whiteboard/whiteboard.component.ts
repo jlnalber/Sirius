@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, AfterViewInit, AfterContentInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import { Board } from './global-whiteboard/board/board';
 import { WhiteboardConfig } from './global-whiteboard/interfaces/whiteboard.config';
 import { BoardService } from './services/board.service';
@@ -8,11 +8,11 @@ import { BoardService } from './services/board.service';
   templateUrl: './whiteboard.component.html',
   styleUrls: ['./whiteboard.component.scss']
 })
-export class WhiteboardComponent implements AfterViewInit, AfterContentInit {
+export class WhiteboardComponent implements AfterViewInit {
 
   public board: Board;
 
-  @Input() onInit: (board: Board) => void = (b: Board) => { };
+  @Input() afterViewInit: (board: Board) => void = (b: Board) => { };
 
   @Input() whiteboardConfig: WhiteboardConfig = {
     showBottomBar: true,
@@ -35,16 +35,11 @@ export class WhiteboardComponent implements AfterViewInit, AfterContentInit {
     this.board = this.boardService.addBoard();
   }
 
-  ngOnInit(): void {
-    //this.onInit(this.board);
-  }
-
   ngAfterViewInit(): void {
-    this.onInit(this.board);
-  }
-
-  ngAfterContentInit(): void {
-    // this.onInit(this.board);
+    // Set a timeout to trigger the function because it might change the view after it has been checked by angular
+    setTimeout(() => {
+      this.afterViewInit(this.board);
+    }, 0);
   }
 
 }
