@@ -37,6 +37,7 @@ import { SelectControlComponent } from './drawing/controls/select-control/select
 import { BackgroundDialogComponent } from './drawing/controls/menu-control/background-control/background-dialog/background-dialog.component';
 import { ShapeControlComponent } from './drawing/controls/shape-control/shape-control.component';
 import { MatInputModule } from '@angular/material/input';
+import { SaveAsPictureControlComponent } from './drawing/controls/menu-control/save-as-picture-control/save-as-picture-control.component';
 
 
 
@@ -69,7 +70,8 @@ import { MatInputModule } from '@angular/material/input';
     ColorsetComponent,
     FillPickerComponent,
     StrokePickerComponent,
-    ShapePickerComponent
+    ShapePickerComponent,
+    SaveAsPictureControlComponent
   ],
   imports: [
     CommonModule,

@@ -231,7 +231,10 @@ export class Board {
 
   public downloadWhiteboard() {
     this.doDownload('whiteboard.json', JSON.stringify(this.export()));
-    // this.doDownload('whiteboard.svg', this.currentPage.getSVG(), 'svg');
+  }
+
+  public downloadSVG(): void {
+    this.doDownload('whiteboard.svg', this.currentPage.getSVG(), 'svg');
   }
 
   public downloadPDF() {

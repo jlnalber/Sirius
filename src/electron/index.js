@@ -1,3 +1,4 @@
+const { ipcRenderer, ipcMain } = require('electron')
 const electron = require('electron')
 const fs = require('fs')
 // Module to control application life.
@@ -10,12 +11,26 @@ const url = require('url');
 const { getEnvironmentData } = require('worker_threads');
 const iconPath = path.join(__dirname, 'sirius', 'assets', 'icon.ico')
 
+ipcMain.on('test', () => {
+  console.log('wow')
+})
+/*ipcRenderer.on('test', () => {
+  console.log('wow')
+})*/
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 let splash
+let config
 
 function createWindow () {
+  // Read the config
+  if (!config) {
+    readConfig();
+    console.log(config);
+  }
+
   // Create the browser window.
 
   mainWindow = new BrowserWindow({
@@ -34,9 +49,11 @@ function createWindow () {
   splash = new BrowserWindow({width: 500, icon: iconPath, height: 400, transparent: true, frame: false, alwaysOnTop: true})
   splash.loadURL(path.join(__dirname, 'sirius', 'assets', 'splashscreen.html'));
 
-  let fileContent = fs.readFileSync('faecher.json', 'utf-8')
+  // let fileContent = fs.readFileSync('faecher.json', 'utf-8')
+  let fileContent = readFileUTF8('faecher.json');
 
-  console.log(fileContent);
+  // Write the data from the file into the localStorage
+  // console.log(fileContent);
   mainWindow.webContents.executeJavaScript("localStorage.setItem('faecher', '" + fileContent + "'); console.log('" + fileContent + "');", true).then(_result => { });
 
   mainWindow.loadURL('about:blank')
@@ -58,7 +75,7 @@ function createWindow () {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
-  // Emitted when the window is closed.
+  // Emitted when the window is closed. Writes the data from the local storage into a file.
   let onClosing = false;
   mainWindow.on('close', (e) => {
     if (!onClosing) {
@@ -68,8 +85,9 @@ function createWindow () {
         mainWindow.webContents
           .executeJavaScript('localStorage.getItem("faecher");', true)
           .then(result => {
-            console.log(result);
-            fs.writeFileSync('faecher.json', result, 'utf-8');
+            // console.log(result);
+            writeFileUTF8('faecher.json', result);
+            // fs.writeFileSync('faecher.json', result, 'utf-8');
         });
         //console.log(storage)
 
@@ -107,6 +125,69 @@ function createWindow () {
     // when you should delete the corresponding element.
     //mainWindow = null*/
   })
+}
+
+function joinPathsForFS(dir, relativePath) {
+  // joins two paths
+  let path = dir;
+  if (dir != '' && !dir.endsWith('/') && !relativePath.startsWith('/')) {
+    path += '/';
+  }
+  path += relativePath;
+  return path;
+}
+
+function readConfig() {
+  let configStr = fs.readFileSync('sirius.config.json', 'utf-8');
+  config = JSON.parse(configStr);
+}
+
+function readFileUTF8(relativePath) {
+  try {
+    let dir = '';
+    if (config.directories.length != 0) {
+      dir = config.directories[0];
+    }
+    let path = joinPathsForFS(dir, relativePath);
+    return fs.readFileSync(path, 'utf-8');
+  }
+  catch {
+    return '';
+  }
+}
+
+function readFile(relativePath) {
+  try {
+    let dir = '';
+    if (config.directories.length != 0) {
+      dir = config.directories[0];
+    }
+    let path = joinPathsForFS(dir, relativePath);
+    return fs.readFileSync(path);
+  }
+  catch {
+    return '';
+  }
+}
+
+function writeFile(relativePath, data) {
+  for (let dir of config.directories) {
+    try {
+      let path = joinPathsForFS(dir, relativePath);
+      fs.writeFileSync(path, data);
+    }
+    catch { }
+  }
+}
+
+function writeFileUTF8(relativePath, data) {
+  for (let dir of config.directories) {
+    try {
+      let path = joinPathsForFS(dir, relativePath);
+      fs.writeFileSync(path, data, 'utf-8');
+    }
+    catch { }
+  }
 }
 
 // This method will be called when Electron has finished
