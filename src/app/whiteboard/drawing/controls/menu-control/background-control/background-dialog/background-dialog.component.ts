@@ -2,7 +2,7 @@ import { Component, Inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
-import { cross, karo, line, none } from 'src/app/whiteboard/global-whiteboard/board/background/backgroundImage';
+import { cross, karo, line, none, music } from 'src/app/whiteboard/global-whiteboard/board/background/backgroundImage';
 
 export interface DialogData {
   board: Board
@@ -33,7 +33,7 @@ export class BackgroundDialogComponent {
 
   @Input()
   backgroundImages: string[] = [
-    none, line, karo, cross
+    none, line, karo, cross, music
   ]
 
   colors: Color[] = [

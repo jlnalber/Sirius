@@ -19,6 +19,7 @@ import { Point } from '../interfaces/point';
 import { Color } from '../essentials/color';
 import { SelectorComponent } from '../../drawing/selector/selector.component';
 import { Event } from '../essentials/event';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 
 const svgns = "http://www.w3.org/2000/svg";
 
@@ -118,11 +119,13 @@ export class Board {
   public readonly onTouchStart: Event = new Event();
   public readonly onTouchMove: Event = new Event();
   public readonly onTouchEnd: Event = new Event();
+  public readonly onInput: Event = new Event();
   public readonly onPageSwitched: Event = new Event();
   public readonly beforePageSwitched: Event = new Event();
   public readonly onAddElement: Event = new Event();
   public readonly onRemoveElement: Event = new Event();
   public readonly onImport: Event = new Event();
+  public readonly onWhiteboardViewChange: Event = new Event();
 
   public pages: Page[] = [ new Page(this) ]
   private _currentPageIndex = 0;
@@ -136,6 +139,7 @@ export class Board {
       this._currentPageIndex = value;
       this.currentPage.open();
       this.onPageSwitched.emit();
+      this.onWhiteboardViewChange.emit();
     } 
   }
   public get currentPage(): Page {
@@ -206,6 +210,8 @@ export class Board {
 
       this.onTouchEnd.emit();
       this.isOnActiveTouch = false;
+      this.onInput.emit();
+      this.onWhiteboardViewChange.emit();
     }
   }
 
@@ -218,11 +224,131 @@ export class Board {
     return el;
   }
 
+  public addFile(file: File | null | undefined): boolean {
+    // Füge eine Datei zum Whiteboard hinzu
+    try {
+      if (file) {
+        if (file.type == 'application/pdf') {
+          let pages = new Map<number, [HTMLCanvasElement, string]>();
+
+          
+          // function that adds the pdf-pages to the whiteboard
+          let render = () => {
+            for (let i = 1; i < pages.size + 1; i++) {
+              let p = pages.get(i);
+              if (p) {
+                this.addPage();
+                let img = this.createElement('image');
+                img.setAttributeNS(null, 'href', p[1]);
+                img.setAttributeNS(null, 'transform', `translate(0 ${p[0].height}) rotate(180) scale(-1 1)`)
+                this.onInput.emit();
+                this.onWhiteboardViewChange.emit();
+              }
+            }
+          }
+
+          let fileReader = new FileReader();
+          fileReader.readAsArrayBuffer(file);
+          //fileReader.readAsDataURL(file);
+          fileReader.onload = (ev) => {
+            
+            
+            if (fileReader.result) {
+
+              //var typedarray = new Uint8Array(fileReader.result as ArrayBuffer);
+
+              GlobalWorkerOptions.workerSrc = require('pdfjs-dist/build/pdf.worker.entry');
+
+              getDocument(fileReader.result as string).promise.then((pdf: any) => {
+                //
+                // Fetch the first page
+                //
+                let size: number = pdf.numPages;
+
+                for (let i = 1; i < size + 1; i++) {
+                  pdf.getPage(i).then((page: any) => {
+
+                    var scale = 1;
+                    var viewport = page.getViewport(scale);
+
+                    let pageNumber: number = page.pageNumber;
+                    
+                    //
+                    // Prepare canvas using PDF page dimensions
+                    //
+                    let canvas = document.createElement('canvas');
+                    //document.body.appendChild(canvas);
+                    var context = canvas.getContext('2d');
+                    canvas.width = page.view[2];
+                    canvas.height = page.view[3];
+
+                    //
+                    // Render PDF page into canvas context
+                    //
+                    var renderContext = {
+                      canvasContext: context,
+                      viewport: viewport};
+ 
+                    page.render(renderContext).promise.then(() => {
+                      let res = canvas.toDataURL('image/png');
+                      pages.set(pageNumber, [canvas, res])
+                      if (size == pages.size) render();
+                      
+                    })});
+                }
+                //console.log(pdf.numPages);
+                //console.log(pdf)
+
+            }, (error: any) => {
+              console.log(error);
+            });
+              }
+          };
+
+        }
+        else {
+          var reader = new FileReader();
+          reader.readAsDataURL(file);
+          
+          // helper to get dimensions of an image
+          const imageDimensions = (file: any) => 
+              new Promise((resolve, reject) => {
+                  const img = new Image()
+          
+                  // the following handler will fire after the successful loading of the image
+                  img.onload = () => {
+                      const { naturalWidth: width, naturalHeight: height } = img
+                      resolve({ width, height })
+                  }
+              
+                  img.src = URL.createObjectURL(file)
+          })
+
+          reader.onload = async () => {
+            let dim: any = await imageDimensions(file);
+            let img = this.createElement('image');
+            if (reader.result) img.setAttributeNS(null, 'href', reader.result.toString());
+            img.setAttributeNS(null, 'width', dim.width);
+            img.setAttributeNS(null, 'height', dim.height);
+            
+            this.onInput.emit();
+            this.onWhiteboardViewChange.emit();
+          };
+        }
+
+        return true;
+      }
+    }
+    catch { }
+    return false;
+  }
+
   public removeElement(el: SVGElement): boolean {
     if (this.canvas && this.canvas.gElement && this.canvas.gElement.contains(el)) {
       this.canvas.gElement.removeChild(el);
 
       this.onRemoveElement.emit();
+      this.onWhiteboardViewChange.emit();
 
       return true;
     }
@@ -271,6 +397,7 @@ export class Board {
 
   public goBack() {
     this.currentPage.goBack();
+    this.onWhiteboardViewChange.emit();
   }
 
   public canGoBack() {
@@ -279,6 +406,7 @@ export class Board {
 
   public goForward() {
     this.currentPage.goForward();
+    this.onWhiteboardViewChange.emit();
   }
 
   public canGoForward() {
@@ -287,6 +415,7 @@ export class Board {
 
   public clear() {
     this.currentPage.clear();
+    this.onWhiteboardViewChange.emit();
   }
   
   private doDownload(filename: string, text: string, type?: string) {

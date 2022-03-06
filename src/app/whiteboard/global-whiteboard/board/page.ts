@@ -135,12 +135,13 @@ export class Page {
     }
     
     constructor(private board: Board) {
-        this.board.onTouchEnd.addListener(() => {
+        this.board.onInput.addListener(() => {
             if (this.board.currentPage == this) this.save();
         });
     }
 
     public getSizeRect(): Rect {
+        // get a rect that limits the view: left-most, right-most, top-most and bottom-most elements in the svg
         let rect = {
             x: 0,
             y: 0,

@@ -16,7 +16,7 @@ export class BackgroundControlComponent extends BasicControl implements AfterVie
 
   public onClick = () => {
     this.dialog.open(BackgroundDialogComponent, {
-      width: '530px',
+      width: '635px',
       data: { 
         board: this.board
       }

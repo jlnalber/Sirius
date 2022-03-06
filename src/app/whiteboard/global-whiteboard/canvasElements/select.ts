@@ -76,16 +76,8 @@ export class Select {
             }
         })
 
-        // füge das select auch zu neu hinzugefügeten Element hinzu
-        this.board.onAddElement.addListener(() => {
-            if (this.active) {
-                this.end();
-                this.start();
-            }
-        });
-
-        // entferne das select von neu entfernten Element
-        this.board.onRemoveElement.addListener(() => {
+        // starte erneut, wenn eine Veränderung auftritt
+        this.board.onWhiteboardViewChange.addListener(() => {
             if (this.active) {
                 this.end();
                 this.start();

@@ -85,29 +85,22 @@ export class Delete {
             }
         })
 
-        this.board.onAddElement.addListener(() => {
-            if (this.active) {
-                this.end();
-                this.start();
-            }
-        });
-
-        // endet das select, wenn eine Seite geschlossen wird
+        // Ende, wenn eine Seite geschlossen wird
         this.board.beforePageSwitched.addListener(() => {
             if (this.active) {
                 this.end();
             }
         })
 
-        // startet das select wieder, wenn eine andere Seite geöffnet wird
+        // startet erneut, wenn eine andere Seite geöffnet wird
         this.board.onPageSwitched.addListener(() => {
             if (this.active) {
                 this.start();
             }
         })
 
-        // entferne das select von neu entfernten Element
-        this.board.onRemoveElement.addListener(() => {
+        // starte erneut, wenn eine Veränderung auftritt
+        this.board.onWhiteboardViewChange.addListener(() => {
             if (this.active) {
                 this.end();
                 this.start();

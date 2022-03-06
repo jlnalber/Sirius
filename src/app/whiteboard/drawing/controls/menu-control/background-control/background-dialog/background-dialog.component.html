@@ -4,7 +4,7 @@
       <div *ngFor="let bgimg of this.backgroundImages" class="cardContainer" [ngStyle]="{'background-color': this.data.board.backgroundColor.toString(), 'background-image': 'url(\'' + bgimg + '\''}" [ngClass]="this.data.board.backgroundImage == bgimg ? 'active' : 'inactive'" (click)="this.data.board.backgroundImage = bgimg">
       </div>
     </div>
-    <whiteboard-colorset [defaultColors]="this.colors" [listener]="this.listener" [currentColor]="this.currentColor"></whiteboard-colorset>
+    <whiteboard-colorset class="colorset" [defaultColors]="this.colors" [listener]="this.listener" [currentColor]="this.currentColor"></whiteboard-colorset>
 </div>
 <div mat-dialog-actions align="end" class="fill">
   <button cdkFocusInitial mat-button (click)="onNoClick()">Schließen</button>
