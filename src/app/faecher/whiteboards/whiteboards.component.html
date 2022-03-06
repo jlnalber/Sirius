@@ -3,12 +3,18 @@
         <h3>Whiteboards</h3>
     </mat-card-title>
     <mat-card-content>
-        <div class="fileContainer">
-            <div *ngFor="let whiteboard of this.whiteboards" class="task">
+        <div class="whiteboardContainer">
+            <div *ngFor="let whiteboard of this.whiteboards" class="whiteboard" [routerLink]="'whiteboards/' + whiteboard">
+                <div class="text">
+                    {{ whiteboard }}
+                </div>
+                <div align="right">
+                    <button class="remove" color="accent" mat-button (click)="this.removeWhiteboard(whiteboard)"><mat-icon>clear</mat-icon></button>
+                </div>
             </div>
         </div>
     </mat-card-content>
     <mat-card-actions *ngIf="this.isAbleToAddWhiteboards" align="end">
-        <button routerLink="whiteboards/w1" (click)="this.newWhiteboard()" mat-flat-button>Hinzufügen</button>
+        <button (click)="this.newWhiteboard()" mat-flat-button>Hinzufügen</button>
     </mat-card-actions>
 </mat-card>

@@ -1,5 +1,7 @@
-import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, Output } from '@angular/core';
 import { Board } from './global-whiteboard/board/board';
+import { Handler } from './global-whiteboard/essentials/handler';
+import { Whiteboard } from './global-whiteboard/interfaces/whiteboard';
 import { WhiteboardConfig } from './global-whiteboard/interfaces/whiteboard.config';
 import { BoardService } from './services/board.service';
 
@@ -37,10 +39,18 @@ export class WhiteboardComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.export != undefined) {
+      this.export.handler = () => {
+        return this.board.export();
+      }
+    }
+
     // Set a timeout to trigger the function because it might change the view after it has been checked by angular
     setTimeout(() => {
       this.afterViewInit(this.board);
     }, 0);
   }
+
+  @Input() export: Handler<Whiteboard> | undefined;
 
 }

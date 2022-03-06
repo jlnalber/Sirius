@@ -100,7 +100,7 @@ export class Page {
 
     public reload(): void {
         if (this.canvas && this.canvas.gElement) {
-            this.canvas.gElement.innerHTML = this.currentContent;
+            this.canvas.gElement.innerHTML = this._currentContent;
         }
     }
 

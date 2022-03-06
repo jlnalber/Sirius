@@ -242,4 +242,30 @@ export class FaecherManagerService {
     }
     return false;
   }
+
+  public getPathForFileDir(fachid: string | undefined, einheitid: string | undefined): string {
+    if (fachid) {
+      let path = `faecher/${fachid}/`;
+      if (einheitid) {
+        path += `einheiten/${einheitid}/`;
+      }
+      path += 'dateien/'
+      return path;
+    }
+    return '';
+  }
+
+  public getPathForWhiteboard(fachid: string | undefined, einheitid: string | undefined, whiteboardid: string | undefined): string {
+    if (fachid) {
+      let path = `faecher/${fachid}/`;
+      if (einheitid) {
+        path += `einheiten/${einheitid}/`;
+      }
+      if (whiteboardid) {
+        path += `whiteboards/${whiteboardid}.json`;
+        return path;
+      }
+    }
+    return '';
+  }
 }

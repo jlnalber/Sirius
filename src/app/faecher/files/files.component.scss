@@ -1,0 +1,27 @@
+$height: 36px;
+
+.fileContainer {
+    padding-top: 10px;
+}
+
+.file {
+    margin: 5px;
+    padding: 10px;
+    padding-left: 15px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 3px #00000066;
+}
+
+.remove {
+    height: $height;
+}
+
+.text {
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    height: $height;
+}

@@ -562,7 +562,7 @@ export class Board {
 
       let pageIndex = whiteboard.pageIndex >= this.pages.length ? 0 : whiteboard.pageIndex;
       this.pages[pageIndex].reload();
-      this.currentPageIndex = pageIndex;
+      this._currentPageIndex = pageIndex;
 
       this.onImport.emit();
 

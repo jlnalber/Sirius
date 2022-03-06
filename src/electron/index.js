@@ -11,12 +11,54 @@ const url = require('url');
 const { getEnvironmentData } = require('worker_threads');
 const iconPath = path.join(__dirname, 'sirius', 'assets', 'icon.ico')
 
-ipcMain.on('test', () => {
+ipcMain.on('test', (ev, ...args) => {
   console.log('wow')
+  console.log(args);
+  console.log(ipcMain)
+  ipcMain.emit('response', 'here')
+  // ipcMain.send()
 })
-/*ipcRenderer.on('test', () => {
-  console.log('wow')
-})*/
+
+ipcMain.handle('an-action', (event, arg) => {
+  // do stuff
+  return "foo";
+})
+
+ipcMain.handle('request-file', (event, ...args) => {
+  let path = arg[0];
+  return readFile(path);
+})
+
+ipcMain.handle('request-whiteboard', (event, ...args) => {
+  let path = args[0];
+  let file = readFileUTF8(path);
+  const defaultWhiteboard = '{"backgroundImage":"","backgroundColor":{"r":255,"g":255,"b":255},"pageIndex":0,"pages":[{"translateX":0,"translateY":0,"zoom":1,"content":""}]}';
+  return file == '' ? defaultWhiteboard : file;
+})
+
+ipcMain.handle('write-file', (event, ...args) => {
+  let path = args[0];
+  let data = args[1];
+  return writeFile(path, data);
+})
+
+ipcMain.handle('write-whiteboard', (event, ...args) => {
+  let path = args[0];
+  let data = args[1];
+  let res = writeFileUTF8(path, data);
+  console.log(res);
+  return res;
+})
+
+ipcMain.handle('open-file', (event, ...args) => {
+  let path = args[0];
+  try {
+    return fs.openSync(path, '');
+  }
+  catch {
+    return null;
+  }
+})
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -127,6 +169,8 @@ function createWindow () {
   })
 }
 
+
+// functions for communicating with the filesystem
 function joinPathsForFS(dir, relativePath) {
   // joins two paths
   let path = dir;
@@ -174,9 +218,13 @@ function writeFile(relativePath, data) {
   for (let dir of config.directories) {
     try {
       let path = joinPathsForFS(dir, relativePath);
+      checkPath(path);
       fs.writeFileSync(path, data);
+      return true;
     }
-    catch { }
+    catch {
+      return false;
+    }
   }
 }
 
@@ -184,9 +232,25 @@ function writeFileUTF8(relativePath, data) {
   for (let dir of config.directories) {
     try {
       let path = joinPathsForFS(dir, relativePath);
+      checkPath(path);
       fs.writeFileSync(path, data, 'utf-8');
+      return true;
     }
-    catch { }
+    catch (e) {
+      console.log(e); 
+      fs.mkdirSync()
+      return false;
+    }
+  }
+}
+
+function checkPath(path) {
+  try {
+    fs.accessSync(path);
+  }
+  catch {
+    let dir = path.substring(0, path.lastIndexOf('/'));
+    fs.mkdirSync(dir, {recursive: true})
   }
 }
 

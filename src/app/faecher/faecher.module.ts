@@ -25,6 +25,8 @@ import { EinheitComponent } from './einheit/einheit.component';
 import { Route, RouterModule } from '@angular/router';
 import { WhiteboardsComponent } from './whiteboards/whiteboards.component';
 import { WhiteboardWrapperComponent } from './whiteboard-wrapper/whiteboard-wrapper.component';
+import { AddWhiteboardDialogComponent } from './whiteboards/add-whiteboard-dialog/add-whiteboard-dialog.component';
+import { AddFileDialogComponent } from './files/add-file-dialog/add-file-dialog.component';
 
 const routes: Route[] = [
   {
@@ -78,7 +80,9 @@ const routes: Route[] = [
     AcceptDialogComponent,
     EinheitComponent,
     WhiteboardsComponent,
-    WhiteboardWrapperComponent
+    WhiteboardWrapperComponent,
+    AddWhiteboardDialogComponent,
+    AddFileDialogComponent
   ],
   imports: [
     CommonModule,
