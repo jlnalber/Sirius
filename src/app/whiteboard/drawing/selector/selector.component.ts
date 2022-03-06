@@ -430,6 +430,7 @@ export class SelectorComponent implements AfterViewInit {
         end(origPos, this.board.getActualPoint(getPosFromMouseEvent(e)));
 
         this.board.onTouchEnd.emit();
+        this.board.onInput.emit();
       }
     };
 
@@ -439,6 +440,7 @@ export class SelectorComponent implements AfterViewInit {
         end(origPos, this.board.getActualPoint(getPosFromTouchEvent(e)));
 
         this.board.onTouchEnd.emit();
+        this.board.onInput.emit();
       }
     }
 
