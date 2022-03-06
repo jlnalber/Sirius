@@ -240,7 +240,8 @@ export class Board {
                 this.addPage();
                 let img = this.createElement('image');
                 img.setAttributeNS(null, 'href', p[1]);
-                img.setAttributeNS(null, 'transform', `translate(0 ${p[0].height}) rotate(180) scale(-1 1)`)
+                img.setAttributeNS(null, 'transform', `translate(0 ${p[0].height}) rotate(180) scale(-1 1)`);
+
                 this.onInput.emit();
                 this.onWhiteboardViewChange.emit();
               }
@@ -343,6 +344,113 @@ export class Board {
     return false;
   }
 
+  public addStickyNote(text: string, color: Color, textColor: Color) {
+    // helper-function for teh text-wrapper
+    let splitStringAll = (text: string, length: number): string[] => {
+      let texts = [];
+      while (text.length >= length) {
+        let word = text.substring(0, length);
+        texts.push(word);
+        text = text.substring(length);
+      }
+      if (text != '') texts.push(text);
+      return texts;
+    }
+
+    // helper-function for teh text-wrapper
+    let yieldMe = (arr: string[][]): string[] => {
+      let strs = [];
+      for (let sarr of arr) {
+        for (let s of sarr) {
+          strs.push(s);
+        }
+      }
+      return strs;
+    }
+
+    // this function wraps text
+    let createSVGtext = (text: string): [SVGTextElement, number, number] => {
+        //  This function attempts to create a new svg "text" element, chopping 
+        //  it up into "tspan" pieces, if the caption is too long
+        //
+        let svgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        // svgText.setAttributeNS(null, 'text-anchor', 'middle');   //  Center the text
+
+        let y = 0;
+        let x = 0;
+    
+        //  The following two variables should really be passed as parameters
+        let charsperlineproposal = Math.floor(Math.sqrt(text.length * 2));
+        const MAXIMUM_CHARS_PER_LINE = charsperlineproposal < 20 ? 20 : charsperlineproposal;
+        const LINE_HEIGHT = 30;
+    
+        let words = yieldMe(text.split(" ").map(s => splitStringAll(s, MAXIMUM_CHARS_PER_LINE - 1)));
+        let line = "";
+    
+        for (let n = 0; n < words.length; n++) {
+            let testLine = line + words[n] + " ";
+            if (testLine.length > MAXIMUM_CHARS_PER_LINE)
+            {
+                //  Add a new <tspan> element
+                let svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+                svgTSpan.setAttributeNS(null, 'y', y.toString());
+                svgTSpan.setAttributeNS(null, 'x', x.toString());
+    
+                let tSpanTextNode = document.createTextNode(line);
+                svgTSpan.appendChild(tSpanTextNode);
+                svgText.appendChild(svgTSpan);
+    
+                line = words[n] + " ";
+                y += LINE_HEIGHT;
+            }
+            else {
+                line = testLine;
+            }
+        }
+    
+        let svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+        svgTSpan.setAttributeNS(null, 'x', x.toString());
+        svgTSpan.setAttributeNS(null, 'y', y.toString());
+    
+        let tSpanTextNode = document.createTextNode(line);
+        svgTSpan.appendChild(tSpanTextNode);
+    
+        svgText.appendChild(svgTSpan);
+    
+        return [ svgText, y + (line != '' ? LINE_HEIGHT : 0), LINE_HEIGHT ];
+    }
+
+    let g = this.createElement('g');
+    let t = createSVGtext(text);
+    let textSVG = t[0];
+    let rect = document.createElementNS(svgns, 'rect');
+
+    g.appendChild(rect);
+    g.appendChild(textSVG);
+
+    textSVG.setAttributeNS(null, 'fill', textColor.toString());
+    textSVG.setAttributeNS(null, 'font-size', '15pt');
+    textSVG.setAttributeNS(null, 'font-family', 'sans-serif');
+
+    let rectText = this.getActualRect(g.getBoundingClientRect());
+    rectText.height = t[1];
+
+    const padding = 12;
+    const offset = rectText.height - t[2] + 7;
+    const borderRadius = 7;
+
+    rect.setAttributeNS(null, 'x', (-padding).toString());
+    rect.setAttributeNS(null, 'y', (-1 * rectText.height - padding + offset).toString());
+    rect.setAttributeNS(null, 'width', (rectText.width + 2 * padding).toString());
+    rect.setAttributeNS(null, 'height', (rectText.height +  2 * padding).toString());
+    rect.setAttributeNS(null, 'fill', color.toString());
+    rect.setAttributeNS(null, 'rx', borderRadius.toString());
+    rect.setAttributeNS(null, 'ry', borderRadius.toString());
+
+    this.onInput.emit();
+    this.onWhiteboardViewChange.emit();
+  }
+
   public removeElement(el: SVGElement): boolean {
     if (this.canvas && this.canvas.gElement && this.canvas.gElement.contains(el)) {
       this.canvas.gElement.removeChild(el);
@@ -419,8 +527,6 @@ export class Board {
   }
   
   private doDownload(filename: string, text: string, type?: string) {
-    console.log(text);
-
     var element = document.createElement('a');
     element.setAttribute('href', `data:${type ?? 'text'}/plain;charset=utf-8,` + encodeURIComponent(text));
     element.setAttribute('download', filename);

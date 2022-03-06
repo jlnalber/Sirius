@@ -12,5 +12,6 @@ export interface WhiteboardConfig {
     enableForwardControl: boolean,
     enableNewPageControl: boolean,
     enableLastPageControl: boolean,
-    enableNextPageControl: boolean
+    enableNextPageControl: boolean,
+    enableStickyNotesControl: boolean
 }

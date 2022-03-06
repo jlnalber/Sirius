@@ -28,7 +28,8 @@ export class WhiteboardComponent implements AfterViewInit {
     enableNextPageControl: true,
     enablePenControl: true,
     enableSelectControl: true,
-    enableShapeControl: true
+    enableShapeControl: true,
+    enableStickyNotesControl: true
   }
 
   constructor(private readonly boardService: BoardService) {

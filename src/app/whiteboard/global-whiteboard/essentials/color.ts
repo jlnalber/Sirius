@@ -129,4 +129,11 @@ export class Color {
         this._a = value.a;
         this.onchange.emit();
     }
+
+    public isBright(): boolean {
+        if (this.r != null && this.g != null && this.b != null && (!this.a || this.a > 100)) {
+            return this.r + this.g + this.b > 3 * 255 / 2;
+        }
+        return false;
+    }
 }

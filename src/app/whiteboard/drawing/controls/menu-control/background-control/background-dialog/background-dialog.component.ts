@@ -55,36 +55,4 @@ export class BackgroundDialogComponent {
     new Color(45, 178, 178),
     new Color(178, 45, 178)
   ]
-
-  isLine() {
-    return this.data.board.backgroundImage == line;
-  }
-
-  isKaro() {
-    return this.data.board.backgroundImage == karo;
-  }
-
-  isNone() {
-    return this.data.board.backgroundImage == none;
-  }
-
-  isCross() {
-    return this.data.board.backgroundImage == cross;
-  }
-
-  setLine() {
-    this.data.board.backgroundImage = line;
-  }
-
-  setKaro() {
-    this.data.board.backgroundImage = karo;
-  }
-
-  setNone() {
-    this.data.board.backgroundImage = none;
-  }
-
-  setCross() {
-    this.data.board.backgroundImage = cross;
-  }
 }

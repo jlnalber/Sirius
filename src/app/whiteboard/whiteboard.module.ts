@@ -38,6 +38,8 @@ import { BackgroundDialogComponent } from './drawing/controls/menu-control/backg
 import { ShapeControlComponent } from './drawing/controls/shape-control/shape-control.component';
 import { MatInputModule } from '@angular/material/input';
 import { SaveAsPictureControlComponent } from './drawing/controls/menu-control/save-as-picture-control/save-as-picture-control.component';
+import { StickyNotesControlComponent } from './drawing/controls/sticky-notes-control/sticky-notes-control.component';
+import { StickyNotesDialogComponent } from './drawing/controls/sticky-notes-control/sticky-notes-dialog/sticky-notes-dialog.component';
 
 
 
@@ -71,7 +73,9 @@ import { SaveAsPictureControlComponent } from './drawing/controls/menu-control/s
     FillPickerComponent,
     StrokePickerComponent,
     ShapePickerComponent,
-    SaveAsPictureControlComponent
+    SaveAsPictureControlComponent,
+    StickyNotesControlComponent,
+    StickyNotesDialogComponent
   ],
   imports: [
     CommonModule,

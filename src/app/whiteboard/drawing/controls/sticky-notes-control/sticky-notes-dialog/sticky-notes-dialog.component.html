@@ -1,0 +1,11 @@
+<h1 mat-dialog-title class="fill">Farbe auswählen</h1>
+<div mat-dialog-content class="fill">
+    <div class="note" [ngStyle]="{ 'background-color': this.data.color.toString() }">
+        <textarea placeholder="Notiz" [ngStyle]="{ 'color': this.getTextColor() }" [(ngModel)]="this.data.text" type="text" class="inputNote"></textarea>
+    </div>
+    <whiteboard-colorset class="colorset" [listener]="this.listener" [currentColor]="this.currentColor"></whiteboard-colorset>
+</div>
+<div mat-dialog-actions align="end" class="fill">
+  <button color="accent" mat-button (click)="onNoClick()">Abbrechen</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Bestätigen</button>
+</div>
