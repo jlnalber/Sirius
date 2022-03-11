@@ -9,6 +9,8 @@ export class Circle extends Shape {
     public touchStart(p: Point): void {
         let realP = this.board.getActualPoint(p);
         this.start = realP;
+        this.svgElement.setAttributeNS(null, 'cx', this.start.x.toString());
+        this.svgElement.setAttributeNS(null, 'cy', this.start.y.toString());
         this.goTo(realP);
     }
 
@@ -23,25 +25,7 @@ export class Circle extends Shape {
     }
 
     private goTo(p: Point): void {
-        let smaller = (a: number, b: number): number => {
-            return a < b ? a : b;
-        }
-        let bigger = (a: number, b: number): number => {
-            return a > b ? a : b;
-        }
-
-        let startX = smaller(p.x, this.start.x);
-        let startY = smaller(p.y, this.start.y);
-        let endX = bigger(p.x, this.start.x);
-        let endY = bigger(p.y, this.start.y);
-
-        let rx = (endX - startX) / 2;
-        let ry = (endY - startY) / 2;
-
-        let r = smaller(rx, ry);
-
-        this.svgElement.setAttributeNS(null, 'cx', (startX + r).toString());
-        this.svgElement.setAttributeNS(null, 'cy', (startY + r).toString());
+        let r = Math.sqrt((p.x - this.start.x) ** 2 + (p.y - this.start.y) ** 2);
         this.svgElement.setAttributeNS(null, 'r', r.toString());
     }
     
