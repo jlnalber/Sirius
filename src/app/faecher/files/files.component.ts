@@ -1,8 +1,7 @@
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Component, Input, OnInit } from '@angular/core';
-import { AddFileDialogComponent, DialogData } from './add-file-dialog/add-file-dialog.component';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 
 @Component({
@@ -19,7 +18,7 @@ export class FilesComponent implements OnInit {
 
   path: string | undefined;
 
-  constructor(private readonly dialog: MatDialog, private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService) { 
+  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService) { 
     if (this.electron.isElectronApp) {
       this.activeRoute.params.subscribe((params: any) => {
         this.path = this.faecherManager.getPathForFileDir(params.fachid, params.einheitid);
@@ -28,29 +27,6 @@ export class FilesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  }
-
-  public openDialog(): void {
-    const dialogRef = this.dialog.open(AddFileDialogComponent, {
-      width: '500px',
-      data: { 
-        files: []
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined && result != "") {
-        if (this.electron.isElectronApp) {
-          let res = result as DialogData;
-          for (let file of res.files) {
-            file[1].text().then(value => {
-              this.electron.ipcRenderer.invoke('write-file', this.path + file[0], value);
-              this.files?.push(file[0]);
-            })
-          }
-        }
-      }
-    });
   }
 
   public openFile(file: string) {
@@ -66,6 +42,67 @@ export class FilesComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  @HostListener('dragover', ['$event']) onDragOver(evt: DragEvent) {
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+
+  @HostListener('dragleave', ['$event']) onDragLeave(evt: DragEvent) {
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+
+  @HostListener('drop', ['$event']) onDrop(evt: DragEvent) {
+    evt.preventDefault();
+    evt.stopPropagation();
+    const files = evt.dataTransfer?.files;
+    this.openFiles(files);
+  }
+
+  public openFilesInput() {
+    try {
+      let inp = document.getElementById('inp') as HTMLInputElement;
+      const files = inp.files;
+      this.openFiles(files);
+    }
+    catch { }
+  }
+
+  private addFile(file: File | undefined): void {
+    if (this.electron.isElectronApp && file) {
+      file.arrayBuffer().then(value => {
+        this.electron.ipcRenderer.invoke('write-file', this.path + file.name, value);
+        this.files?.push(file.name);
+      })
+    }
+    else if (file) {
+      file.text().then(value => {
+        // console.log(value);
+      })
+      file.arrayBuffer().then((value) => {
+        const enc = new TextDecoder('utf-8');
+        console.log(enc.decode(value));
+        console.log(value);
+      })
+      this.files?.push(file.name);
+    }
+  }
+  
+  private openFiles(files: FileList | null | undefined): void {
+    try {
+      if (files) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files.item(i);
+
+          if (file) {
+            this.addFile(file); 
+          }
+        }
+      }    
+    }
+    catch { }
   }
 
 }

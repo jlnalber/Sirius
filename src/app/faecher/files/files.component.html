@@ -15,6 +15,8 @@
         </div>
     </mat-card-content>
     <mat-card-actions *ngIf="this.isAbleToAddFiles" align="end">
-        <button (click)="this.openDialog()" mat-flat-button>Hinzufügen</button>
+        <button mat-flat-button>Hinzufügen
+            <input id="inp" title="" multiple type="file" (change)="this.openFilesInput()">
+        </button>
     </mat-card-actions>
 </mat-card>

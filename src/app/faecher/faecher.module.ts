@@ -26,7 +26,6 @@ import { Route, RouterModule } from '@angular/router';
 import { WhiteboardsComponent } from './whiteboards/whiteboards.component';
 import { WhiteboardWrapperComponent } from './whiteboard-wrapper/whiteboard-wrapper.component';
 import { AddWhiteboardDialogComponent } from './whiteboards/add-whiteboard-dialog/add-whiteboard-dialog.component';
-import { AddFileDialogComponent } from './files/add-file-dialog/add-file-dialog.component';
 
 const routes: Route[] = [
   {
@@ -81,8 +80,7 @@ const routes: Route[] = [
     EinheitComponent,
     WhiteboardsComponent,
     WhiteboardWrapperComponent,
-    AddWhiteboardDialogComponent,
-    AddFileDialogComponent
+    AddWhiteboardDialogComponent
   ],
   imports: [
     CommonModule,
@@ -100,9 +98,7 @@ const routes: Route[] = [
     NgxElectronModule,
     RouterModule.forChild(routes)
   ],
-  providers: [
-    FaecherManagerService
-  ],
+  providers: [],
   exports: [
     FaecherComponent,
     RouterModule

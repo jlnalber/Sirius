@@ -39,20 +39,34 @@ ipcMain.handle('request-whiteboard', (event, ...args) => {
 ipcMain.handle('write-file', (event, ...args) => {
   let path = args[0];
   let data = args[1];
-  return writeFile(path, data);
+
+  if (data instanceof ArrayBuffer) {
+    data = Buffer.from(data);
+  }
+
+  let res = writeFile(path, data);
+  return res;
 })
 
 ipcMain.handle('write-whiteboard', (event, ...args) => {
   let path = args[0];
   let data = args[1];
   let res = writeFileUTF8(path, data);
-  console.log(res);
   return res;
 })
 
 ipcMain.handle('open-file', (event, ...args) => {
   let path = args[0];
   try {
+    let dir = '';
+    if (config.directories.length != 0) {
+      dir = config.directories[0];
+    }
+    path = joinPathsForFS(dir, path);
+
+    var exec = require('child_process').exec;
+    exec('"' + path.replaceAll('/', '\\') + '"');
+
     return fs.openSync(path, '');
   }
   catch {
@@ -220,10 +234,10 @@ function writeFile(relativePath, data) {
       let path = joinPathsForFS(dir, relativePath);
       checkPath(path);
       fs.writeFileSync(path, data);
-      return true;
+      // return true;
     }
     catch {
-      return false;
+      // return false;
     }
   }
 }
@@ -234,12 +248,10 @@ function writeFileUTF8(relativePath, data) {
       let path = joinPathsForFS(dir, relativePath);
       checkPath(path);
       fs.writeFileSync(path, data, 'utf-8');
-      return true;
+      // return true;
     }
-    catch (e) {
-      console.log(e); 
-      fs.mkdirSync()
-      return false;
+    catch {
+      // return false;
     }
   }
 }

@@ -1,3 +1,4 @@
+import { FaecherManagerService } from './faecher/global/services/faecher-manager.service';
 import { FaecherModule } from './faecher/faecher.module';
 import { WhiteboardModule } from './whiteboard/whiteboard.module';
 import { NgModule } from '@angular/core';
@@ -47,7 +48,7 @@ import { NgxElectronModule } from 'ngx-electron';
     WhiteboardModule,
     FaecherModule
   ],
-  providers: [],
+  providers: [FaecherManagerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
