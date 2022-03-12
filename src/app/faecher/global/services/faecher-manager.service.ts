@@ -2,6 +2,7 @@ import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { Einheit, Fach } from '../interfaces/fach';
+import { Event } from 'src/app/whiteboard/global-whiteboard/essentials/event';
 
 const siriusConfigPath: string = 'sirius.config.json';
 const onSiriusConfigFileChannel: string = 'siriusConfigFile';
@@ -67,6 +68,8 @@ export class FaecherManagerService {
     whiteboards: []
   }];
 
+  public readonly whiteboardSavers: Event = new Event();
+
   constructor(private readonly electron: ElectronService) {
     //load the sirius.config.json file
     /*if (this.electron.isElectronApp) {
@@ -74,6 +77,11 @@ export class FaecherManagerService {
     }*/
 
     window.addEventListener('beforeunload', () => {
+      try {
+        this.whiteboardSavers.emit();
+      }
+      catch { }
+      
       this.saveInCache();
     })
 

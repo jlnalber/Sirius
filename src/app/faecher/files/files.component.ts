@@ -1,6 +1,5 @@
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 
@@ -18,7 +17,7 @@ export class FilesComponent implements OnInit {
 
   path: string | undefined;
 
-  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService) { 
+  constructor(public readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService) { 
     if (this.electron.isElectronApp) {
       this.activeRoute.params.subscribe((params: any) => {
         this.path = this.faecherManager.getPathForFileDir(params.fachid, params.einheitid);
@@ -76,17 +75,6 @@ export class FilesComponent implements OnInit {
         this.electron.ipcRenderer.invoke('write-file', this.path + file.name, value);
         this.files?.push(file.name);
       })
-    }
-    else if (file) {
-      file.text().then(value => {
-        // console.log(value);
-      })
-      file.arrayBuffer().then((value) => {
-        const enc = new TextDecoder('utf-8');
-        console.log(enc.decode(value));
-        console.log(value);
-      })
-      this.files?.push(file.name);
     }
   }
   

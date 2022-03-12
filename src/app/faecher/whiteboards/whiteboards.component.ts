@@ -1,6 +1,7 @@
 import { AddWhiteboardDialogComponent, DialogData } from './add-whiteboard-dialog/add-whiteboard-dialog.component';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ElectronService } from 'ngx-electron';
 
 @Component({
   selector: 'faecher-whiteboards',
@@ -15,7 +16,7 @@ export class WhiteboardsComponent implements OnInit {
   @Input()
   isAbleToAddWhiteboards: boolean = true;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public readonly electron: ElectronService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }

@@ -3,5 +3,4 @@
 </div>
 <div *ngIf="this.whiteboard != undefined" class="wrapper">
     <whiteboard-whiteboard [export]="this.export" [afterViewInit]="this.afterWhiteboardViewInit"></whiteboard-whiteboard>
-    <button (click)="this.save()">Speichern</button>
 </div>
