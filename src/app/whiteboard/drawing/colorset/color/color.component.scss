@@ -1,7 +1,8 @@
 $wh: 25px;
+$borderStandard: 1px;
 $border: 2px;
 $pad: 2px;
-$whn: calc($wh - 2 * ($border + $pad));
+$whn: calc($wh - $border - 2 * $pad);
 
 .wrapper {
     width: calc($wh + 2px);
@@ -16,7 +17,7 @@ $whn: calc($wh - 2 * ($border + $pad));
     border-radius: 50%;
     overflow: hidden;
     transition: all 0.2s linear;
-    border: 1px solid #00000028;
+    border: $borderStandard solid #00000028;
 }
 
 .sameColor {

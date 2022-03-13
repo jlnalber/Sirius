@@ -90,13 +90,14 @@ function createWindow () {
   // Create the browser window.
 
   mainWindow = new BrowserWindow({
-    width: 800, 
-    height: 600, 
+    width: 1200, 
+    height: 800, 
+    minWidth: 1100,
+    minHeight: 600,
     icon: iconPath, 
     autoHideMenuBar: true, 
-    titleBarStyle: 'hidden', 
     webPreferences: { nodeIntegration: true, nodeIntegrationInSubFrames: true, nodeIntegrationInWorker: true, contextIsolation: false }, 
-    show: false,
+    show: false, 
     titleBarOverlay: {
     color: '#0a2472ff',
     symbolColor: '#bbbbbb'
@@ -125,6 +126,7 @@ function createWindow () {
   mainWindow.once('ready-to-show', () => {
       splash.destroy();
       mainWindow.show();
+      mainWindow.webContents.clearHistory();
   });
 
 
@@ -196,8 +198,19 @@ function joinPathsForFS(dir, relativePath) {
 }
 
 function readConfig() {
-  let configStr = fs.readFileSync('sirius.config.json', 'utf-8');
-  config = JSON.parse(configStr);
+  let pathConfig = 'sirius.config.json'
+  try {
+    let configStr = fs.readFileSync(pathConfig, 'utf-8');
+    config = JSON.parse(configStr);
+  }
+  catch {
+    let defaultConfig = '{"directories":[""]}';
+    config = JSON.parse(defaultConfig);
+    try {
+      fs.writeFileSync(pathConfig, defaultConfig, 'utf-8');
+    }
+    catch { }
+  }
 }
 
 function readFileUTF8(relativePath) {

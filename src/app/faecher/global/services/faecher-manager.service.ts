@@ -85,6 +85,10 @@ export class FaecherManagerService {
       this.saveInCache();
     })
 
+    window.addEventListener('popstate', () => {
+      this.saveInCache();
+    })
+
     //setTimeout(() => this.loadFromCache(), 2000)
     this.loadFromCache();
   }
@@ -206,7 +210,7 @@ export class FaecherManagerService {
 
   public addFachWithData(id: string, name: string, description: string): void {
     this.addFach({
-      id: id.trim().replace(' ', '').toLowerCase(),
+      id: this.toID(id),
       name: name,
       description: description,
       notes: '',
@@ -217,13 +221,26 @@ export class FaecherManagerService {
     })
   }
 
+  private static replaceAll(str: string, what: string[], by: string): string {
+    for (let w of what) {
+      while (str.indexOf(w) != -1) {
+        str = str.replace(w, by);
+      }
+    }
+    return str;
+  }
+
+  private toID(str: string): string {
+    return FaecherManagerService.replaceAll(str.trim().toLowerCase(), [' ', '\r', '\n', '\\', '/', '&', '.', ',', '\'', '"', ';', ':'], '');
+  }
+
   public addEinheitWithData(fach: Fach, topic: string, description: string): void {
     fach.einheiten.push(this.getEinheitFromData(topic, description));
   }
 
   public getEinheitFromData(topic: string, description: string): Einheit {
     return {
-      id: topic.trim().replace(' ', '').toLowerCase(),
+      id: this.toID(topic),
       topic: topic,
       description: description,
       tasks: [],

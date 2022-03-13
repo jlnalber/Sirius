@@ -19,6 +19,10 @@ export class StickyNotesDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
+  colors: Color[] = [
+    new Color(255, 255, 255, 0)
+  ]
+
   onNoClick(): void {
     this.dialogRef.close();
   }
