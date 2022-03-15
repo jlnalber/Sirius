@@ -108,13 +108,29 @@ export class Board {
     this.onBoardModeChange.emit();
   }
 
+  private _touchMode: BoardModes = BoardModes.Move;
+  public get touchMode(): BoardModes {
+    return this._touchMode;
+  }
+  public set touchMode(value: BoardModes) {
+    this._touchMode = value;
+    this.onBoardTouchModeChange.emit();
+  }
+
   public shapeMode: Shapes = Shapes.Line;
   private currentCanvasItem: CanvasItem | undefined;
+  private currentTouchCanvasItem: CanvasItem | undefined;
+  public isOnActiveMouse: boolean = false;
   public isOnActiveTouch: boolean = false;
   public backgroundColor: Color = new Color(18, 52, 19);
   public backgroundImage: string = '';
 
   public readonly onBoardModeChange: Event = new Event();
+  public readonly onBoardTouchModeChange: Event = new Event();
+  public readonly onMouse: Event = new Event();
+  public readonly onMouseStart: Event = new Event();
+  public readonly onMouseMove: Event = new Event();
+  public readonly onMouseEnd: Event = new Event();
   public readonly onTouch: Event = new Event();
   public readonly onTouchStart: Event = new Event();
   public readonly onTouchMove: Event = new Event();
@@ -169,44 +185,82 @@ export class Board {
     this.currentPage.zoom = value;
   }
 
+  private getCanvasElementToMode(mode: BoardModes): CanvasItem {
+    // returns to a board mode the according CanvasItem
+    switch (mode) {
+      case BoardModes.Draw: return new Path(this);
+      case BoardModes.Delete: return new EmptyCanvasElement();
+      case BoardModes.Move: return new Move(this);
+      case BoardModes.Select: return new EmptyCanvasElement();
+      case BoardModes.Shape: {
+        switch (this.shapeMode) {
+          case Shapes.Circle: return new Circle(this);
+          case Shapes.Ellipse: return new Ellipse(this);
+          case Shapes.Line: return new Line(this);
+          case Shapes.Rectangle: return new Rectangle(this);
+          default: return new EmptyCanvasElement();
+        }
+      }
+      default: return new EmptyCanvasElement(); 
+    }
+  }
+
+  public async startMouse(p: Point) {
+    if (!this.isOnActiveMouse) {
+        this.isOnActiveMouse = true;
+        this.onMouse.emit();
+
+        this.currentCanvasItem = this.getCanvasElementToMode(this.mode);
+
+        this.currentCanvasItem?.touchStart(p);
+
+        this.onMouseStart.emit();
+    }
+  }
+
+  public async moveMouse(from: Point, to: Point) {
+    if (this.isOnActiveMouse) {
+      this.currentCanvasItem?.touchMove(from, to);
+
+      this.onMouseMove.emit();
+    }
+  }
+
+  public async endMouse(p: Point) {
+    if (this.isOnActiveMouse) {
+      this.currentCanvasItem?.touchEnd(p);
+
+      this.onMouseEnd.emit();
+      this.isOnActiveMouse = false;
+      this.onInput.emit();
+      this.onWhiteboardViewChange.emit();
+    }
+  }
+
   public async startTouch(p: Point) {
-    if (!this.isOnActiveTouch) {
+    if (!this.isOnActiveMouse && !this.isOnActiveTouch) {
         this.isOnActiveTouch = true;
         this.onTouch.emit();
 
-        switch (this.mode) {
-        case BoardModes.Draw: this.currentCanvasItem = new Path(this); break;
-        case BoardModes.Delete: this.currentCanvasItem = new EmptyCanvasElement(); break;
-        case BoardModes.Move: this.currentCanvasItem = new Move(this); break;
-        case BoardModes.Select: this.currentCanvasItem = new EmptyCanvasElement(); break;
-        case BoardModes.Shape: {
-            switch (this.shapeMode) {
-              case Shapes.Circle: this.currentCanvasItem = new Circle(this); break;
-              case Shapes.Ellipse: this.currentCanvasItem = new Ellipse(this); break;
-              case Shapes.Line: this.currentCanvasItem = new Line(this); break;
-              case Shapes.Rectangle: this.currentCanvasItem = new Rectangle(this); break;
-            }
-            break;
-        } 
-        }
+        this.currentTouchCanvasItem = this.getCanvasElementToMode(this.touchMode);
 
-        this.currentCanvasItem?.touchStart(p);
+        this.currentTouchCanvasItem?.touchStart(p);
 
         this.onTouchStart.emit();
     }
   }
 
   public async moveTouch(from: Point, to: Point) {
-    if (this.isOnActiveTouch) {
-      this.currentCanvasItem?.touchMove(from, to);
+    if (!this.isOnActiveMouse && this.isOnActiveTouch) {
+      this.currentTouchCanvasItem?.touchMove(from, to);
 
       this.onTouchMove.emit();
     }
   }
 
   public async endTouch(p: Point) {
-    if (this.isOnActiveTouch) {
-      this.currentCanvasItem?.touchEnd(p);
+    if (!this.isOnActiveMouse && this.isOnActiveTouch) {
+      this.currentTouchCanvasItem?.touchEnd(p);
 
       this.onTouchEnd.emit();
       this.isOnActiveTouch = false;

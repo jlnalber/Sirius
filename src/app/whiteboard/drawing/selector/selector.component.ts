@@ -429,7 +429,7 @@ export class SelectorComponent implements AfterViewInit {
         activeTouch = false;
         end(origPos, this.board.getActualPoint(getPosFromMouseEvent(e)));
 
-        this.board.onTouchEnd.emit();
+        this.board.onMouseEnd.emit();
         this.board.onInput.emit();
       }
     };
@@ -439,7 +439,7 @@ export class SelectorComponent implements AfterViewInit {
         activeTouch = false;
         end(origPos, this.board.getActualPoint(getPosFromTouchEvent(e)));
 
-        this.board.onTouchEnd.emit();
+        this.board.onMouseEnd.emit();
         this.board.onInput.emit();
       }
     }
@@ -457,10 +457,10 @@ export class SelectorComponent implements AfterViewInit {
           m.preventDefault();
           let origPos = this.board.getActualPoint(getPosFromMouseEvent(m));
           if (!activeTouch) {
-            this.board.onTouch.emit();
+            this.board.onMouse.emit();
             start(origPos);
             activeTouch = true;
-            this.board.onTouchStart.emit();
+            this.board.onMouseStart.emit();
           }
 
           // after a mouse down, we'll record all mouse moves
@@ -497,7 +497,7 @@ export class SelectorComponent implements AfterViewInit {
     
           await move(origPos, this.board.getActualPoint(prevPos), this.board.getActualPoint(currentPos));
 
-          this.board.onTouchMove.emit();
+          this.board.onMouseMove.emit();
         }
       });
 
@@ -508,10 +508,10 @@ export class SelectorComponent implements AfterViewInit {
           e.preventDefault();
           let origPos = this.board.getActualPoint(getPosFromTouchEvent(e));
           if (!activeTouch) {
-            this.board.onTouch.emit();
+            this.board.onMouse.emit();
             start(origPos);
             activeTouch = true;
-            this.board.onTouchStart.emit();
+            this.board.onMouseStart.emit();
           }
 
           // after a touch start, we'll record all touch moves
@@ -550,7 +550,7 @@ export class SelectorComponent implements AfterViewInit {
     
           await move(origPos, this.board.getActualPoint(prevPos), this.board.getActualPoint(currentPos));
 
-          this.board.onTouchMove.emit();
+          this.board.onMouseMove.emit();
         }
       });
   }
