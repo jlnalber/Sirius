@@ -45,7 +45,7 @@ export class MoveControlComponent extends Control implements AfterViewInit {
   public onSliderChange(event: MatSliderChange): void {
     if (event.value) {
       let realValue = this.sliderToZoom(event.value);
-      this.board.zoom = realValue;
+      this.board.zoomTo(realValue);
     }
   }
 

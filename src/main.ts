@@ -5,7 +5,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 
-export function f (el: any) {
+/*export function f (el: any) {
   el.addEventListener('touchstart', function() {
     var top = el.scrollTop
       , totalScroll = el.scrollHeight
@@ -29,19 +29,7 @@ export function f (el: any) {
     if(el.offsetHeight < el.scrollHeight)
       evt._isScroller = true
   })
-}
-
-document.body.addEventListener('touchmove', function(evt: any) {
-  //In this case, the default behavior is scrolling the body, which
-  //would result in an overflow.  Since we don't want that, we preventDefault.
-  if(!evt._isScroller) {
-    evt.preventDefault()
-  }
-}, {passive: false})
-
-document.body.addEventListener('dblclick', (ev: MouseEvent) => {
-  ev.preventDefault();
-})
+}*/
 
 if (environment.production) {
   enableProdMode();

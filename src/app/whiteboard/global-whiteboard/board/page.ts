@@ -3,6 +3,7 @@ import { Stack } from "../essentials/stack";
 import { Rect } from "../interfaces/rect";
 import { Board } from "./board";
 import { Page as PageExport } from "../interfaces/whiteboard";
+import { Point } from "../interfaces/point";
 
 const maxStepsBack = 30;
 
@@ -75,6 +76,15 @@ export class Page {
         if (this.board.currentPage == this && this.canvas) {
             this.canvas.zoom = value; // Attention: Zoom setter on canvas tries to center the svg again
             this._zoom = this.canvas.zoom;
+        }
+        else {
+            this._zoom = value;
+        }
+    }
+
+    public zoomTo(value: number, p?: Point): void {
+        if (this.board.currentPage == this && this.canvas) {
+            this.canvas.zoomTo(value, p);
         }
         else {
             this._zoom = value;

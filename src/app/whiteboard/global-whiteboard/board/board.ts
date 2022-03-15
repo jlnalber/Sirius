@@ -124,6 +124,7 @@ export class Board {
   public isOnActiveTouch: boolean = false;
   public backgroundColor: Color = new Color(18, 52, 19);
   public backgroundImage: string = '';
+  public onPointerMoveDoZoom: boolean = true;
 
   public readonly onBoardModeChange: Event = new Event();
   public readonly onBoardTouchModeChange: Event = new Event();
@@ -162,8 +163,7 @@ export class Board {
       return this.pages[this.currentPageIndex];
   };
 
-
-  // translate and zoom (actually managed by page)
+  //#region translate and zoom (actually managed by page)
   public get translateX(): number {
     return this.currentPage.translateX;
   }
@@ -185,6 +185,12 @@ export class Board {
     this.currentPage.zoom = value;
   }
 
+  public zoomTo(value: number, p?: Point): void {
+    this.currentPage.zoomTo(value, p);
+  }
+  //#endregion
+
+  //#region touch and mouse event handlers
   private getCanvasElementToMode(mode: BoardModes): CanvasItem {
     // returns to a board mode the according CanvasItem
     switch (mode) {
@@ -269,6 +275,12 @@ export class Board {
     }
   }
 
+  public async onPointer(ev: PointerEvent) {
+    
+  }
+  //#endregion
+
+  //#region methods for adding and removing elements to the board
   public createElement(tag: string): SVGElement {
     let el = document.createElementNS(svgns, tag);
     this.canvas?.gElement?.appendChild(el);
@@ -531,7 +543,9 @@ export class Board {
     }
     return false;
   }
+  //#endregion
 
+  //#region methods for handling with files
   public downloadWhiteboard() {
     this.doDownload('whiteboard.json', JSON.stringify(this.export()));
   }
@@ -571,29 +585,6 @@ export class Board {
         })
     }
   }
-
-  public goBack() {
-    this.currentPage.goBack();
-    this.onWhiteboardViewChange.emit();
-  }
-
-  public canGoBack() {
-    return this.currentPage.canGoBack();
-  }
-
-  public goForward() {
-    this.currentPage.goForward();
-    this.onWhiteboardViewChange.emit();
-  }
-
-  public canGoForward() {
-    return this.currentPage.canGoForward();
-  }
-
-  public clear() {
-    this.currentPage.clear();
-    this.onWhiteboardViewChange.emit();
-  }
   
   private doDownload(filename: string, text: string, type?: string) {
     var element = document.createElement('a');
@@ -606,11 +597,6 @@ export class Board {
     element.click();
   
     document.body.removeChild(element);
-  }
-
-  public addPage() {
-    this.pages.push(new Page(this));
-    this.currentPageIndex = this.pages.length - 1;
   }
 
   public import(whiteboard: WhiteboardExport): boolean {
@@ -655,5 +641,36 @@ export class Board {
       pages: pages
     };
   }
+  //#endregion
+
+  //#region dealing with pages
+  public goBack() {
+    this.currentPage.goBack();
+    this.onWhiteboardViewChange.emit();
+  }
+
+  public canGoBack() {
+    return this.currentPage.canGoBack();
+  }
+
+  public goForward() {
+    this.currentPage.goForward();
+    this.onWhiteboardViewChange.emit();
+  }
+
+  public canGoForward() {
+    return this.currentPage.canGoForward();
+  }
+
+  public clear() {
+    this.currentPage.clear();
+    this.onWhiteboardViewChange.emit();
+  }
+
+  public addPage() {
+    this.pages.push(new Page(this));
+    this.currentPageIndex = this.pages.length - 1;
+  }
+  //#endregion
   
 }
