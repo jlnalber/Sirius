@@ -11,6 +11,8 @@ enum Resize {
   Right
 }
 
+const offset = 5;
+
 @Component({
   selector: 'whiteboard-selector',
   templateUrl: './selector.component.html',
@@ -217,7 +219,12 @@ export class SelectorComponent implements AfterViewInit {
 
   public get rect(): Rect {
     if (this.svgEl != undefined) {
-      return this.getRectRealPos(this.svgEl.getBoundingClientRect());
+      let rect = this.getRectRealPos(this.svgEl.getBoundingClientRect());
+      rect.x -= offset;
+      rect.y -= offset;
+      rect.width += offset;
+      rect.height += offset;
+      return rect;
     }
     else {
       return {
