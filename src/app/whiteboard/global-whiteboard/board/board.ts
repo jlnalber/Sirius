@@ -357,7 +357,7 @@ export class Board {
       return texts;
     }
 
-    // helper-function for teh text-wrapper
+    // helper-function for the text-wrapper
     let yieldMe = (arr: string[][]): string[] => {
       let strs = [];
       for (let sarr of arr) {
@@ -446,6 +446,21 @@ export class Board {
     rect.setAttributeNS(null, 'fill', color.toString());
     rect.setAttributeNS(null, 'rx', borderRadius.toString());
     rect.setAttributeNS(null, 'ry', borderRadius.toString());
+
+    // center the sticky note in the middle of the screen
+    let rectG = this.getActualRect(g.getBoundingClientRect());
+    let rectSVG = this.getActualRect(this.canvas?.svgElement?.getBoundingClientRect() ?? {x: 0, y: 0, width: 0, height: 0});
+    if (rectSVG) {
+      let centerG: Point = {
+        x: rectG.x + rectG.width / 2,
+        y: rectG.y + rectG.height / 2
+      }
+      let centerSVG: Point = {
+        x: rectSVG.x + rectSVG.width / 2,
+        y: rectSVG.y + rectSVG.height / 2
+      }
+      g.setAttributeNS(null, 'transform', `translate(${centerSVG.x - centerG.x} ${centerSVG.y - centerG.y})`);
+    }
 
     this.onInput.emit();
     this.onWhiteboardViewChange.emit();
