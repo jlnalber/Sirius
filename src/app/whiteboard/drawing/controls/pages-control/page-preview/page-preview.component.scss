@@ -1,0 +1,60 @@
+$factor: 0.1;
+$height: 133px;
+$wrapperHeight: $height;
+$width: 300px;
+$borderColor: rgb(24, 245, 24);
+$borderRadius: 7px;
+$activeBorderThickness: 4px;
+$activePadding: 3px;
+$activeHeight: calc($height - 2 * $activeBorderThickness - 2 * $activePadding);
+$activeWrapperHeight: $activeHeight;
+$transition: all 0.2s ease-in-out;
+
+.preview {
+    margin-top: 7px;
+    border-radius: $borderRadius;
+    transition: $transition;
+    overflow: hidden;
+    height: $height;
+    position: relative;
+}
+
+.preview.active {
+    border: $activeBorderThickness solid $borderColor;
+    padding: $activePadding;
+    height: $activeHeight;
+}
+
+.preview.inactive {
+    border: 0px solid $borderColor;
+}
+
+.deleteButton {
+    $offset: 7px;
+    position: absolute;
+    z-index: 1;
+    top: $offset;
+    right: $offset;
+    display: none;
+}
+
+.preview:hover .deleteButton {
+    display: initial;
+}
+
+.wrapper {
+    overflow: hidden;
+    height: $wrapperHeight;
+    border-radius: calc($borderRadius / 1.5);
+    transition: $transition;
+}
+
+.preview.active .wrapper {
+    height: $activeWrapperHeight;
+}
+
+.svgPreview {
+    transform: scale($factor) translateX(-13500px) translateY(-6000px); // the translate-values are hard-coded
+    height: calc($height / $factor);
+    width: calc($width / $factor);
+}

@@ -40,6 +40,8 @@ import { MatInputModule } from '@angular/material/input';
 import { SaveAsPictureControlComponent } from './drawing/controls/menu-control/save-as-picture-control/save-as-picture-control.component';
 import { StickyNotesControlComponent } from './drawing/controls/sticky-notes-control/sticky-notes-control.component';
 import { StickyNotesDialogComponent } from './drawing/controls/sticky-notes-control/sticky-notes-dialog/sticky-notes-dialog.component';
+import { PagesControlComponent } from './drawing/controls/pages-control/pages-control.component';
+import { PagePreviewComponent } from './drawing/controls/pages-control/page-preview/page-preview.component';
 
 
 
@@ -75,7 +77,9 @@ import { StickyNotesDialogComponent } from './drawing/controls/sticky-notes-cont
     ShapePickerComponent,
     SaveAsPictureControlComponent,
     StickyNotesControlComponent,
-    StickyNotesDialogComponent
+    StickyNotesDialogComponent,
+    PagesControlComponent,
+    PagePreviewComponent
   ],
   imports: [
     CommonModule,

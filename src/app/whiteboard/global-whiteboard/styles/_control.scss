@@ -24,7 +24,7 @@ $disabledColor: white;
     background-color: $activeColor;
 }
 
-.enabled:active mat-icon {
+.enabled:active mat-icon, .enabled:active p {
     color: $activeColorIcon;
 }
 
@@ -40,11 +40,11 @@ $disabledColor: white;
     background-color: $hoverColor;
 }
 
-.active mat-icon {
+.active mat-icon, .active p {
     color: $activeColorIcon;
 }
 
-.control mat-icon {
+.control mat-icon, .control p {
     position: absolute;
     bottom: 0;
     top: 0;
@@ -58,7 +58,7 @@ $disabledColor: white;
     margin: 0px;
 }
 
-.disabled mat-icon {
+.disabled mat-icon, .disabled p {
     color: $disabledColorIcon;
 }
 

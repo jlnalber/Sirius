@@ -1,0 +1,12 @@
+<div class="preview" [ngClass]="this.board.currentPage == this.page ? 'active' : 'inactive'" (click)="this.onClick()">
+    <div class="wrapper">
+        <button color="accent" class="deleteButton" mat-icon-button (click)="deleteClick()">
+            <mat-icon>
+                delete_outline
+            </mat-icon>
+        </button>
+        <div #svgWrapper>
+
+        </div>
+    </div>
+</div>

@@ -21,7 +21,7 @@ import { SelectorComponent } from '../../drawing/selector/selector.component';
 import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 
-const svgns = "http://www.w3.org/2000/svg";
+export const svgns = "http://www.w3.org/2000/svg";
 
 export enum BoardModes {
   Draw,
@@ -117,13 +117,29 @@ export class Board {
     this.onBoardTouchModeChange.emit();
   }
 
+  private _backgroundColor: Color = new Color(18, 52, 19);
+  public set backgroundColor(value: Color) {
+    this._backgroundColor = value;
+    this.onBackgroundChange.emit();
+  }
+  public get backgroundColor(): Color {
+    return this._backgroundColor;
+  }
+
+  private _backgroundImage: string = '';
+  public set backgroundImage(value: string) {
+    this._backgroundImage = value;
+    this.onBackgroundChange.emit();
+  }
+  public get backgroundImage(): string {
+    return this._backgroundImage;
+  }
+
   public shapeMode: Shapes = Shapes.Line;
   private currentCanvasItem: CanvasItem | undefined;
   private currentTouchCanvasItem: CanvasItem | undefined;
   public isOnActiveMouse: boolean = false;
   public isOnActiveTouch: boolean = false;
-  public backgroundColor: Color = new Color(18, 52, 19);
-  public backgroundImage: string = '';
   public onPointerMoveDoZoom: boolean = true;
 
   public readonly onBoardModeChange: Event = new Event();
@@ -138,12 +154,15 @@ export class Board {
   public readonly onTouchEnd: Event = new Event();
   public readonly onInput: Event = new Event();
   public readonly onPageSwitched: Event = new Event();
+  public readonly onPageRemoved: Event = new Event();
   public readonly beforePageSwitched: Event = new Event();
   public readonly onAddElement: Event = new Event();
   public readonly onRemoveElement: Event = new Event();
   public readonly onImport: Event = new Event();
   public readonly onWhiteboardViewChange: Event = new Event();
+  public readonly onBackgroundChange: Event = new Event();
 
+  //#region pages
   public pages: Page[] = [ new Page(this) ]
   private _currentPageIndex = 0;
   public get currentPageIndex(): number {
@@ -162,6 +181,35 @@ export class Board {
   public get currentPage(): Page {
       return this.pages[this.currentPageIndex];
   };
+
+  public removePage(page: Page): boolean {
+    // try to remove the page
+    const index = this.pages.indexOf(page);
+    if (index >= 0) {
+      try {
+        this.beforePageSwitched.emit();
+        this.currentPage.close();
+        this.pages.splice(index, 1);
+        if (this.pages.length == 0) {
+          this.pages.push(new Page(this));
+        }
+        if (this.currentPageIndex >= this.pages.length) {
+          this._currentPageIndex = this.pages.length - 1;
+        }
+        this.currentPage.open();
+        this.onPageSwitched.emit();
+        this.onWhiteboardViewChange.emit();
+        this.onPageRemoved.emit();
+        
+        return true;
+      }
+      catch {
+        return false;
+      }
+    }
+    return false;
+  }
+  //#endregion
 
   //#region translate and zoom (actually managed by page)
   public get translateX(): number {

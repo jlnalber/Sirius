@@ -1,0 +1,11 @@
+<div title="Seiten" class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
+    <p class="indicator">{{ (this.board.currentPageIndex + 1) + '/' + this.board.pages.length }}</p>
+</div>
+<div *ngIf="this.isActive()" class="card">
+    <div class="previewWrapper">
+        <div class="previews">
+            <whiteboard-page-preview *ngFor="let page of this.board.pages" class="page" [page]="page" [board]="this.board">
+            </whiteboard-page-preview>
+        </div>
+    </div>
+</div>

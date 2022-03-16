@@ -1,7 +1,7 @@
 import { CanvasComponent } from "src/app/whiteboard/drawing/canvas/canvas.component";
 import { Stack } from "../essentials/stack";
 import { Rect } from "../interfaces/rect";
-import { Board } from "./board";
+import { Board, svgns } from "./board";
 import { Page as PageExport } from "../interfaces/whiteboard";
 import { Point } from "../interfaces/point";
 
@@ -144,7 +144,7 @@ export class Page {
         return this.nextContent.size() != 0;
     }
     
-    constructor(private board: Board) {
+    constructor(private readonly board: Board) {
         this.board.onInput.addListener(() => {
             if (this.board.currentPage == this) this.save();
         });
@@ -240,5 +240,27 @@ export class Page {
             zoom: this.zoom,
             content: this.currentContent
         };
+    }
+
+    public getSVGPreview(): SVGSVGElement {
+        let curr = this.currentContent;
+        if (this.board.currentPage == this && this.canvas && this.canvas.gElement) {
+            curr = this.canvas.gElement.innerHTML;
+        }
+        let g = document.createElementNS(svgns, 'g');
+        g.setAttributeNS(null, 'transform', `translate(${this.translateX} ${this.translateY}) scale(${this.zoom})`);
+        /*g.style.background = `url('${this.board.backgroundImage}')`;
+        g.style.backgroundColor = this.board.backgroundColor.toString();*/
+        g.innerHTML = curr;
+
+        let gWrapper = document.createElementNS(svgns, 'g');
+        gWrapper.appendChild(g);
+
+        let svg = document.createElementNS(svgns, 'svg');
+        svg.appendChild(gWrapper);
+        svg.style.backgroundColor = this.board.backgroundColor.toString();
+        svg.style.backgroundImage = 'url(\'' + this.board.backgroundImage + '\')';
+
+        return svg;
     }
 }

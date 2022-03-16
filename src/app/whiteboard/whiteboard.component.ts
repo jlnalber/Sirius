@@ -31,7 +31,8 @@ export class WhiteboardComponent implements AfterViewInit {
     enablePenControl: true,
     enableSelectControl: true,
     enableShapeControl: true,
-    enableStickyNotesControl: true
+    enableStickyNotesControl: true,
+    enablePagesControl: true
   }
 
   @HostListener('touchmove', ['$event'])

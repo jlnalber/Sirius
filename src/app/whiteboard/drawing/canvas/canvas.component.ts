@@ -155,7 +155,7 @@ export class CanvasComponent implements AfterViewInit {
           y: (p0.y + p1.y) / 2 - rect.top
         }
 
-        if (prevDiff > 0) {
+        if (prevDiff > 0 && curDiff > 0) {
           // zoom to the middle by the amount that was scrolled
           this.board.zoomTo(this.board.zoom * curDiff / prevDiff, averageP);
           /*if (curDiff > prevDiff) {
