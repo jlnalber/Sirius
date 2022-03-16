@@ -11,6 +11,16 @@ $height: 36px;
     border-radius: 3px;
     margin-bottom: 10px;
     box-shadow: 1px 1px 3px #00000066;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.file:hover {
+    background-color: #eee;
+}
+
+.file:active {
+    background-color: #ccc;
 }
 
 input {
