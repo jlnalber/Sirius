@@ -1,13 +1,17 @@
 $factor: 0.1;
 $height: 133px;
-$wrapperHeight: $height;
 $width: 300px;
-$borderColor: rgb(24, 245, 24);
+$activeBorderColor: rgb(24, 245, 24);
+$inactiveBorderColor: #383838;
 $borderRadius: 7px;
 $activeBorderThickness: 4px;
+$inactiveBorderThickness: 1px;
 $activePadding: 3px;
+$inactivePadding: 0px;
+$inactiveHeight: calc($height - 2 * $inactiveBorderThickness - 2 * $inactivePadding);
 $activeHeight: calc($height - 2 * $activeBorderThickness - 2 * $activePadding);
 $activeWrapperHeight: $activeHeight;
+$inactiveWrapperHeight: $inactiveHeight;
 $transition: all 0.2s ease-in-out;
 
 .preview {
@@ -15,18 +19,20 @@ $transition: all 0.2s ease-in-out;
     border-radius: $borderRadius;
     transition: $transition;
     overflow: hidden;
-    height: $height;
+    height: $inactiveHeight;
+    padding: $inactivePadding;
     position: relative;
+    border: $inactiveBorderThickness solid $inactiveBorderColor;
 }
 
 .preview.active {
-    border: $activeBorderThickness solid $borderColor;
+    border: $activeBorderThickness solid $activeBorderColor;
     padding: $activePadding;
     height: $activeHeight;
 }
 
-.preview.inactive {
-    border: 0px solid $borderColor;
+.preview.inactive {   
+    border: $inactiveBorderThickness solid $inactiveBorderColor;
 }
 
 .deleteButton {
@@ -44,13 +50,14 @@ $transition: all 0.2s ease-in-out;
 
 .wrapper {
     overflow: hidden;
-    height: $wrapperHeight;
-    border-radius: calc($borderRadius / 1.5);
+    height: $inactiveWrapperHeight;
+    border-radius: calc($borderRadius / 1.2);
     transition: $transition;
 }
 
 .preview.active .wrapper {
     height: $activeWrapperHeight;
+    border-radius: calc($borderRadius / 1.5);
 }
 
 .svgPreview {

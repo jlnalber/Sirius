@@ -214,10 +214,15 @@ export class Page {
 
     public getSVG(): string {
       if (this.canvas && this.canvas.svgElement) {
+          let content = this.canvas.svgElement.innerHTML;
+          if (this.board.currentPage != this) {
+            content = `<g transform="translate(${this.translateX} ${this.translateY}) scale(${this.zoom})">${this.currentContent}</g>`;
+          }
+
         return `<?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="${this.board.backgroundColor.toString()}" style="background-color: ${this.board.backgroundColor.toString()}; background-image: url('${this.board.backgroundImage}');">
-        ${this.canvas.svgElement.innerHTML}
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.board.backgroundColor.toString()}; background-image: url('${this.board.backgroundImage}');">
+        ${content}
         </svg>`;
       }
       return '';

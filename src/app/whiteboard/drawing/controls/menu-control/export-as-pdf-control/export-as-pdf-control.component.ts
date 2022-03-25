@@ -1,6 +1,8 @@
+import { jsPDF } from 'jspdf';
 import { Component, Input, AfterViewInit } from '@angular/core';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { BasicControl } from 'src/app/whiteboard/global-whiteboard/controls/basicControl';
+import { Canvg, presets, RenderingContext2D } from 'canvg';
 
 @Component({
   selector: 'whiteboard-export-as-pdf-control',
@@ -12,7 +14,7 @@ export class ExportAsPdfControlComponent extends BasicControl implements AfterVi
   @Input() board!: Board;
   @Input() enabled = true;
 
-  public onClick = () => {
+  public onClick = async () => {
     this.board.downloadPDF();
   }
 

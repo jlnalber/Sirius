@@ -20,6 +20,7 @@ import { Color } from '../essentials/color';
 import { SelectorComponent } from '../../drawing/selector/selector.component';
 import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import { Canvg, presets, RenderingContext2D } from 'canvg';
 
 export const svgns = "http://www.w3.org/2000/svg";
 
@@ -602,36 +603,52 @@ export class Board {
     this.doDownload('whiteboard.svg', this.currentPage.getSVG(), 'svg');
   }
 
-  public downloadPDF() {
-    if (this.canvas && this.canvas.svgElement) {
-      let rect = this.currentPage.getSizeRect();
+  public async downloadPDF() {
+    /*if (this.canvas && this.canvas.svgElement) {
 
-      let svg = document.createElement('svg');
-      svg.innerHTML = this.canvas.svgElement.innerHTML;
+      let getMaxRect = (): Rect => {
+        let rects = this.pages.map(p => p.getSizeRect());
+        let rect = {
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100
+        };
 
-      let bgRect = document.createElement('rect');
-      bgRect.setAttributeNS('null', 'x', rect.x.toString());
-      bgRect.setAttributeNS('null', 'y', rect.y.toString());
-      bgRect.setAttributeNS('null', 'width', rect.width.toString());
-      bgRect.setAttributeNS('null', 'height', rect.height.toString());
-      bgRect.setAttributeNS('null', 'fill', this.backgroundColor.toString());
-      svg.insertBefore(bgRect, svg.firstChild);
+        return rect;
+      }
 
-      const doc = new jsPDF(
-        'l', 'px', [ rect.width - rect.x, rect.height - rect.y ]
-      );
-      doc
-        .svg(svg, {
-          x: rect.x,
-          y: rect.y,
-          width: rect.width,
-          height: rect.height,
-          loadExternalStyleSheets: true
-        })
-        .then(() => {
-          doc.save('whiteboard.pdf');
-        })
-    }
+      let rect =       
+
+      let doc = new jsPDF(rect.height > rect.width ? 'p' : 'l', 'mm', [rect.height, rect.width]);
+
+      for (let pageIndex = 0; pageIndex < this.pages.length; pageIndex++) {
+        let canv = document.createElement('canvas');
+        canv.style.background = this.backgroundColor.toString();
+        let ctx = canv.getContext('2d');
+        let v = await Canvg.fromString(ctx as RenderingContext2D, this.pages[pageIndex].getSVG(), presets.offscreen());
+
+        let rect = this.pages[pageIndex].getSizeRect();
+        v.resize(rect.width, rect.height);
+        await v.render();
+
+        const blob = canv.toDataURL('image/png');
+
+        let width = doc.internal.pageSize.getWidth();
+        let height = doc.internal.pageSize.getHeight();
+      
+        doc.setFillColor(this.backgroundColor.r ?? 0, this.backgroundColor.g ?? 0, this.backgroundColor.b ?? 0, this.backgroundColor.a)
+        doc.rect(0, 0, rect.width, rect.height, "F");
+        doc.addImage(blob, 'PNG', 0, 0, width, height);
+
+        if (pageIndex != this.pages.length - 1) {
+          doc.addPage();
+        }
+      }
+
+
+      doc.save('whiteboard')
+    }*/
   }
   
   private doDownload(filename: string, text: string, type?: string) {
