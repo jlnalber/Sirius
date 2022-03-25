@@ -11,11 +11,13 @@ export abstract class Shape extends CanvasItem {
     
     protected svgElement: SVGElement; 
 
-    constructor(protected board: Board, svgTag: string) {
+    constructor(protected board: Board, svgTag: string, initialize: boolean = true) {
         super();
 
         this.svgElement = this.board.createElement(svgTag);
 
-        this.initialize();
+        if (initialize) {
+            this.initialize();
+        }
     }
 }

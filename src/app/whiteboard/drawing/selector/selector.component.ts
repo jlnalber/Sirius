@@ -1,3 +1,4 @@
+import { SVGElementWrapper, SVGElementWrapperCollection } from './SVGElementWrapper';
 import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 import { Board } from '../../global-whiteboard/board/board';
@@ -41,13 +42,12 @@ export class SelectorComponent implements AfterViewInit {
   public wrapper!: ElementRef;
   public wrapperEl: HTMLDivElement | undefined;
 
-  private _svgEl: SVGElement | undefined;
-  public set svgEl(value: SVGElement | undefined) {
-    this._svgEl = value;
-    this.readTransform();
+  private _svgElements: SVGElementWrapperCollection = new SVGElementWrapperCollection();
+  public set svgEl(value: SVGElement | SVGElement[] | undefined) {
+    this._svgElements.svgElementWrapper = value;
   }
-  public get svgEl(): SVGElement | undefined {
-    return this._svgEl;
+  public get svgElements(): SVGElementWrapperCollection {
+    return this._svgElements;
   }
 
   public getCenter(): Point {
@@ -58,7 +58,7 @@ export class SelectorComponent implements AfterViewInit {
     };
   }
 
-  //#region The transform properties
+  /*//#region The transform properties
   private _translateX: number | undefined;
   public get translateX(): number | undefined {
     return this._translateX;
@@ -195,13 +195,14 @@ export class SelectorComponent implements AfterViewInit {
     }
   }
   //#endregion
+*/
 
-  private getRectRealPos(rect: DOMRect): Rect {
+  private getRectRealPos(rect: Rect): Rect {
     if (this.board.canvas && this.board.canvas.svgElement) {
       let svgRect = this.board.canvas.svgElement.getBoundingClientRect() as DOMRect;
       return {
-        x: rect.left - svgRect.left,
-        y: rect.top - svgRect.top,
+        x: rect.x - svgRect.left,
+        y: rect.y - svgRect.top,
         width: rect.width,
         height: rect.height
       };
@@ -209,17 +210,18 @@ export class SelectorComponent implements AfterViewInit {
     return rect;
   }
 
-  private getRectRealPosInCanvas(rect: DOMRect): Rect {
+  private getRectRealPosInCanvas(rect: Rect): Rect {
     return this.board.getActualRect(this.getRectRealPos(rect));
   }
   
   private getSVGElPos(): Rect {
-    return this.getRectRealPosInCanvas((this.svgEl as SVGElement).getBoundingClientRect());
+    // difference to rect: rect returns the position without translate or zoom on the whiteboard, this method returns the (exact) rect position in the svg with the whiteboard zoom and translate etc. 
+    return this.getRectRealPosInCanvas(this.svgElements.getBoundingClientRect());
   }
 
   public get rect(): Rect {
-    if (this.svgEl != undefined) {
-      let rect = this.getRectRealPos(this.svgEl.getBoundingClientRect());
+    if (!this.svgElements.empty) {
+      let rect = this.getRectRealPos(this.svgElements.getBoundingClientRect());
       rect.x -= offset;
       rect.y -= offset;
       rect.width += offset;
@@ -243,40 +245,40 @@ export class SelectorComponent implements AfterViewInit {
 
   private resize(dir: Resize, p: Point): void {
     // kann das Element größer/kleiner machen, basierend auf einer Richtung und einem Punkt (wohin)
-    if (this.svgEl) {
+    if (!this.svgElements.empty) {
 
       let rect = this.getSVGElPos();
 
-      if (dir == Resize.Bottom && this.scaleY != undefined && this.translateY != undefined) {
+      if (dir == Resize.Bottom) {
         let factor =  (p.y - rect.y) / (rect.height);
         if (factor > 0) {
-          this.scaleY *= factor;
+          this.svgElements.scaleYBy(factor);
           let newRect = this.getSVGElPos();
-          this.translateY -= newRect.y - rect.y;
+          this.svgElements.translateYBy(rect.y - newRect.y);
         }
       }
-      else if (dir == Resize.Top && this.scaleY != undefined && this.translateY != undefined) {
+      else if (dir == Resize.Top) {
         let factor =  (rect.y + rect.height - p.y) / (rect.height);
         if (factor > 0) {
-          this.scaleY *= factor;
+          this.svgElements.scaleYBy(factor);
           let newRect = this.getSVGElPos();
-          this.translateY -= (newRect.y + newRect.height) - (rect.y + rect.height);
+          this.svgElements.translateYBy((rect.y + rect.height) - (newRect.y + newRect.height));
         }
       }
-      else if (dir == Resize.Left && this.scaleX != undefined && this.translateX != undefined) {
+      else if (dir == Resize.Left) {
         let factor =  (rect.x + rect.width - p.x) / (rect.width);
         if (factor > 0) {
-          this.scaleX *= factor;
+          this.svgElements.scaleXBy(factor);
           let newRect = this.getSVGElPos();
-          this.translateX -= (newRect.x + newRect.width) - (rect.x + rect.width);
+          this.svgElements.translateXBy((rect.x + rect.width) - (newRect.x + newRect.width));
         }
       }
-      else if (dir == Resize.Right && this.scaleX != undefined && this.translateX != undefined) {
+      else if (dir == Resize.Right) {
         let factor =  (p.x - rect.x) / (rect.width);
         if (factor > 0) {
-          this.scaleX *= factor;
+          this.svgElements.scaleXBy(factor);
           let newRect = this.getSVGElPos();
-          this.translateX -= newRect.x - rect.x;
+          this.svgElements.translateXBy(rect.x - newRect.x);
         }
       }
     }
@@ -296,7 +298,7 @@ export class SelectorComponent implements AfterViewInit {
 
     // function that returns the center point of the svgEl
     let getSVGElCenter = (): Point => {
-      if (this.svgEl) {
+      if (!this.svgElements.empty) {
         let svgElRect = this.getSVGElPos();
         return {
           x: svgElRect.x + svgElRect.width / 2,
@@ -309,22 +311,22 @@ export class SelectorComponent implements AfterViewInit {
       };
     }
 
-    if (this.svgEl && this.rotate != undefined && this.scaleX != undefined && this.scaleY != undefined && this.translateX != undefined && this.translateY != undefined) {
+    if (!this.svgElements.empty) {
       // firstly, rotate the svgEl
       let center = getSVGElCenter();
 
       let anglePrev = getAngleByTwoPoints(prev, center);
       let angleCurr = getAngleByTwoPoints(curr, center);
 
-      let angleDiff = (angleCurr - anglePrev) * Math.sign(this.scaleX * this.scaleY);
+      let angleDiff = (angleCurr - anglePrev) /** Math.sign(this.scaleX * this.scaleY)*/;
       let angleDeg = angleDiff * 180 / Math.PI;
 
-      this.rotate += angleDeg;
+      this.svgElements.rotateBy(angleDeg);
 
       // secondly, move the svgEl so that it remains in its original position
       let newCenter = getSVGElCenter();
-      this.translateX += center.x - newCenter.x;
-      this.translateY += center.y - newCenter.y;
+      this.svgElements.translateXBy(center.x - newCenter.x);
+      this.svgElements.translateYBy(center.y - newCenter.y);
     }
   }
 
@@ -344,10 +346,8 @@ export class SelectorComponent implements AfterViewInit {
     // capture the events
     this.captureEvent(this.wrapperEl as HTMLDivElement, (p: Point) => {
     }, (orig: Point, prev: Point, curr: Point) => {
-      if (this.translateX != undefined && this.translateY != undefined) {
-        this.translateX += curr.x - prev.x;
-        this.translateY += curr.y - prev.y;
-      }
+      this.svgElements.translateXBy(curr.x - prev.x);
+      this.svgElements.translateYBy(curr.y - prev.y);
     }, (orig: Point, p: Point) => {
     });
 

@@ -1,4 +1,4 @@
-<div class="wrapper" [class]="this.svgEl ? '' : 'inactive'" [style]="this.getStyle()">
+<div class="wrapper" [class]="!this.svgElements.empty ? '' : 'inactive'" [style]="this.getStyle()">
     <div class="point turn" #turn></div>
     <div class="line center"></div>
     <div class="inside" #wrapper></div>

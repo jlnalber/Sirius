@@ -92,7 +92,13 @@ export class Board {
 
   constructor() {
     new Delete(this);
-    new Select(this);
+
+    this.onBoardModeChange.addListener(() => {
+      // reset the selector when the board mode is changed
+      if (this.selector) {
+        this.selector.svgEl = undefined;
+      }
+    })
   }
 
   public stroke: Stroke = new Stroke(new Color(255, 255, 255), 5);
@@ -246,7 +252,7 @@ export class Board {
       case BoardModes.Draw: return new Path(this);
       case BoardModes.Delete: return new EmptyCanvasElement();
       case BoardModes.Move: return new Move(this);
-      case BoardModes.Select: return new EmptyCanvasElement();
+      case BoardModes.Select: return new Select(this);
       case BoardModes.Shape: {
         switch (this.shapeMode) {
           case Shapes.Circle: return new Circle(this);
