@@ -247,6 +247,11 @@ export class CanvasComponent implements AfterViewInit {
       }
       await this.board.endTouch(getPosFromTouchEvent(e));
     });
+    this.svgElement?.addEventListener('contextmenu', (e: any) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+    })
 
     // this will capture all mousedown events from the canvas element
     fromEvent(this.svgElement as SVGSVGElement, 'mousedown')

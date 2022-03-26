@@ -14,7 +14,7 @@ $activeWrapperHeight: $activeHeight;
 $inactiveWrapperHeight: $inactiveHeight;
 $transition: all 0.2s ease-in-out;
 
-.preview {
+.pagePreview {
     margin-top: 7px;
     border-radius: $borderRadius;
     transition: $transition;
@@ -25,17 +25,17 @@ $transition: all 0.2s ease-in-out;
     border: $inactiveBorderThickness solid $inactiveBorderColor;
 }
 
-.preview.active {
+.pagePreview.active {
     border: $activeBorderThickness solid $activeBorderColor;
     padding: $activePadding;
     height: $activeHeight;
 }
 
-.preview.inactive {   
+.pagePreview.inactive {   
     border: $inactiveBorderThickness solid $inactiveBorderColor;
 }
 
-.deleteButton {
+.pageDeleteButton {
     $offset: 7px;
     position: absolute;
     z-index: 1;
@@ -44,18 +44,18 @@ $transition: all 0.2s ease-in-out;
     display: none;
 }
 
-.preview:hover .deleteButton, .preview.active .deleteButton {
+.pagePreview:hover .pageDeleteButton, .pagePreview.active .pageDeleteButton {
     display: initial;
 }
 
-.previewWrapper {
+.pagePreviewWrapper {
     overflow: hidden;
     height: $inactiveWrapperHeight;
     border-radius: calc($borderRadius / 1.2);
     transition: $transition;
 }
 
-.preview.active .previewWrapper {
+.pagePreview.active .pagePreviewWrapper {
     height: $activeWrapperHeight;
     border-radius: calc($borderRadius / 1.5);
 }

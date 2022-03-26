@@ -1,6 +1,6 @@
-<div class="preview" [ngClass]="this.board.currentPage == this.page ? 'active' : 'inactive'" (click)="this.onClick()">
-    <div class="previewWrapper">
-        <button color="accent" class="deleteButton" mat-icon-button (click)="deleteClick()">
+<div class="pagePreview" [ngClass]="this.board.currentPage == this.page ? 'active' : 'inactive'" (click)="this.onClick()">
+    <div class="pagePreviewWrapper">
+        <button color="accent" class="pageDeleteButton" mat-icon-button (click)="deleteClick()">
             <mat-icon>
                 delete_outline
             </mat-icon>
