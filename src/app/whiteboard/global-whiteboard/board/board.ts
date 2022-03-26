@@ -146,7 +146,7 @@ export class Board {
   private currentCanvasItem: CanvasItem | undefined;
   private currentTouchCanvasItem: CanvasItem | undefined;
   public isOnActiveMouse: boolean = false;
-  public isOnActiveTouch: boolean = false;
+  //public isOnActiveTouch: boolean = false;
   public onPointerMoveDoZoom: boolean = true;
 
   public readonly onBoardModeChange: Event = new Event();
@@ -299,8 +299,8 @@ export class Board {
   }
 
   public async startTouch(p: Point) {
-    if (!this.isOnActiveMouse && !this.isOnActiveTouch) {
-        this.isOnActiveTouch = true;
+    if (!this.isOnActiveMouse) {
+        //this.isOnActiveTouch = true;
         this.onTouch.emit();
 
         this.currentTouchCanvasItem = this.getCanvasElementToMode(this.touchMode);
@@ -312,7 +312,7 @@ export class Board {
   }
 
   public async moveTouch(from: Point, to: Point) {
-    if (!this.isOnActiveMouse && this.isOnActiveTouch) {
+    if (!this.isOnActiveMouse) {
       this.currentTouchCanvasItem?.touchMove(from, to);
 
       this.onTouchMove.emit();
@@ -320,18 +320,14 @@ export class Board {
   }
 
   public async endTouch(p: Point) {
-    if (!this.isOnActiveMouse && this.isOnActiveTouch) {
+    if (!this.isOnActiveMouse) {
       this.currentTouchCanvasItem?.touchEnd(p);
 
       this.onTouchEnd.emit();
-      this.isOnActiveTouch = false;
+      //this.isOnActiveTouch = false;
       this.onInput.emit();
       this.onWhiteboardViewChange.emit();
     }
-  }
-
-  public async onPointer(ev: PointerEvent) {
-    
   }
   //#endregion
 
