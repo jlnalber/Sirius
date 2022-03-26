@@ -18,10 +18,10 @@ export class PagePreviewComponent implements AfterViewInit, OnDestroy {
   // for listeners
   private alive: boolean = true;
   private changePageListener = () => {
-    this.reload(true);
+    //this.reload(true);
   }
   private changeListener = () => {
-    this.reload(false);
+    //this.reload(false);
   }
 
   private reload(checkForThisPage: boolean) {
@@ -41,6 +41,7 @@ export class PagePreviewComponent implements AfterViewInit, OnDestroy {
     this.alive = false;
     this.board.onInput.removeListener(this.changePageListener);
     this.board.onBackgroundChange.removeListener(this.changeListener);
+    
   }
 
   ngAfterViewInit(): void {

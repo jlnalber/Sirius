@@ -48,14 +48,14 @@ $transition: all 0.2s ease-in-out;
     display: initial;
 }
 
-.wrapper {
+.previewWrapper {
     overflow: hidden;
     height: $inactiveWrapperHeight;
     border-radius: calc($borderRadius / 1.2);
     transition: $transition;
 }
 
-.preview.active .wrapper {
+.preview.active .previewWrapper {
     height: $activeWrapperHeight;
     border-radius: calc($borderRadius / 1.5);
 }
