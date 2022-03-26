@@ -1,3 +1,4 @@
+import { TouchController } from './../../global-whiteboard/essentials/touchController';
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 import { fromEvent } from 'rxjs';
@@ -98,14 +99,24 @@ export class CanvasComponent implements AfterViewInit {
     this.board.canvas = this;
     this.svgElement = this.canvas.nativeElement as SVGSVGElement;
     this.gElement = this.g.nativeElement as SVGGElement;
-    this.captureEvents();
-    this.capturePinchZoomEvents();
+    //this.captureEvents();
+    //this.capturePinchZoomEvents();
 
-    this.board.onImport.addListener(() => {
-    })
+    new TouchController({
+      touchStart: (p: Point) => this.board.startTouch(p),
+      touchMove: (from: Point, to: Point) => this.board.moveTouch(from, to),
+      touchEnd: (p: Point) => this.board.endTouch(p),
+      mouseStart: (p: Point) => this.board.startMouse(p),
+      mouseMove: (from: Point, to: Point) => this.board.moveMouse (from, to),
+      mouseEnd: (p: Point) => this.board.endMouse(p),
+      stylusStart: (p: Point) => this.board.startMouse(p),
+      stylusMove: (from: Point, to: Point) => this.board.moveMouse(from, to),
+      stylusEnd: (p: Point) => this.board.endMouse(p),
+      pinchZoom: (factor: number, point: Point) => this.board.zoomTo(this.board.zoom * factor, point)
+    }, this.svgElement)
   }
 
-  private capturePinchZoomEvents() {
+  /*private capturePinchZoomEvents() {
     // from mdn: https://github.com/mdn/dom-examples/blob/master/pointerevents/Pinch_zoom_gestures.html 
 
     // Global vars to cache event state
@@ -164,7 +175,7 @@ export class CanvasComponent implements AfterViewInit {
           if (curDiff < prevDiff) {
             // The distance between the two pointers has decreased
           }*/
-        }
+        /*}
 
         // Cache the distance for the next move event 
         prevDiff = curDiff;
@@ -337,7 +348,7 @@ export class CanvasComponent implements AfterViewInit {
     
           await this.board.moveTouch(prevPos, currentPos);
         });
-  }
+  }*/
 
   private justify() {
     this.gElement?.setAttribute('transform', `translate(${this.translateX} ${this.translateY}) scale(${this.zoom})`)
