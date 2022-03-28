@@ -11,6 +11,7 @@ $borderthickness: 3px;
     top: 70px;
     left: 100px;
     border: $borderthickness dashed $color;
+    overflow: visible;
 }
 
 .touch {
@@ -90,4 +91,9 @@ $borderthickness: 3px;
 
 .inactive {
     display: none;
+}
+
+.taskbar {
+    position: fixed;
+    transform: translateX(15px);
 }

@@ -58,170 +58,18 @@ export class SelectorComponent implements AfterViewInit {
     };
   }
 
-  /*//#region The transform properties
-  private _translateX: number | undefined;
-  public get translateX(): number | undefined {
-    return this._translateX;
-  }
-  public set translateX(value: number | undefined) {
-    this._translateX = !value || value == Infinity ? 0.00001 : value;
-    this.reloadTransform();
-  }
-
-  private _translateY: number | undefined;
-  public get translateY(): number | undefined {
-    return this._translateY;
-  }
-  public set translateY(value: number | undefined) {
-    this._translateY = !value || value == Infinity ? 0.00001 : value;
-    this.reloadTransform();
-  }
-
-  private _scaleX: number | undefined;
-  public get scaleX(): number | undefined {
-    return this._scaleX;
-  }
-  public set scaleX(value: number | undefined) {
-    this._scaleX = !value || value == Infinity ? 0 : value;
-    this.reloadTransform();
-  }
-
-  private _scaleY: number | undefined;
-  public get scaleY(): number | undefined {
-    return this._scaleY;
-  }
-  public set scaleY(value: number | undefined) {
-    this._scaleY = !value || value == Infinity ? 0 : value;
-    this.reloadTransform();
-  }
-
-  private _rotate: number | undefined;
-  public get rotate(): number | undefined {
-    return this._rotate;
-  }
-  public set rotate(value: number | undefined) {
-    this._rotate = !value || value == Infinity ? 0 : value;
-    this.reloadTransform();
-  }
-
-  private reloadTransform(): void {
-    if (this.svgEl) {
-      let transform = '';
-      if (this.translateX != undefined && this.translateY != undefined) {
-        transform += `translate(${this.translateX} ${this.translateY})`;
-      }
-      if (this.scaleX != undefined && this.scaleY != undefined) {
-        transform += ` scale(${this.scaleX} ${this.scaleY})`
-      }
-      if (this.rotate != undefined) {
-        transform += ` rotate(${this.rotate})`;
-      }
-      this.svgEl.setAttributeNS(null, 'transform', transform);
-    }
-  }
-
-  private readTransform(): void {
-    // funktion, die die parameter einer Funktion zurückgibt
-    let getFuncParams = (str: string, func: string): string[] | undefined => {
-      let ind = str.indexOf(func + '(');
-      if (ind != -1) {
-        try {
-          ind += func.length + 1;
-          let indEnd = str.indexOf(')', ind);
-          let substr = str.substring(ind, indEnd); // in 'substr' ist jetzt das innere von den Klammern
-          return substr.split(/(?: |,)/); // Und hier wird an den ','/' ' getrennt
-        } catch { }
-      }
-      return undefined;
-    }
-
-    if (this.svgEl) {
-      let transform = this.svgEl.getAttributeNS(null, 'transform');
-
-      if (transform != null) {
-        let translate = getFuncParams(transform, 'translate');
-        let scale = getFuncParams(transform, 'scale');
-        let rotate = getFuncParams(transform, 'rotate');
-
-        // set the translate properties
-        if (translate) {
-          if (translate.length == 1) {
-            let num = Number.parseFloat(translate[0]);
-            this._translateX = num;
-            this._translateY = num;
-          }
-          else if (translate.length == 2) {
-            this._translateX = Number.parseFloat(translate[0]);
-            this._translateY = Number.parseFloat(translate[1]);
-          }
-        }
-        else {
-          this._translateX = 0;
-          this._translateY = 0;
-        }
-
-        // set the scale properties
-        if (scale) {
-          if (scale.length == 1) {
-            let num = Number.parseFloat(scale[0]);
-            this._scaleX = num;
-            this._scaleY = num;
-          }
-          else if (scale.length == 2) {
-            this._scaleX = Number.parseFloat(scale[0]);
-            this._scaleY = Number.parseFloat(scale[1]);
-          }
-        }
-        else {
-          this._scaleX = 1;
-          this._scaleY = 1;
-        }
-
-        // set the rotate propertie
-        if (rotate && rotate.length == 1) {
-          this._rotate = Number.parseFloat(rotate[0]);
-        }
-        else {
-          this._rotate = 0;
-        }
-      }
-      else {
-        this._translateX = 0;
-        this._translateY = 0;
-        this._scaleX = 1;
-        this._scaleY = 1;
-        this._rotate = 0;
-      }
-    }
-  }
-  //#endregion
-*/
-
-  private getRectRealPos(rect: Rect): Rect {
-    if (this.board.canvas && this.board.canvas.svgElement) {
-      let svgRect = this.board.canvas.svgElement.getBoundingClientRect() as DOMRect;
-      return {
-        x: rect.x - svgRect.left,
-        y: rect.y - svgRect.top,
-        width: rect.width,
-        height: rect.height
-      };
-    }
-    return rect;
-  }
-
   private getRectRealPosInCanvas(rect: Rect): Rect {
-    return this.board.getActualRect(this.getRectRealPos(rect));
+    return this.board.getRectFromBoundingClientRect(rect);
   }
   
-  private getSVGElPos(): Rect {
+  public getSVGElPos(): Rect {
     // difference to rect: rect returns the position without translate or zoom on the whiteboard, this method returns the (exact) rect position in the svg with the whiteboard zoom and translate etc. 
     return this.getRectRealPosInCanvas(this.svgElements.getBoundingClientRect());
   }
 
   public get rect(): Rect {
     if (!this.svgElements.empty) {
-      let rect = this.getRectRealPos(this.svgElements.getBoundingClientRect());
+      let rect = this.board.getRectRealPosInCanvas(this.svgElements.getBoundingClientRect());
       rect.x -= offset;
       rect.y -= offset;
       rect.width += offset;
@@ -241,6 +89,11 @@ export class SelectorComponent implements AfterViewInit {
   public getStyle(): string {
     let rect = this.rect;
     return `left: ${rect.x}px; top: ${rect.y}px; width: ${rect.width}px; height: ${rect.height}px`;
+  }
+
+  public getTranslateTaskBar(): string {
+    let rect = this.rect;
+    return 'transform: translate(15px, ' + (rect.height - 10) + 'px);';
   }
 
   private resize(dir: Resize, p: Point): void {
@@ -334,6 +187,14 @@ export class SelectorComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.board.selector = this;
+
+    // reset the selector when there are changes to when pages are switched or the history is used
+    let reset = () => {
+      this.svgEl = undefined;
+    }
+    this.board.onPageSwitched.addListener(reset);
+    this.board.onBack.addListener(reset);
+    this.board.onForward.addListener(reset);
 
     // set the native elements
     this.ltrEl = this.ltr.nativeElement;

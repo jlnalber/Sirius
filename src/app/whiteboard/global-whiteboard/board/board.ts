@@ -41,6 +41,7 @@ export enum Shapes {
 
 export class Board {
 
+  //#region methods for dealing with positions
   public getActualPoint(p: Point): Point {
     // berechne die Position eines Punktes im canvas
     if (this.canvas) {
@@ -49,6 +50,23 @@ export class Board {
       return { x: x, y: y };
     }
     return { x: 0, y: 0 };
+  }
+
+  public getPointRealPosInCanvas(point: Point): Point {
+    // calculate the position of a rect in the canvas (if svg deposition is respected)
+    if (this.canvas && this.canvas.svgElement) {
+      
+      let svgRect = this.canvas.svgElement.getBoundingClientRect() as DOMRect;
+      return {
+        x: point.x - svgRect.left,
+        y: point.y - svgRect.top
+      };
+    }
+    return point;
+  }
+
+  public getPointFromAbsolutePoint(point: Point): Point {
+    return this.getActualPoint(this.getPointRealPosInCanvas(point));
   }
 
   public getActualRect(rect: Rect): Rect {
@@ -70,6 +88,39 @@ export class Board {
     }
   }
 
+  public getRectRealPosInCanvas(rect: Rect): Rect {
+    // calculate the position of a rect in the canvas (if svg deposition is respected)
+    if (this.canvas && this.canvas.svgElement) {
+      
+      let svgRect = this.canvas.svgElement.getBoundingClientRect() as DOMRect;
+      return {
+        x: rect.x - svgRect.left,
+        y: rect.y - svgRect.top,
+        width: rect.width,
+        height: rect.height
+      };
+    }
+    return rect;
+  }
+
+  public getRectFromBoundingClientRect(rect: DOMRect | Rect | undefined): Rect {
+    if (rect instanceof DOMRect) {
+      rect = {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height
+      };
+    }
+
+    return this.getActualRect(this.getRectRealPosInCanvas(rect ?? {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
+    }));
+  }
+
   public getPosFromMouseEvent(e: MouseEvent): Point {
     const rect = this.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
 
@@ -89,6 +140,7 @@ export class Board {
       y: res1.clientY - rect.top
     };
   }
+  //#endregion
 
   constructor() {
     new Delete(this);
@@ -168,6 +220,8 @@ export class Board {
   public readonly onImport: Event = new Event();
   public readonly onWhiteboardViewChange: Event = new Event();
   public readonly onBackgroundChange: Event = new Event();
+  public readonly onBack: Event = new Event();
+  public readonly onForward: Event = new Event();
 
   //#region pages
   public pages: Page[] = [ new Page(this) ]
@@ -325,20 +379,27 @@ export class Board {
 
       this.onTouchEnd.emit();
       //this.isOnActiveTouch = false;
-      this.onInput.emit();
-      this.onWhiteboardViewChange.emit();
+      this.markChange();
     }
+  }
+
+  public markChange(): void {
+    this.onInput.emit();
+    this.onWhiteboardViewChange.emit();
   }
   //#endregion
 
   //#region methods for adding and removing elements to the board
   public createElement(tag: string): SVGElement {
-    let el = document.createElementNS(svgns, tag);
-    this.canvas?.gElement?.appendChild(el);
+    return this.addElement(document.createElementNS(svgns, tag));
+  }
+  
+  public addElement(element: SVGElement): SVGElement {
+    this.canvas?.gElement?.appendChild(element);
 
     this.onAddElement.emit();
 
-    return el;
+    return element;
   }
 
   public addFile(file: File | null | undefined): boolean {
@@ -713,6 +774,7 @@ export class Board {
   //#region dealing with pages
   public goBack() {
     this.currentPage.goBack();
+    this.onBack.emit();
     this.onWhiteboardViewChange.emit();
   }
 
@@ -722,6 +784,7 @@ export class Board {
 
   public goForward() {
     this.currentPage.goForward();
+    this.onForward.emit();
     this.onWhiteboardViewChange.emit();
   }
 

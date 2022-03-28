@@ -1,3 +1,5 @@
+@import "../global-whiteboard/styles/controlWrapper";
+
 $animationtime: 0.2s;
 
 .canvasWrapper {
@@ -31,19 +33,6 @@ input:checked ~ .card {
     display: block;
 }*/
 
-.controlWrapper {
-    //width: 80%;
-    width: auto;
-    display: table;
-    height: 100%;
-    background-color: transparent;
-    pointer-events: all;
-    overflow: hidden;
-    box-shadow: 3px 3px 5px #00000028;
-    border: 1px solid #00000038;
-    border-radius: 5px;
-}
-
 .centerWrapper {
     margin: 0 auto;
 }
@@ -54,10 +43,6 @@ input:checked ~ .card {
 
 .rightWrapper {
     float: right;
-}
-
-.control {
-    float: left;
 }
 
 .table {

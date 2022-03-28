@@ -42,6 +42,11 @@ import { StickyNotesControlComponent } from './drawing/controls/sticky-notes-con
 import { StickyNotesDialogComponent } from './drawing/controls/sticky-notes-control/sticky-notes-dialog/sticky-notes-dialog.component';
 import { PagesControlComponent } from './drawing/controls/pages-control/pages-control.component';
 import { PagePreviewComponent } from './drawing/controls/pages-control/page-preview/page-preview.component';
+import { TaskBarComponent } from './drawing/selector/task-bar/task-bar.component';
+import { DeleteElementControlComponent } from './drawing/selector/task-bar/delete-element-control/delete-element-control.component';
+import { CloneElementControlComponent } from './drawing/selector/task-bar/clone-element-control/clone-element-control.component';
+import { MirrorElementHorizontallyControlComponent } from './drawing/selector/task-bar/mirror-element-control/mirror-element-horizontally-control.component';
+import { MirrorElementVerticallyControlComponent } from './drawing/selector/task-bar/mirror-element-control/mirror-element-vertically-control.component';
 
 
 
@@ -79,7 +84,12 @@ import { PagePreviewComponent } from './drawing/controls/pages-control/page-prev
     StickyNotesControlComponent,
     StickyNotesDialogComponent,
     PagesControlComponent,
-    PagePreviewComponent
+    PagePreviewComponent,
+    TaskBarComponent,
+    DeleteElementControlComponent,
+    CloneElementControlComponent,
+    MirrorElementHorizontallyControlComponent,
+    MirrorElementVerticallyControlComponent
   ],
   imports: [
     CommonModule,
