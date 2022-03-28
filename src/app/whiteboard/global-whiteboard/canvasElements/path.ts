@@ -6,7 +6,7 @@ import { Point } from "../interfaces/point";
 export class Path extends CanvasItem {
 
     private tolerance: ((path: Path) => number) = (path: Path) => {
-        return Math.sqrt(path.stroke.getThickness());
+        return 1;
     };
 
     private points: Point[] = [];
@@ -32,7 +32,8 @@ export class Path extends CanvasItem {
     }
 
     public addPoint(point: Point) {
-        if (point) {
+        let correct = this.points.length == 0 || Math.sqrt((point.x - this.points[this.points.length - 1].x) ** 2 + (point.y - this.points[this.points.length - 1].y) ** 2) > this.tolerance(this);
+        if (point && correct) {
             if (this.points.length == 0) {
                 this.pathElement.setAttributeNS(null, 'd', `M${point.x} ${point.y}`);
             }
