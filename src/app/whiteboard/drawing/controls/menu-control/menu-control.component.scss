@@ -1,8 +1,10 @@
 @import "../../../global-whiteboard/styles/control";
 
 .card {
+    $numberOfElements: 5;
+
     $width: 50px;
-    $height: 200px;
+    $height: calc(50px * $numberOfElements);
     $cardhoverabovecontrols: 15px;
     width: $width;
     height: $height;

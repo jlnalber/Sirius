@@ -47,6 +47,7 @@ import { DeleteElementControlComponent } from './drawing/selector/task-bar/delet
 import { CloneElementControlComponent } from './drawing/selector/task-bar/clone-element-control/clone-element-control.component';
 import { MirrorElementHorizontallyControlComponent } from './drawing/selector/task-bar/mirror-element-control/mirror-element-horizontally-control.component';
 import { MirrorElementVerticallyControlComponent } from './drawing/selector/task-bar/mirror-element-control/mirror-element-vertically-control.component';
+import { ExportAsSvgControlComponent } from './drawing/controls/menu-control/export-as-svg-control/export-as-svg-control.component';
 
 
 
@@ -89,7 +90,8 @@ import { MirrorElementVerticallyControlComponent } from './drawing/selector/task
     DeleteElementControlComponent,
     CloneElementControlComponent,
     MirrorElementHorizontallyControlComponent,
-    MirrorElementVerticallyControlComponent
+    MirrorElementVerticallyControlComponent,
+    ExportAsSvgControlComponent
   ],
   imports: [
     CommonModule,

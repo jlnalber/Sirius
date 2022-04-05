@@ -4,6 +4,8 @@ import { Rect } from "../interfaces/rect";
 import { Board, svgns } from "./board";
 import { Page as PageExport } from "../interfaces/whiteboard";
 import { Point } from "../interfaces/point";
+import { Canvg, presets, RenderingContext2D } from "canvg";
+import { getBoundingRect, resizeRect } from "../essentials/utils";
 
 const maxStepsBack = 30;
 
@@ -159,7 +161,7 @@ export class Page {
             height: 100
         };
 
-        let max = (a: number, b: number) => {
+        /*let max = (a: number, b: number) => {
             return a > b ? a : b;
         }
         let min = (a: number, b: number) => {
@@ -167,6 +169,7 @@ export class Page {
         }
 
         if (this.canvas && this.canvas.gElement) {
+
             for (let i in this.canvas.gElement.children) {
                 let el = this.canvas.gElement.children[i];
                 if (el) {
@@ -180,10 +183,20 @@ export class Page {
                     catch { }
                 }
             }
+        }*/
+
+        if (this.canvas && this.canvas.gElement) {
+            rect = getBoundingRect(this.canvas.gElement.children, this.board);
         }
 
-        rect.width += 20;
-        rect.height += 20;
+        const offset = 40;
+
+        rect.width += 2 * offset /*+ rect.x > 0 ? rect.x : 0*/;
+        rect.height += 2 * offset /*+ rect.y > 0 ? rect.y : 0*/;
+        rect.x -= offset;
+        rect.y -= offset;
+        //rect.x = rect.x < 0 ? rect.x : 0;
+        //rect.y = rect.y < 0 ? rect.y : 0;
 
         return rect;
     }
@@ -212,20 +225,42 @@ export class Page {
         }
     }
 
-    public getSVG(): string {
-      if (this.canvas && this.canvas.svgElement) {
-          let content = this.canvas.svgElement.innerHTML;
-          if (this.board.currentPage != this) {
-            content = `<g transform="translate(${this.translateX} ${this.translateY}) scale(${this.zoom})">${this.currentContent}</g>`;
-          }
+    public getSVG(withBackgroundAsRect: boolean = false): [string, Rect] {
+        // this method returns a string (and a rect for the shape) of a svg of this page, it moves the content and scales so that it makes sense
 
-        return `<?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.board.backgroundColor.toString()}; background-image: url('${this.board.backgroundImage}');">
-        ${content}
-        </svg>`;
-      }
-      return '';
+        if (this.canvas && this.canvas.svgElement) {
+            let content = this.canvas.svgElement.innerHTML;
+            if (this.board.currentPage != this) {
+              content = `<g transform="translate(${this.translateX} ${this.translateY}) scale(${this.zoom})">${this.currentContent}</g>`;
+            }
+
+            let rect = this.getSizeRect();
+
+            let scaleBack = 1 / this.zoom;
+            let translateXBack = -this.translateX - rect.x * this.zoom;
+            let translateYBack = -this.translateY - rect.y * this.zoom;
+
+            rect = {
+                x: 0,
+                y: 0,
+                width: rect.width,
+                height: rect.height
+            };
+
+            let rectStr = withBackgroundAsRect ? 
+                `<rect fill="${this.board.backgroundColor.toString()}" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" />`
+                : '';
+  
+            let str = `<?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.board.backgroundColor.toString()}; background-image: url('${this.board.backgroundImage}');">
+            ${rectStr}
+            <g transform="scale(${scaleBack}) translate(${translateXBack} ${translateYBack})">${content}</g>
+            </svg>`;
+
+            return [str, rect];
+        }
+        return ['', {x: 0, y: 0, width: 0, height: 0}];
     }
 
     public import(value: PageExport): void {
@@ -267,5 +302,31 @@ export class Page {
         svg.style.backgroundImage = 'url(\'' + this.board.backgroundImage + '\')';
 
         return svg;
+    }
+
+    public async getPageAsPicture(): Promise<string> {
+        const scale = 0.5;
+
+        // this method returns the data url of the png image of this page
+
+        let svg = this.getSVG(true);
+        let svgString = svg[0];
+        let rect = svg[1];
+
+        let canv = document.createElement('canvas');
+        canv.style.background = this.board.backgroundColor.toString();
+        let ctx = canv.getContext('2d') as RenderingContext2D;
+        //ctx.scale(scale, scale);
+
+
+        let v = await Canvg.fromString(ctx as RenderingContext2D, svgString, presets.offscreen());
+
+        v.resize(rect.width, rect.height);
+        await v.render();
+
+        /*ctx.fillStyle = 'red';
+        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);*/
+
+        return canv.toDataURL('image/png');
     }
 }

@@ -13,7 +13,7 @@ export class SaveAsPictureControlComponent extends BasicControl implements After
   @Input() enabled = true;
 
   public onClick = () => {
-    this.board.downloadSVG();
+    this.board.downloadPNG();
   }
 
   constructor() {

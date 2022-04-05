@@ -1,3 +1,5 @@
+import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
+import { Vector } from './../interfaces/point';
 import { Rect } from './../interfaces/rect';
 
 export function max<T>(coll: T[], func: (t: T) => number): number | undefined {
@@ -32,18 +34,39 @@ export function min<T>(coll: T[], func: (t: T) => number): number | undefined {
     return undefined;
 }
 
-export function getBoundingRect(rects: Rect[]): Rect {
-    let x = min(rects, r => r.x) ?? 0;
-    let y = min(rects, r => r.y) ?? 0;
-    let outerX = max(rects, r => r.x + r.width) ?? 0;
-    let outerY = max(rects, r => r.y + r.height) ?? 0;
+export function getBoundingRect(rects: Rect[] | HTMLCollection, board?: Board): Rect {
+    if (rects instanceof HTMLCollection) {
+        // if it is an HTMLCollection, calculate the rects
+        let coll: Rect[] = [];
 
-    return {
-        x: x,
-        y: y,
-        width: outerX - x,
-        height: outerY - y
-    };
+        for (let i in rects) {
+            let el = rects[i];
+            if (el && el instanceof SVGElement) {
+                // if there is an board, map to the actual coordinates
+                if (board) {
+                    coll.push(board.getRectFromBoundingClientRect(el.getBoundingClientRect()));
+                }
+                else {
+                    coll.push(DOMRectToRect(el.getBoundingClientRect()));
+                }
+            }
+        }
+
+        return getBoundingRect(coll);
+    }
+    else {
+        let x = min(rects, r => r.x) ?? 0;
+        let y = min(rects, r => r.y) ?? 0;
+        let outerX = max(rects, r => r.x + r.width) ?? 0;
+        let outerY = max(rects, r => r.y + r.height) ?? 0;
+
+        return {
+            x: x,
+            y: y,
+            width: outerX - x,
+            height: outerY - y
+        }
+    }
 }
 
 export function DOMRectToRect(domRect: DOMRect | undefined): Rect {
@@ -52,5 +75,23 @@ export function DOMRectToRect(domRect: DOMRect | undefined): Rect {
         y: domRect?.top ?? 0,
         width: domRect?.width ?? 0,
         height: domRect?.height ?? 0
+    }
+}
+
+export function moveRect(rect: Rect, vector: Vector): Rect {
+    return {
+        x: rect.x + vector.x,
+        y: rect.y + vector.y,
+        width: rect.width,
+        height: rect.height
+    };
+}
+
+export function resizeRect(rect: Rect, factor: number): Rect {
+    return {
+        x: rect.x * factor,
+        y: rect.y * factor,
+        width: rect.width * factor,
+        height: rect.height * factor
     }
 }

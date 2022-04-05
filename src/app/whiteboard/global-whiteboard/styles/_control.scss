@@ -6,6 +6,8 @@ $activeColor: #0e6ba8ff;
 $disabledColorIcon: #aaa;
 $activeColorIcon: white;
 $disabledColor: white;
+$enabledCursor: pointer;
+$disabledCursor: default;
 
 .control {
     background-color: $normalColor;
@@ -14,6 +16,14 @@ $disabledColor: white;
     transition: all $animationtime ease-in-out;
     position: relative;
     overflow: visible;
+}
+
+.enabled {
+    cursor: $enabledCursor;
+}
+
+.enabled * {
+    cursor: $enabledCursor;
 }
 
 .enabled:hover:not(:active) {
@@ -50,7 +60,6 @@ $disabledColor: white;
     top: 0;
     right: 0;
     left: 0;
-    cursor: pointer;
     $iconsize: calc($controlheight / 2);
     font-size: $iconsize;
     padding: calc(calc($controlheight - $iconsize) / 2);
@@ -64,6 +73,11 @@ $disabledColor: white;
 
 .disabled {
     background-color: $disabledColor;
+    cursor: $disabledCursor;
+}
+
+.disabled * {
+    cursor: $disabledCursor;
 }
 
 .card {

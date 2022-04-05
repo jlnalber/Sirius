@@ -105,6 +105,8 @@ export class Board {
   }
 
   public getRectFromBoundingClientRect(rect: DOMRect | Rect | undefined): Rect {
+    // maps DOMRect or rect to the actual coordinates in the svg
+    
     if (rect instanceof DOMRect) {
       rect = {
         x: rect.left,
@@ -664,7 +666,11 @@ export class Board {
   }
 
   public downloadSVG(): void {
-    this.doDownload('whiteboard.svg', this.currentPage.getSVG(), 'svg');
+    this.doDownload('whiteboard.svg', this.currentPage.getSVG()[0], 'svg');
+  }
+
+  public async downloadPNG(): Promise<void> {
+    this.doDownload('whiteboard.png', await this.currentPage.getPageAsPicture(), 'png', true)
   }
 
   public async downloadPDF() {
@@ -678,7 +684,7 @@ export class Board {
         let canv = document.createElement('canvas');
         canv.style.background = this.backgroundColor.toString();
         let ctx = canv.getContext('2d');
-        let v = await Canvg.fromString(ctx as RenderingContext2D, this.pages[pageIndex].getSVG(), presets.offscreen());
+        let v = await Canvg.fromString(ctx as RenderingContext2D, this.pages[pageIndex].getSVG()[0], presets.offscreen());
 
         let rect = this.pages[pageIndex].getSizeRect();
         v.resize(rect.width, rect.height);
@@ -703,9 +709,9 @@ export class Board {
     }
   }
   
-  private doDownload(filename: string, text: string, type?: string) {
+  private doDownload(filename: string, text: string, type?: string, alreadyDataUrl = false) {
     var element = document.createElement('a');
-    element.setAttribute('href', `data:${type ?? 'text'}/plain;charset=utf-8,` + encodeURIComponent(text));
+    element.setAttribute('href', alreadyDataUrl ? text : `data:${type ?? 'text'}/plain;charset=utf-8,` + encodeURIComponent(text));
     element.setAttribute('download', filename);
   
     element.style.display = 'none';
