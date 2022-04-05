@@ -32,7 +32,7 @@ export class Path extends CanvasItem {
     }
 
     public addPoint(point: Point) {
-        let correct = this.points.length == 0 || Math.sqrt((point.x - this.points[this.points.length - 1].x) ** 2 + (point.y - this.points[this.points.length - 1].y) ** 2) > this.tolerance(this);
+        let correct = this.points.length < 2 || Math.sqrt((point.x - this.points[this.points.length - 1].x) ** 2 + (point.y - this.points[this.points.length - 1].y) ** 2) > this.tolerance(this);
         if (point && correct) {
             if (this.points.length == 0) {
                 this.pathElement.setAttributeNS(null, 'd', `M${point.x} ${point.y}`);

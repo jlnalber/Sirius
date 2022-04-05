@@ -1,5 +1,6 @@
 import { Rect } from './../../global-whiteboard/interfaces/rect';
 import { Event } from "../../global-whiteboard/essentials/event";
+import { DOMRectToRect, getBoundingRect } from '../../global-whiteboard/essentials/utils';
 
 export class SVGElementWrapper {
     public readonly onSVGElChange: Event = new Event();
@@ -248,7 +249,9 @@ export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> 
     }
 
     public getBoundingClientRect(): Rect {
-        let minX: number | undefined = undefined;
+        return getBoundingRect(this.svgElementWrappers.map(s => DOMRectToRect(s.getBoundingClientRect())))
+
+        /*let minX: number | undefined = undefined;
         let maxX: number | undefined = undefined;
         let minY: number | undefined = undefined;
         let maxY: number | undefined = undefined;
@@ -276,7 +279,7 @@ export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> 
             y: minY ?? 0,
             width: (maxX ?? 0) - (minX ?? 0),
             height: (maxY ?? 0) - (minY ?? 0)
-        }
+        }*/
     }
 
     public scaleXBy(factor: number) {

@@ -21,6 +21,7 @@ import { SelectorComponent } from '../../drawing/selector/selector.component';
 import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import { Canvg, presets, RenderingContext2D } from 'canvg';
+import { getBoundingRect } from '../essentials/utils';
 
 export const svgns = "http://www.w3.org/2000/svg";
 
@@ -667,21 +668,9 @@ export class Board {
   }
 
   public async downloadPDF() {
-    /*if (this.canvas && this.canvas.svgElement) {
+    if (this.canvas && this.canvas.svgElement) {
 
-      let getMaxRect = (): Rect => {
-        let rects = this.pages.map(p => p.getSizeRect());
-        let rect = {
-          x: 0,
-          y: 0,
-          width: 100,
-          height: 100
-        };
-
-        return rect;
-      }
-
-      let rect =       
+      let rect = getBoundingRect(this.pages.map(p => p.getSizeRect()));
 
       let doc = new jsPDF(rect.height > rect.width ? 'p' : 'l', 'mm', [rect.height, rect.width]);
 
@@ -711,7 +700,7 @@ export class Board {
 
 
       doc.save('whiteboard')
-    }*/
+    }
   }
   
   private doDownload(filename: string, text: string, type?: string) {
