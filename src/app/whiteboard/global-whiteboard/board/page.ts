@@ -5,7 +5,7 @@ import { Board, svgns } from "./board";
 import { Page as PageExport } from "../interfaces/whiteboard";
 import { Point } from "../interfaces/point";
 import { Canvg, presets, RenderingContext2D } from "canvg";
-import { getBoundingRect, resizeRect } from "../essentials/utils";
+import { defaultRect, getBoundingRect, getImageDimensions, resizeRect } from "../essentials/utils";
 
 const maxStepsBack = 30;
 
@@ -225,7 +225,7 @@ export class Page {
         }
     }
 
-    public getSVG(withBackgroundAsRect: boolean = false): [string, Rect] {
+    public async getSVG(withBackgroundAsRect: boolean = false): Promise<[string, Rect]> {
         // this method returns a string (and a rect for the shape) of a svg of this page, it moves the content and scales so that it makes sense
 
         if (this.canvas && this.canvas.svgElement) {
@@ -247,9 +247,25 @@ export class Page {
                 height: rect.height
             };
 
-            let rectStr = withBackgroundAsRect ? 
-                `<rect fill="${this.board.backgroundColor.toString()}" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" />`
-                : '';
+            let rectStr = '';
+            if (withBackgroundAsRect) {
+                // load the background color into an image, the background into a pattern
+
+                rectStr = `<rect fill="${this.board.backgroundColor.toString()}" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" />`
+                
+                if (this.board.backgroundImage != '') {
+                    
+                    let rectBGImg = await getImageDimensions(this.board.backgroundImage);
+                    
+                    rectStr += `
+                    <defs>
+                        <pattern width="${rectBGImg.width}" height="${rectBGImg.height}" patternUnits="userSpaceOnUse" id="pat1" x="0" y="0">
+                            <image width="${rectBGImg.width}" height="${rectBGImg.height}" href="${this.board.backgroundImage}" />
+                        </pattern>
+                    </defs>
+                    <rect width="${rect.width}" height="${rect.height}" fill="url(#pat1)"/>`;
+                }
+            }
   
             let str = `<?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -309,7 +325,7 @@ export class Page {
 
         // this method returns the data url of the png image of this page
 
-        let svg = this.getSVG(true);
+        let svg = await this.getSVG(true);
         let svgString = svg[0];
         let rect = svg[1];
 

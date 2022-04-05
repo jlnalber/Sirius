@@ -21,7 +21,7 @@ import { SelectorComponent } from '../../drawing/selector/selector.component';
 import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import { Canvg, presets, RenderingContext2D } from 'canvg';
-import { getBoundingRect } from '../essentials/utils';
+import { getBoundingRect, getImageDimensions } from '../essentials/utils';
 
 export const svgns = "http://www.w3.org/2000/svg";
 
@@ -665,8 +665,8 @@ export class Board {
     this.doDownload('whiteboard.json', JSON.stringify(this.export()));
   }
 
-  public downloadSVG(): void {
-    this.doDownload('whiteboard.svg', this.currentPage.getSVG()[0], 'svg');
+  public async downloadSVG(): Promise<void> {
+    this.doDownload('whiteboard.svg', (await this.currentPage.getSVG())[0], 'svg');
   }
 
   public async downloadPNG(): Promise<void> {
@@ -676,35 +676,38 @@ export class Board {
   public async downloadPDF() {
     if (this.canvas && this.canvas.svgElement) {
 
-      let rect = getBoundingRect(this.pages.map(p => p.getSizeRect()));
+      let doc = new jsPDF('p', 'mm', 'a4');
 
-      let doc = new jsPDF(rect.height > rect.width ? 'p' : 'l', 'mm', [rect.height, rect.width]);
+      let c = 0;
+      
+      for (let page of this.pages) {
+        let img = await page.getPageAsPicture();
+        let rect = await getImageDimensions(img);
+        doc.setPage(c++ + 1);
+        doc.addPage([rect.width, rect.height], rect.width > rect.height ? 'l' : 'p');
+        doc.addImage(img, 'PNG', 0, 0, rect.width, rect.height);
+
+        
+      }
+
+      /*let rect = getBoundingRect(this.pages.map(p => p.getSizeRect()));
+
 
       for (let pageIndex = 0; pageIndex < this.pages.length; pageIndex++) {
-        let canv = document.createElement('canvas');
-        canv.style.background = this.backgroundColor.toString();
-        let ctx = canv.getContext('2d');
-        let v = await Canvg.fromString(ctx as RenderingContext2D, this.pages[pageIndex].getSVG()[0], presets.offscreen());
 
-        let rect = this.pages[pageIndex].getSizeRect();
-        v.resize(rect.width, rect.height);
-        await v.render();
-
-        const blob = canv.toDataURL('image/png');
+        let img = await this.pages[pageIndex].getPageAsPicture();
 
         let width = doc.internal.pageSize.getWidth();
         let height = doc.internal.pageSize.getHeight();
-      
-        doc.setFillColor(this.backgroundColor.r ?? 0, this.backgroundColor.g ?? 0, this.backgroundColor.b ?? 0, this.backgroundColor.a)
-        doc.rect(0, 0, rect.width, rect.height, "F");
-        doc.addImage(blob, 'PNG', 0, 0, width, height);
+
+        doc.addImage(img, 'PNG', 0, 0, width, height);
 
         if (pageIndex != this.pages.length - 1) {
           doc.addPage();
         }
-      }
+      }*/
 
-
+      doc.deletePage(1);
       doc.save('whiteboard')
     }
   }

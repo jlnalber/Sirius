@@ -1,5 +1,5 @@
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
-import { Vector } from './../interfaces/point';
+import { Vector, Point } from './../interfaces/point';
 import { Rect } from './../interfaces/rect';
 
 export function max<T>(coll: T[], func: (t: T) => number): number | undefined {
@@ -94,4 +94,26 @@ export function resizeRect(rect: Rect, factor: number): Rect {
         width: rect.width * factor,
         height: rect.height * factor
     }
+}
+
+export function getImageDimensions(file: string): Promise<Rect> {
+    return new Promise (function (resolved, rejected) {
+        var i = new Image()
+        i.onload = function(){
+            resolved({x: 0, y: 0, width: i.width, height: i.height})
+        };
+        i.src = file
+    })
+}
+
+export const defaultRect: Rect = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0
+};
+
+export const defaultPoint: Point = {
+    x: 0,
+    y: 0
 }

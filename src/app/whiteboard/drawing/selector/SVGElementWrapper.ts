@@ -317,7 +317,7 @@ export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> 
     public rotateBy(addition: number) {
         for (let svgEl of this.svgElementWrappers) {
             if (svgEl.rotate != undefined) {
-                svgEl.rotate += addition;
+                svgEl.rotate += addition/* * Math.sign(svgEl.scaleX ?? 1) * Math.sign(svgEl.scaleY ?? 1)*/; // TODO: take care of how the element is already flipped (has to turn the other way) + weird behaviour in multiselection
             }
         }
     }
