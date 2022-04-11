@@ -102,6 +102,7 @@ export class CanvasComponent implements AfterViewInit {
     //this.captureEvents();
     //this.capturePinchZoomEvents();
 
+    // touch controller which keeps track of what happens to the board
     new TouchController({
       touchStart: (p: Point) => this.board.startTouch(p),
       touchMove: (from: Point, to: Point) => this.board.moveTouch(from, to),
@@ -112,6 +113,12 @@ export class CanvasComponent implements AfterViewInit {
       stylusStart: (p: Point) => this.board.startMouse(p),
       stylusMove: (from: Point, to: Point) => this.board.moveMouse(from, to),
       stylusEnd: (p: Point) => this.board.endMouse(p),
+      stylusBarrelStart: (p: Point) => this.board.startBarrel(p),
+      stylusBarrelMove: (from: Point, to: Point) => this.board.moveBarrel(from, to),
+      stylusBarrelEnd: (p: Point) => this.board.endBarrel(p),
+      stylusEraseStart: (p: Point) => this.board.startErase(p),
+      stylusEraseMove: (from: Point, to: Point) => this.board.moveErase(from, to),
+      stylusEraseEnd: (p: Point) => this.board.endErase(p),
       pinchZoom: (factor: number, point: Point) => this.board.zoomTo(this.board.zoom * factor, point)
     }, this.svgElement)
   }

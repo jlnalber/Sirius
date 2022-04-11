@@ -41,6 +41,9 @@ export class SelectorComponent implements AfterViewInit {
   @ViewChild('wrapper')
   public wrapper!: ElementRef;
   public wrapperEl: HTMLDivElement | undefined;
+  @ViewChild('outerWrapper')
+  public outerWrapper!: ElementRef;
+  public outerWrapperEl: HTMLDivElement | undefined;
 
   private _svgElements: SVGElementWrapperCollection = new SVGElementWrapperCollection();
   public set svgEl(value: SVGElement | SVGElement[] | undefined) {
@@ -203,6 +206,12 @@ export class SelectorComponent implements AfterViewInit {
     this.rbrEl = this.rbr.nativeElement;
     this.turnEl = this.turn.nativeElement;
     this.wrapperEl = this.wrapper.nativeElement;
+    this.outerWrapperEl = this.outerWrapper.nativeElement;
+
+    // prevent context menu from opening
+    this.outerWrapperEl?.addEventListener('contextmenu', (e: MouseEvent) => {
+      e.preventDefault();
+    })
 
     // capture the events
     this.captureEvent(this.wrapperEl as HTMLDivElement, (p: Point) => {

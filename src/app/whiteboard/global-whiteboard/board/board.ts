@@ -148,7 +148,7 @@ export class Board {
   constructor() {
     new Delete(this);
 
-    this.onBoardModeChange.addListener(() => {
+    this.onBoardAnyModeChange.addListener(() => {
       // reset the selector when the board mode is changed
       if (this.selector) {
         this.selector.svgEl = undefined;
@@ -168,6 +168,7 @@ export class Board {
   public set mode(value: BoardModes) {
     this._mode = value;
     this.onBoardModeChange.emit();
+    this.onBoardAnyModeChange.emit();
   }
 
   private _touchMode: BoardModes = BoardModes.Move;
@@ -177,6 +178,27 @@ export class Board {
   public set touchMode(value: BoardModes) {
     this._touchMode = value;
     this.onBoardTouchModeChange.emit();
+    this.onBoardAnyModeChange.emit();
+  }
+
+  private _barrelMode: BoardModes = BoardModes.Select;
+  public get barrelMode(): BoardModes {
+    return this._barrelMode;
+  }
+  public set barrelMode(value: BoardModes) {
+    this._barrelMode = value;
+    this.onBoardBarrelModeChange.emit();
+    this.onBoardAnyModeChange.emit();
+  }
+
+  private _eraseMode: BoardModes = BoardModes.Delete;
+  public get eraseMode(): BoardModes {
+    return this._eraseMode;
+  }
+  public set eraseMode(value: BoardModes) {
+    this._eraseMode = value;
+    this.onBoardEraseModeChange.emit();
+    this.onBoardAnyModeChange.emit();
   }
 
   private _backgroundColor: Color = new Color(18, 52, 19);
@@ -200,12 +222,17 @@ export class Board {
   public shapeMode: Shapes = Shapes.Line;
   private currentCanvasItem: CanvasItem | undefined;
   private currentTouchCanvasItem: CanvasItem | undefined;
+  private currentBarrelCanvasItem: CanvasItem | undefined;
+  private currentEraseCanvasItem: CanvasItem | undefined;
   public isOnActiveMouse: boolean = false;
   //public isOnActiveTouch: boolean = false;
   public onPointerMoveDoZoom: boolean = true;
 
   public readonly onBoardModeChange: Event = new Event();
   public readonly onBoardTouchModeChange: Event = new Event();
+  public readonly onBoardBarrelModeChange: Event = new Event();
+  public readonly onBoardEraseModeChange: Event = new Event();
+  public readonly onBoardAnyModeChange: Event = new Event();
   public readonly onMouse: Event = new Event();
   public readonly onMouseStart: Event = new Event();
   public readonly onMouseMove: Event = new Event();
@@ -214,6 +241,14 @@ export class Board {
   public readonly onTouchStart: Event = new Event();
   public readonly onTouchMove: Event = new Event();
   public readonly onTouchEnd: Event = new Event();
+  public readonly onBarrel: Event = new Event();
+  public readonly onBarrelStart: Event = new Event();
+  public readonly onBarrelMove: Event = new Event();
+  public readonly onBarrelEnd: Event = new Event();
+  public readonly onErase: Event = new Event();
+  public readonly onEraseStart: Event = new Event();
+  public readonly onEraseMove: Event = new Event();
+  public readonly onEraseEnd: Event = new Event();
   public readonly onInput: Event = new Event();
   public readonly onPageSwitched: Event = new Event();
   public readonly onPageRemoved: Event = new Event();
@@ -337,16 +372,16 @@ export class Board {
   }
 
   public async moveMouse(from: Point, to: Point) {
-    if (this.isOnActiveMouse) {
-      this.currentCanvasItem?.touchMove(from, to);
+    if (this.isOnActiveMouse && this.currentCanvasItem) {
+      this.currentCanvasItem.touchMove(from, to);
 
       this.onMouseMove.emit();
     }
   }
 
   public async endMouse(p: Point) {
-    if (this.isOnActiveMouse) {
-      this.currentCanvasItem?.touchEnd(p);
+    if (this.isOnActiveMouse && this.currentCanvasItem) {
+      this.currentCanvasItem.touchEnd(p);
 
       this.onMouseEnd.emit();
       this.isOnActiveMouse = false;
@@ -369,18 +404,80 @@ export class Board {
   }
 
   public async moveTouch(from: Point, to: Point) {
-    if (!this.isOnActiveMouse) {
-      this.currentTouchCanvasItem?.touchMove(from, to);
+    if (!this.isOnActiveMouse && this.currentTouchCanvasItem) {
+      this.currentTouchCanvasItem.touchMove(from, to);
 
       this.onTouchMove.emit();
     }
   }
 
   public async endTouch(p: Point) {
-    if (!this.isOnActiveMouse) {
-      this.currentTouchCanvasItem?.touchEnd(p);
+    if (!this.isOnActiveMouse && this.currentTouchCanvasItem) {
+      this.currentTouchCanvasItem.touchEnd(p);
 
       this.onTouchEnd.emit();
+      //this.isOnActiveTouch = false;
+      this.markChange();
+    }
+  }
+
+  public async startBarrel(p: Point) {
+    if (!this.isOnActiveMouse) {
+        //this.isOnActiveTouch = true;
+        this.onBarrel.emit();
+
+        this.currentBarrelCanvasItem = this.getCanvasElementToMode(this.barrelMode);
+
+        this.currentBarrelCanvasItem?.touchStart(p);
+
+        this.onBarrelStart.emit();
+    }
+  }
+
+  public async moveBarrel(from: Point, to: Point) {
+    if (!this.isOnActiveMouse && this.currentBarrelCanvasItem) {
+      this.currentBarrelCanvasItem.touchMove(from, to);
+
+      this.onBarrelMove.emit();
+    }
+  }
+
+  public async endBarrel(p: Point) {
+    if (!this.isOnActiveMouse && this.currentBarrelCanvasItem) {
+      this.currentBarrelCanvasItem.touchEnd(p);
+
+      this.onBarrelEnd.emit();
+      //this.isOnActiveTouch = false;
+      this.markChange();
+    }
+  }
+
+  public async startErase(p: Point) {
+    if (!this.isOnActiveMouse) {
+        //this.isOnActiveTouch = true;
+        this.onErase.emit();
+
+        this.currentEraseCanvasItem = this.getCanvasElementToMode(this.eraseMode);
+
+        this.currentEraseCanvasItem?.touchStart(p);
+
+        this.onEraseStart.emit();
+    }
+  }
+
+  public async moveErase(from: Point, to: Point) {
+    if (!this.isOnActiveMouse && this.currentEraseCanvasItem) {
+      this.currentEraseCanvasItem.touchMove(from, to);
+
+      this.onEraseMove.emit();
+    }
+  }
+
+  public async endErase(p: Point) {
+    if (!this.isOnActiveMouse && this.currentEraseCanvasItem) {
+      this.currentEraseCanvasItem.touchEnd(p);
+
+      this.onEraseEnd.emit();
       //this.isOnActiveTouch = false;
       this.markChange();
     }

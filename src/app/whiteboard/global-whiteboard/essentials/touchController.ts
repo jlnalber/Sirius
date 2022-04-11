@@ -1,4 +1,5 @@
 import { Point } from './../interfaces/point';
+import { getDistance, inRange } from './utils';
 
 interface TouchControllerEvents {
     touchStart: (point: Point) => void,
@@ -7,6 +8,12 @@ interface TouchControllerEvents {
     stylusStart: (point: Point) => void,
     stylusMove: (from: Point, to: Point) => void,
     stylusEnd: (point: Point) => void,
+    stylusBarrelStart?: (point: Point) => void,
+    stylusBarrelMove?: (from: Point, to: Point) => void,
+    stylusBarrelEnd?: (point: Point) => void,
+    stylusEraseStart?: (point: Point) => void,
+    stylusEraseMove?: (from: Point, to: Point) => void,
+    stylusEraseEnd?: (point: Point) => void,
     mouseStart: (point: Point) => void,
     mouseMove: (from: Point, to: Point) => void,
     mouseEnd: (point: Point) => void,
@@ -41,14 +48,38 @@ export class TouchController {
 
         let ongoingTouch: boolean = false;
 
+        let checkWhetherPointIsValid = (p: Point): boolean => {
+            // this function checks whether the distance is valid
+            const maxDistance = Number.MAX_VALUE;
+            return lastPoint == undefined || inRange(getDistance(lastPoint, p), -maxDistance, maxDistance);
+        }
+
+        const barrelButtons = 2;
+        const eraseButtons = 32;
+        const barrelButton = 2;
+        const eraseButton = 5;
+
         let start = (e: PointerEvent | Event) => {
             if (!ongoingTouch && e instanceof PointerEvent) {
                 let point = getPosFromPointerEvent(e);
                 
                 switch (e.pointerType) {
-                    case 'pen': this.touchControllerEvents.stylusStart(point); break;
+                    case 'pen': {
+                        if ((e.button == barrelButton || e.buttons == barrelButtons) && this.touchControllerEvents.stylusBarrelStart) {
+                            this.touchControllerEvents.stylusBarrelStart(point);
+                        }
+                        else if ((e.button == eraseButton || e.buttons == eraseButtons) && this.touchControllerEvents.stylusEraseStart) {
+                            this.touchControllerEvents.stylusEraseStart(point);
+                        }
+                        else {
+                            this.touchControllerEvents.stylusStart(point);
+                        }
+                        break;
+                    }
                     case 'mouse': this.touchControllerEvents.mouseStart(point); break;
-                    case 'touch': if (this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) this.touchControllerEvents.touchStart(point); break;
+                    case 'touch': {
+                        if (this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) this.touchControllerEvents.touchStart(point); break;
+                    }
                 }
 
                 if (e.pointerType != 'touch' || this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) {
@@ -62,20 +93,33 @@ export class TouchController {
             if (ongoingTouch && e instanceof PointerEvent) {
                 let point = getPosFromPointerEvent(e);
                 
-                if (lastPoint != undefined) {
-                    switch (e.pointerType) {
-                        case 'pen': this.touchControllerEvents.stylusMove(lastPoint, point); break;
-                        case 'mouse': this.touchControllerEvents.mouseMove(lastPoint, point); break;
-                        case 'touch': if (this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) this.touchControllerEvents.touchMove(lastPoint, point); break;
+                if (checkWhetherPointIsValid(point)) {
+                    if (lastPoint != undefined) {
+                        switch (e.pointerType) {
+                            case 'pen': {
+                                if ((e.button == barrelButton || e.buttons == barrelButtons) && this.touchControllerEvents.stylusBarrelMove) {
+                                    this.touchControllerEvents.stylusBarrelMove(lastPoint, point);
+                                }
+                                else if ((e.button == eraseButton || e.buttons == eraseButtons) && this.touchControllerEvents.stylusEraseMove) {
+                                    this.touchControllerEvents.stylusEraseMove(lastPoint, point);
+                                }
+                                else {
+                                    this.touchControllerEvents.stylusMove(lastPoint, point);
+                                }
+                                break;
+                            }
+                            case 'mouse': this.touchControllerEvents.mouseMove(lastPoint, point); break;
+                            case 'touch': if (this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) this.touchControllerEvents.touchMove(lastPoint, point); break;
+                        }
                     }
-                }
 
-                if (e.pointerType != 'touch' || this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) {
-                    lastPoint = point;
-                }
+                    if (e.pointerType != 'touch' || this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) {
+                        lastPoint = point;
+                    }
 
-                if (e.pointerType == 'touch' && this.mainTouchEventId == undefined) {
-                    this.mainTouchEventId = e.pointerId;
+                    if (e.pointerType == 'touch' && this.mainTouchEventId == undefined) {
+                        this.mainTouchEventId = e.pointerId;
+                    }
                 }
             }
         }
@@ -84,44 +128,65 @@ export class TouchController {
             if (ongoingTouch && e instanceof PointerEvent) {
                 let point = getPosFromPointerEvent(e);
                 
-                switch (e.pointerType) {
-                    case 'pen': this.touchControllerEvents.stylusEnd(point); break;
-                    case 'mouse': this.touchControllerEvents.mouseEnd(point); break;
-                    case 'touch': if (this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) this.touchControllerEvents.touchEnd(point); break;
-                }
+                if (checkWhetherPointIsValid(point)) {
+                    switch (e.pointerType) {
+                        case 'pen': {
+                            if ((e.button == barrelButton || e.buttons == barrelButtons) && this.touchControllerEvents.stylusBarrelEnd) {
+                                this.touchControllerEvents.stylusBarrelEnd(point);
+                            }
+                            else if ((e.button == eraseButton || e.buttons == eraseButtons) && this.touchControllerEvents.stylusEraseEnd) {
+                                this.touchControllerEvents.stylusEraseEnd(point);
+                            }
+                            else {
+                                this.touchControllerEvents.stylusEnd(point);
+                            }
+                            break;
+                        }
+                        case 'mouse': this.touchControllerEvents.mouseEnd(point); break;
+                        case 'touch': if (this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) this.touchControllerEvents.touchEnd(point); break;
+                    }
 
-                if (e.pointerType != 'touch' || this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) {
-                  lastPoint = undefined;
-                  if (this.evCache.length < 1) {
-                      ongoingTouch = false;
-                  }
+                    if (e.pointerType != 'touch' || this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) {
+                        lastPoint = undefined;
+                        if (this.evCache.length < 1) {
+                            ongoingTouch = false;
+                        }
+                    }
                 }
             }
         }
 
 
         this.element.addEventListener('pointerdown', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
             start(ev);
         })
         this.element.addEventListener('pointermove', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
             move(ev);
         })
         this.element.addEventListener('pointerup', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
             end(ev);
         })
         this.element.addEventListener('pointerleave', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
             end(ev);
         })
         this.element.addEventListener('pointercancel', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
             end(ev);
         })
         this.element.addEventListener('pointerout', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
             return;
         })
         this.element.addEventListener('pointerover', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
             return;
         })
         this.element.addEventListener('pointerenter', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
             return;
         })
 

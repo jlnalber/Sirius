@@ -117,3 +117,11 @@ export const defaultPoint: Point = {
     x: 0,
     y: 0
 }
+
+export function getDistance(from: Point, to: Point): number {
+    return Math.sqrt((from.x - to.x) ** 2 + (from.y - to.y) ** 2);
+}
+
+export function inRange(num: number, from: number, to: number): boolean {
+    return num >= from && num <= to;
+}

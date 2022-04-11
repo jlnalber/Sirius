@@ -74,7 +74,7 @@ export class Delete {
     }
 
     constructor(private readonly board: Board) {
-        this.board.onBoardModeChange.addListener(() => {
+        this.board.onBoardAnyModeChange.addListener(() => {
             if (this.board.mode == BoardModes.Delete && !this.active) {
                 this.start();
                 this.active = true;
