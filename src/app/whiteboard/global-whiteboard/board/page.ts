@@ -167,9 +167,7 @@ export class Page {
         let min = (a: number, b: number) => {
             return a < b ? a : b;
         }
-
         if (this.canvas && this.canvas.gElement) {
-
             for (let i in this.canvas.gElement.children) {
                 let el = this.canvas.gElement.children[i];
                 if (el) {
@@ -185,8 +183,20 @@ export class Page {
             }
         }*/
 
+        let currentPageIndex = this.board.currentPageIndex;
+        let myPageIndex = this.board.pages.indexOf(this);
+        let switchPage = myPageIndex >= 0 && myPageIndex != currentPageIndex;
+
+        if (switchPage) {
+            this.board.currentPageIndex = myPageIndex;
+        }
+
         if (this.canvas && this.canvas.gElement) {
             rect = getBoundingRect(this.canvas.gElement.children, this.board);
+        }
+
+        if (switchPage) {
+            this.board.currentPageIndex = currentPageIndex;
         }
 
         const offset = 40;

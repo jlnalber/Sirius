@@ -13,7 +13,7 @@ import { Line } from "../canvasElements/line";
 import { Rectangle } from "../canvasElements/rectangle";
 import { Page } from "./page";
 import { jsPDF } from "jspdf";
-import 'svg2pdf.js';
+//import 'svg2pdf.js';
 import { Rect } from '../interfaces/rect';
 import { Point } from '../interfaces/point';
 import { Color } from '../essentials/color';
@@ -22,6 +22,8 @@ import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import { Canvg, presets, RenderingContext2D } from 'canvg';
 import { getBoundingRect, getImageDimensions } from '../essentials/utils';
+
+declare var require: any
 
 export const svgns = "http://www.w3.org/2000/svg";
 
@@ -146,7 +148,7 @@ export class Board {
   //#endregion
 
   constructor() {
-    new Delete(this);
+    // new Delete(this);
 
     this.onBoardAnyModeChange.addListener(() => {
       // reset the selector when the board mode is changed
@@ -201,7 +203,7 @@ export class Board {
     this.onBoardAnyModeChange.emit();
   }
 
-  private _backgroundColor: Color = new Color(18, 52, 19);
+  private _backgroundColor: Color = new Color(255, 255, 255);
   public set backgroundColor(value: Color) {
     this._backgroundColor = value;
     this.onBackgroundChange.emit();
@@ -342,7 +344,7 @@ export class Board {
     // returns to a board mode the according CanvasItem
     switch (mode) {
       case BoardModes.Draw: return new Path(this);
-      case BoardModes.Delete: return new EmptyCanvasElement();
+      case BoardModes.Delete: return new Delete(this);
       case BoardModes.Move: return new Move(this);
       case BoardModes.Select: return new Select(this);
       case BoardModes.Shape: {
@@ -773,32 +775,43 @@ export class Board {
   public async downloadPDF() {
     if (this.canvas && this.canvas.svgElement) {
 
-      let doc = new jsPDF('p', 'mm', 'a4');
 
-      let c = 0;
+      //let c = 0;
+      let rects = this.pages.map(p => { 
+        let rectP = p.getSizeRect();
+        return { 
+          x: 0,
+          y: 0,
+          width: rectP.width,
+          height: rectP.height
+        }
+      })
+
+      console.log(rects);
+
+      let boundingRect = getBoundingRect(rects);
+
+      console.log(boundingRect);
+      console.log(this.pages[this.pages.length - 1].getSizeRect());
+
+      let doc = new jsPDF(boundingRect.width > boundingRect.height ? 'l' : 'p', 'mm', [ boundingRect.width, boundingRect.height]);
       
       for (let page of this.pages) {
         let img = await page.getPageAsPicture();
         let rect = await getImageDimensions(img);
-        doc.setPage(c++ + 1);
-        doc.addPage([rect.width, rect.height], rect.width > rect.height ? 'l' : 'p');
+        //doc.setPage(c++ + 1);
+        doc.addPage([ rect.width, rect.height], rect.width > rect.height ? 'l' : 'p');
         doc.addImage(img, 'PNG', 0, 0, rect.width, rect.height);
 
         
       }
 
       /*let rect = getBoundingRect(this.pages.map(p => p.getSizeRect()));
-
-
       for (let pageIndex = 0; pageIndex < this.pages.length; pageIndex++) {
-
         let img = await this.pages[pageIndex].getPageAsPicture();
-
         let width = doc.internal.pageSize.getWidth();
         let height = doc.internal.pageSize.getHeight();
-
         doc.addImage(img, 'PNG', 0, 0, width, height);
-
         if (pageIndex != this.pages.length - 1) {
           doc.addPage();
         }

@@ -2,7 +2,7 @@ import { Handler } from './../../whiteboard/global-whiteboard/essentials/handler
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
-import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
+import { Board } from './../../whiteboard/global-whiteboard/board/board';
 import { WhiteboardComponent } from './../../whiteboard/whiteboard.component';
 import { Whiteboard } from './../../whiteboard/global-whiteboard/interfaces/whiteboard';
 import { Component, AfterViewInit, Input, ViewChild, ElementRef, OnDestroy } from '@angular/core';

@@ -2,7 +2,7 @@ import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { Einheit, Fach } from '../interfaces/fach';
-import { Event } from 'src/app/whiteboard/global-whiteboard/essentials/event';
+import { Event } from '../../../whiteboard/global-whiteboard/essentials/event';
 
 const siriusConfigPath: string = 'sirius.config.json';
 const onSiriusConfigFileChannel: string = 'siriusConfigFile';
