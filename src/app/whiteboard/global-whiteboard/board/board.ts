@@ -158,26 +158,8 @@ export class Board {
       }
     })
 
-    this.onMouse.addListener(() => {
-      if (this.mode != BoardModes.Select && this.selector) {
-        this.selector.svgEl = undefined;
-      }
-    });
-
-    this.onBarrel.addListener(() => {
-      if (this.barrelMode != BoardModes.Select && this.selector) {
-        this.selector.svgEl = undefined;
-      }
-    });
-
-    this.onErase.addListener(() => {
-      if (this.eraseMode != BoardModes.Select && this.selector) {
-        this.selector.svgEl = undefined;
-      }
-    });
-
-    this.onTouch.addListener(() => {
-      if (this.touchMode != BoardModes.Select && this.selector) {
+    this.onBoardDetectPointer.addListener(() => {
+      if (this.selector) {
         this.selector.svgEl = undefined;
       }
     });
@@ -287,6 +269,7 @@ export class Board {
   public readonly onBackgroundChange: Event = new Event();
   public readonly onBack: Event = new Event();
   public readonly onForward: Event = new Event();
+  public readonly onBoardDetectPointer: Event = new Event();
 
   //#region pages
   public pages: Page[] = [ new Page(this) ]
@@ -387,6 +370,8 @@ export class Board {
 
   public async startMouse(p: Point) {
     if (!this.isOnActiveMouse) {
+        this.onBoardDetectPointer.emit();
+
         this.isOnActiveMouse = true;
         this.onMouse.emit();
 
@@ -412,13 +397,14 @@ export class Board {
 
       this.onMouseEnd.emit();
       this.isOnActiveMouse = false;
-      this.onInput.emit();
-      this.onWhiteboardViewChange.emit();
+      this.markChange();
     }
   }
 
   public async startTouch(p: Point) {
     if (!this.isOnActiveMouse) {
+        this.onBoardDetectPointer.emit();
+
         //this.isOnActiveTouch = true;
         this.onTouch.emit();
 
@@ -450,6 +436,8 @@ export class Board {
 
   public async startBarrel(p: Point) {
     if (!this.isOnActiveMouse) {
+        this.onBoardDetectPointer.emit();
+        
         //this.isOnActiveTouch = true;
         this.onBarrel.emit();
 
@@ -481,6 +469,8 @@ export class Board {
 
   public async startErase(p: Point) {
     if (!this.isOnActiveMouse) {
+        this.onBoardDetectPointer.emit();
+
         //this.isOnActiveTouch = true;
         this.onErase.emit();
 
@@ -547,8 +537,7 @@ export class Board {
                 img.setAttributeNS(null, 'href', p[1]);
                 img.setAttributeNS(null, 'transform', `translate(0 ${p[0].height}) rotate(180) scale(-1 1)`);
 
-                this.onInput.emit();
-                this.onWhiteboardViewChange.emit();
+                this.markChange();
               }
             }
           }
@@ -637,8 +626,7 @@ export class Board {
             img.setAttributeNS(null, 'width', dim.width);
             img.setAttributeNS(null, 'height', dim.height);
             
-            this.onInput.emit();
-            this.onWhiteboardViewChange.emit();
+            this.markChange();
           };
         }
 
@@ -767,8 +755,7 @@ export class Board {
       g.setAttributeNS(null, 'transform', `translate(${centerSVG.x - centerG.x} ${centerSVG.y - centerG.y})`);
     }
 
-    this.onInput.emit();
-    this.onWhiteboardViewChange.emit();
+    this.markChange();
   }
 
   public removeElement(el: SVGElement): boolean {
