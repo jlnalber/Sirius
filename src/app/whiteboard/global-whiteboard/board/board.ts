@@ -150,15 +150,40 @@ export class Board {
   constructor() {
     // new Delete(this);
 
+    // those listeners will reset the select on certain occassions
     this.onBoardAnyModeChange.addListener(() => {
       // reset the selector when the board mode is changed
       if (this.selector) {
         this.selector.svgEl = undefined;
       }
     })
+
+    this.onMouse.addListener(() => {
+      if (this.mode != BoardModes.Select && this.selector) {
+        this.selector.svgEl = undefined;
+      }
+    });
+
+    this.onBarrel.addListener(() => {
+      if (this.barrelMode != BoardModes.Select && this.selector) {
+        this.selector.svgEl = undefined;
+      }
+    });
+
+    this.onErase.addListener(() => {
+      if (this.eraseMode != BoardModes.Select && this.selector) {
+        this.selector.svgEl = undefined;
+      }
+    });
+
+    this.onTouch.addListener(() => {
+      if (this.touchMode != BoardModes.Select && this.selector) {
+        this.selector.svgEl = undefined;
+      }
+    });
   }
 
-  public stroke: Stroke = new Stroke(new Color(255, 255, 255), 5);
+  public stroke: Stroke = new Stroke(new Color(0, 0, 0), 5);
   public fill: Color = new Color(0, 0, 0, 0);
   public canvas: CanvasComponent | undefined;
   public selector: SelectorComponent | undefined;

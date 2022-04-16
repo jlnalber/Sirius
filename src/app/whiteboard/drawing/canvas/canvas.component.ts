@@ -1,5 +1,5 @@
 import { TouchController } from './../../global-whiteboard/essentials/touchController';
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise } from 'rxjs';
@@ -12,6 +12,15 @@ import { Point } from '../../global-whiteboard/interfaces/point';
   styleUrls: ['./canvas.component.scss']
 })
 export class CanvasComponent implements AfterViewInit {
+
+  @HostListener('touchmove', ['$event'])
+  onTouchMove(evt: any) {
+    //In this case, the default behavior is scrolling the body, which
+    //would result in an overflow.  Since we don't want that, we preventDefault.
+    if(!evt._isScroller && evt.preventDefault) {
+      evt.preventDefault()
+    }
+  }
 
   @Input() board!: Board;
 
@@ -125,17 +134,14 @@ export class CanvasComponent implements AfterViewInit {
 
   /*private capturePinchZoomEvents() {
     // from mdn: https://github.com/mdn/dom-examples/blob/master/pointerevents/Pinch_zoom_gestures.html 
-
     // Global vars to cache event state
     let evCache = new Array();
     let prevDiff = -1;
-
     let pointerdown_handler = (ev: any) => {
       // The pointerdown event signals the start of a touch interaction.
       // This event is cached to support 2-finger gestures
       evCache.push(ev);
     }
-
     let pointermove_handler = (ev: any) => {
       // This function implements a 2-pointer horizontal pinch/zoom gesture. 
       //
@@ -145,7 +151,6 @@ export class CanvasComponent implements AfterViewInit {
       //
       // This function sets the target element's border to "dashed" to visually
       // indicate the pointer's target received a move event.
-
       // Find this event in the cache and update its record with this event
       for (let i = 0; i < evCache.length; i++) {
         if (ev.pointerId == evCache[i].pointerId) {
@@ -153,7 +158,6 @@ export class CanvasComponent implements AfterViewInit {
         break;
         }
       }
-
       // If two pointers are down, check for pinch gestures
       if (evCache.length == 2) {
         // Calculate the distance between the two pointers
@@ -166,13 +170,11 @@ export class CanvasComponent implements AfterViewInit {
           y: evCache[1].clientY as number
         }
         let curDiff = Math.sqrt(Math.pow(p0.x - p1.x, 2) + Math.pow(p0.y - p1.y, 2));
-
         const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
         let averageP = {
           x: (p0.x + p1.x) / 2 - rect.left,
           y: (p0.y + p1.y) / 2 - rect.top
         }
-
         if (prevDiff > 0 && curDiff > 0) {
           // zoom to the middle by the amount that was scrolled
           this.board.zoomTo(this.board.zoom * curDiff / prevDiff, averageP);
@@ -183,12 +185,10 @@ export class CanvasComponent implements AfterViewInit {
             // The distance between the two pointers has decreased
           }*/
         /*}
-
         // Cache the distance for the next move event 
         prevDiff = curDiff;
       }
     }
-
     let pointerup_handler = (ev: any) => {
       // Remove this pointer from the cache and reset the target's
       // background and border
@@ -197,7 +197,6 @@ export class CanvasComponent implements AfterViewInit {
       // If the number of pointers down is less than two then reset diff tracker
       if (evCache.length < 2) prevDiff = -1;
     }
-
     let remove_event = (ev: any) => {
       // Remove this event from the target's cache
       for (let i = 0; i < evCache.length; i++) {
@@ -207,11 +206,9 @@ export class CanvasComponent implements AfterViewInit {
         }
       }
     }
-
     if (this.svgElement) {
       this.svgElement.onpointerdown = pointerdown_handler;
       this.svgElement.onpointermove = pointermove_handler;
-
       // Use same handler for pointer{up,cancel,out,leave} events since
       // the semantics for these events - in this app - are the same.
       this.svgElement.onpointerup = pointerup_handler;
@@ -219,22 +216,17 @@ export class CanvasComponent implements AfterViewInit {
       this.svgElement.onpointerout = pointerup_handler;
       this.svgElement.onpointerleave = pointerup_handler;
     }
-
   }
-
   private captureEvents() {
     let getPosFromMouseEvent = (e: MouseEvent): Point => {
       const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
-
       return {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
       };
     }
-
     let getPosFromTouchEvent = (e: any): Point => {
       let res1: any = e.changedTouches[0];
-
       const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
       
       return {
@@ -242,7 +234,6 @@ export class CanvasComponent implements AfterViewInit {
         y: res1.clientY - rect.top
       };
     }
-
     this.svgElement?.addEventListener('mouseup', async (e: MouseEvent) => {
       e.preventDefault();
       await this.board.endMouse(getPosFromMouseEvent(e));
@@ -270,7 +261,6 @@ export class CanvasComponent implements AfterViewInit {
         e.preventDefault();
       }
     })
-
     // this will capture all mousedown events from the canvas element
     fromEvent(this.svgElement as SVGSVGElement, 'mousedown')
       .pipe(
@@ -278,7 +268,6 @@ export class CanvasComponent implements AfterViewInit {
           let m = e as MouseEvent;
           m.preventDefault();
           this.board.startMouse(getPosFromMouseEvent(m));
-
           // after a mouse down, we'll record all mouse moves
           return fromEvent(this.svgElement as SVGSVGElement, 'mousemove')
             .pipe(
@@ -339,7 +328,6 @@ export class CanvasComponent implements AfterViewInit {
           res[1].preventDefault();
           let res1: any = res[0].changedTouches[0];
           let res2: any = res[1].changedTouches[0];
-
           const rect = this.svgElement?.getBoundingClientRect() as DOMRect;
     
           // previous and current position with the offset
