@@ -6,7 +6,7 @@
         <div class="fileContainer">
             <div *ngFor="let file of this.files" class="file" (click)="this.openFile(file)">
                 <div class="text">
-                    {{ file }}
+                    {{ file.name }}
                 </div>
                 <div align="right">
                     <button class="remove" color="accent" mat-button (click)="this.removeFile(file)"><mat-icon>clear</mat-icon></button>

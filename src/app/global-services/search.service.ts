@@ -119,7 +119,7 @@ export class SearchService {
         if (einheit.topic.toLowerCase().includes(s)) {
           res.push({
             header: einheit.topic,
-            description: '',
+            description: `Im Fach '${fach.name}'`,
             routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
             type: 'einheit'
           });
@@ -157,7 +157,7 @@ export class SearchService {
         if (whiteboard.name.toLowerCase().includes(s)) {
           res.push({
             header: whiteboard.name,
-            description: '',
+            description: `Im Fach '${fach.name}'`,
             routerLink: this.faecherManager.getLinkToWhiteboard(fach, undefined, whiteboard),
             type: 'whiteboard'
           })
@@ -165,7 +165,7 @@ export class SearchService {
         else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId).toLowerCase().includes(s)) {
           res.push({
             header: whiteboard.name,
-            description: `In: ${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}`,
+            description: `In ${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)} im Fach '${fach.name}'`,
             routerLink: this.faecherManager.getLinkToWhiteboard(fach, undefined, whiteboard),
             type: 'whiteboard'
           })
@@ -178,7 +178,7 @@ export class SearchService {
           if (whiteboard.name.toLowerCase().includes(s)) {
             res.push({
               header: whiteboard.name,
-              description: '',
+              description: `In der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
               routerLink: this.faecherManager.getLinkToWhiteboard(fach, einheit, whiteboard),
               type: 'whiteboard'
             })
@@ -186,7 +186,7 @@ export class SearchService {
           else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId).toLowerCase().includes(s)) {
             res.push({
               header: whiteboard.name,
-              description: `In: ${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}`,
+              description: `In ${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)} in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
               routerLink: this.faecherManager.getLinkToWhiteboard(fach, einheit, whiteboard),
               type: 'whiteboard'
             })
@@ -199,15 +199,130 @@ export class SearchService {
   }
 
   private getFiles(s: string): SearchResult[] {
-    return [];
+    // suche nach geeigneten Dateien
+    let res: SearchResult[] = [];
+
+    for (let fach of this.faecherManager.faecherData.faecher) {
+
+      // durchsuche das Fach
+      for (let file of fach.files) {
+        if (file.name.toLowerCase().includes(s)) {
+          res.push({
+            header: file.name,
+            description: `Im Fach '${fach.name}'`,
+            routerLink: this.faecherManager.getLinkToFach(fach),
+            type: 'file',
+            additionalClickAction: () => { this.faecherManager.openFile(fach, undefined, file); }
+          })
+        }
+        else if (file.categoryId && this.faecherManager.getCategoryNameToId(file.categoryId).toLowerCase().includes(s)) {
+          res.push({
+            header: file.name,
+            description: `In ${this.faecherManager.getCategoryNameToId(file.categoryId)} im Fach '${fach.name}'`,
+            routerLink: this.faecherManager.getLinkToFach(fach),
+            type: 'file',
+            additionalClickAction: () => { this.faecherManager.openFile(fach, undefined, file); }
+          })
+        }
+      }
+
+      // durchsuche die Einheiten
+      for (let einheit of fach.einheiten) {
+        for (let file of einheit.files) {
+          if (file.name.toLowerCase().includes(s)) {
+            res.push({
+              header: file.name,
+              description: `In der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
+              type: 'file',
+              additionalClickAction: () => { this.faecherManager.openFile(fach, einheit, file); }
+            })
+          }
+          else if (file.categoryId && this.faecherManager.getCategoryNameToId(file.categoryId).toLowerCase().includes(s)) {
+            res.push({
+              header: file.name,
+              description: `In ${this.faecherManager.getCategoryNameToId(file.categoryId)} in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
+              type: 'file',
+              additionalClickAction: () => { this.faecherManager.openFile(fach, einheit, file); }
+            })
+          }
+        }
+      }
+    }
+
+    return res;
   }
 
   private getTasks(s: string): SearchResult[] {
-    return [];
+    // suche nach geeigneten Tasks
+    let res: SearchResult[] = [];
+
+    for (let fach of this.faecherManager.faecherData.faecher) {
+
+      // durchsuche das Fach
+      for (let task of fach.tasks) {
+        if (task.description.toLowerCase().includes(s)) {
+          res.push({
+            header: task.description,
+            description: `Im Fach '${fach.name}'`,
+            routerLink: this.faecherManager.getLinkToFach(fach),
+            type: task.closed ? 'task' : 'taskOpen'
+          })
+        }
+        else if (task.categoryId && this.faecherManager.getCategoryNameToId(task.categoryId).toLowerCase().includes(s)) {
+          res.push({
+            header: task.description,
+            description: `In ${this.faecherManager.getCategoryNameToId(task.categoryId)} im Fach '${fach.name}'`,
+            routerLink: this.faecherManager.getLinkToFach(fach),
+            type: task.closed ? 'task' : 'taskOpen'
+          })
+        }
+      }
+
+      // durchsuche die Einheiten
+      for (let einheit of fach.einheiten) {
+        for (let task of einheit.tasks) {
+          if (task.description.toLowerCase().includes(s)) {
+            res.push({
+              header: task.description,
+              description: `In der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
+              type: task.closed ? 'task' : 'taskOpen'
+            })
+          }
+          else if (task.categoryId && this.faecherManager.getCategoryNameToId(task.categoryId).toLowerCase().includes(s)) {
+            res.push({
+              header: task.description,
+              description: `In ${this.faecherManager.getCategoryNameToId(task.categoryId)} in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
+              type: task.closed ? 'task' : 'taskOpen'
+            })
+          }
+        }
+      }
+    }
+
+    return res;
   }
 
   private getSettings(s: string): SearchResult[] {
-    return [];
+    const content = [ 'Kategorien' ];
+
+    let res: SearchResult[] = [];
+
+    for (let c of content) {
+      if (c.toLowerCase().includes(s)) {
+        res.push({
+          header: c,
+          description: 'In den Einstellungen',
+          routerLink: '/settings/',
+          type: 'setting'
+        })
+      }
+    }
+
+    return res;
   }
 
   constructor(private readonly faecherManager: FaecherManagerService) { }
@@ -216,7 +331,7 @@ export class SearchService {
 export interface SearchResult {
   header: string,
   description: string,
-  type: 'fach' | 'einheit' | 'file' | 'task' | 'whiteboard' | 'setting',
+  type: 'fach' | 'einheit' | 'file' | 'task' | 'taskOpen' | 'whiteboard' | 'setting',
   routerLink: string,
   additionalClickAction?: () => void
 }

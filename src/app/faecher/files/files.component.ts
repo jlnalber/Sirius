@@ -2,6 +2,7 @@ import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-m
 import { ActivatedRoute } from '@angular/router';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
+import { File as FileFach } from '../global/interfaces/fach';
 
 @Component({
   selector: 'faecher-files',
@@ -10,17 +11,20 @@ import { ElectronService } from 'ngx-electron';
 })
 export class FilesComponent implements OnInit {
   @Input()
-  files: string[] | undefined = [];
+  files: FileFach[] | undefined = [];
 
   @Input()
   isAbleToAddFiles: boolean = true;
 
-  path: string | undefined;
+  fach: string = '';
+  einheit: string | undefined;
 
-  constructor(public readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService) { 
+
+  constructor(public readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, public readonly faecherManager: FaecherManagerService) { 
     if (this.electron.isElectronApp) {
       this.activeRoute.params.subscribe((params: any) => {
-        this.path = this.faecherManager.getPathForFileDir(params.fachid, params.einheitid);
+        this.fach = params.fachid
+        this.einheit = params.einheitid;
       })
     }
   }
@@ -28,19 +32,17 @@ export class FilesComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public openFile(file: string) {
-    if (this.electron.isElectronApp) {
-      this.electron.ipcRenderer.invoke('open-file', this.path + file);
-    }
-  }
-
-  public removeFile(file: string): boolean {
+  public removeFile(file: FileFach): boolean {
     const index = this.files?.indexOf(file);
     if (index != undefined && index != -1) {
       this.files?.splice(index, 1);
       return true;
     }
     return false;
+  }
+
+  public openFile(file: FileFach): void {
+    this.faecherManager.openFile(this.fach, this.einheit, file);
   }
 
   @HostListener('dragover', ['$event']) onDragOver(evt: DragEvent) {
@@ -69,13 +71,8 @@ export class FilesComponent implements OnInit {
     catch { }
   }
 
-  private addFile(file: File | undefined): void {
-    if (this.electron.isElectronApp && file) {
-      file.arrayBuffer().then(value => {
-        this.electron.ipcRenderer.invoke('write-file', this.path + file.name, value);
-        this.files?.push(file.name);
-      })
-    }
+  private async addFile(file: File | undefined): Promise<void> {
+    this.files?.push({ name: await this.faecherManager.addFile(this.fach, this.einheit, file) });
   }
   
   private openFiles(files: FileList | null | undefined): void {

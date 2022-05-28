@@ -15,7 +15,7 @@ export interface Fach {
     id: string,
     name: string,
     description: string,
-    files: string[],
+    files: File[],
     einheiten: Einheit[],
     notes: string,
     tasks: Task[],

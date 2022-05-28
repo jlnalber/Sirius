@@ -1,7 +1,7 @@
 import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Einheit, Fach, Faecher, Whiteboard } from '../interfaces/fach';
+import { Einheit, Fach, Faecher, File as FileFach, Whiteboard } from '../interfaces/fach';
 import { Event } from '../../../whiteboard/global-whiteboard/essentials/event';
 
 const siriusConfigPath: string = 'sirius.config.json';
@@ -224,14 +224,31 @@ export class FaecherManagerService {
     return false;
   }
 
-  public getPathForFileDir(fachid: string | undefined, einheitid: string | undefined): string {
-    if (fachid) {
-      let path = `faecher/${fachid}/`;
-      if (einheitid) {
-        path += `einheiten/${einheitid}/`;
+  public getPathForFileDir(fach: string | Fach | undefined, einheit: string | Einheit | undefined): string {
+    if (fach) {
+      let path = `faecher/${typeof fach == 'string' ? fach : fach.id}/`;
+      if (einheit) {
+        path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
       }
       path += 'dateien/'
       return path;
+    }
+    return '';
+  }
+
+  public openFile(fach: Fach | string, einheit: Einheit | string | undefined, file: FileFach | string) {
+    // Öffne die gegebene Datei
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('open-file', this.getPathForFileDir(fach, einheit) + (typeof file == 'string' ? file : file.name));
+    }
+  }
+
+  public async addFile(fach: Fach | string, einheit: Einheit | string | undefined, file: File | undefined): Promise<string> {
+    if (this.electron.isElectronApp && file) {
+      return await file.arrayBuffer().then(value => {
+        this.electron.ipcRenderer.invoke('write-file', this.getPathForFileDir(fach, einheit) + file.name, value);
+        return file.name;
+      })
     }
     return '';
   }
