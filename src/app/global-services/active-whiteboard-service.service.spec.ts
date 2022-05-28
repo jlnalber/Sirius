@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ActiveWhiteboardService } from './active-whiteboard-service.service';
+import { ActiveService } from './active-whiteboard-service.service';
 
 describe('ActiveWhiteboardServiceService', () => {
-  let service: ActiveWhiteboardService;
+  let service: ActiveService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ActiveWhiteboardService);
+    service = TestBed.inject(ActiveService);
   });
 
   it('should be created', () => {

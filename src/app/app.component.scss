@@ -1,3 +1,6 @@
+$searchHeight: 35px;
+$transition: 0.2s ease-in-out;
+
 mat-toolbar {
   -webkit-user-select: none;
   user-select: none;
@@ -43,15 +46,15 @@ mat-sidenav {
 }
 
 .search {
-    transition: all 0.2s ease-in-out;
-    height: 30px;
+    transition: all $transition, margin-top 1ms;
+    height: $searchHeight;
     margin-right: 15px;
-    transition: all 0.2s ease-in-out;
+    transition: all $transition;
     width: 250px;
 }
 
 .search input {
-    transition: all 0.2s ease-in-out;
+    transition: all $transition, margin-top 1ms;
     background-color: #2a4492;
     height: 100%;
     border-radius: 6px;
@@ -64,9 +67,25 @@ mat-sidenav {
     color: white;
 }
 
+.search button {
+    display: none;
+    transition: all $transition;
+    background-color: #2a4492;
+    border-radius: 0px 6px 6px 0px;
+    outline: none;
+    border: none;
+    height: calc($searchHeight + 2px);
+    position: relative;
+    top: 2px;
+    color: white;
+    border-left: 1px solid #111320;
+    text-align: center;
+    vertical-align: middle;
+}
+
 .search input::placeholder {
     color: white;
-    transition: all 0.2s ease-in-out;
+    transition: all $transition;
 }
 
 .search input:hover {
@@ -81,14 +100,29 @@ mat-sidenav {
     border: none;
 }
 
+.search button:hover {
+    background-color: white;
+    color: black;
+}
+
 .searchActive {
+    margin-top: -10px;
     margin-right: 100px;
     width: 2000px;
     margin-left: 100px;
+    //pointer-events: none;
 }
 
 .searchActive input {
     width: 100%;
+    border-radius: 6px 0px 0px 6px;
+    top: 2px;
+    //pointer-events: all;
+}
+
+.searchActive button {
+    display: unset;
+    //pointer-events: all;
 }
 
 .searchActive input:focus, .searchActive input:hover {

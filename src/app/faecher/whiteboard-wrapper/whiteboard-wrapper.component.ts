@@ -1,4 +1,4 @@
-import { ActiveWhiteboardService } from './../../global-services/active-whiteboard-service.service';
+import { ActiveService } from './../../global-services/active-whiteboard-service.service';
 import { Handler } from './../../whiteboard/global-whiteboard/essentials/handler';
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { ActivatedRoute } from '@angular/router';
@@ -34,7 +34,7 @@ export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService, private readonly activeWhiteboardService: ActiveWhiteboardService) { 
+  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService, private readonly activeWhiteboardService: ActiveService) { 
     this.activeWhiteboardService.isWhiteboardActive = true;
     
     // get the whiteboard
