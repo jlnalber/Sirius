@@ -235,33 +235,34 @@ export class Page {
         }
     }
 
-    public async getSVG(withBackgroundAsRect: boolean = false): Promise<[string, Rect]> {
+    public async getSVG(withBackgroundAsRect: boolean = true): Promise<[string, Rect]> {
         // this method returns a string (and a rect for the shape) of a svg of this page, it moves the content and scales so that it makes sense
 
-        if (this.canvas && this.canvas.svgElement) {
-            let content = this.canvas.svgElement.innerHTML;
+        if (this.canvas && this.canvas.svgElement && this.canvas.gElement) {
+            let content = this.canvas.gElement.outerHTML;
             if (this.board.currentPage != this) {
               content = `<g transform="translate(${this.translateX} ${this.translateY}) scale(${this.zoom})">${this.currentContent}</g>`;
             }
 
-            let rect = this.getSizeRect();
+            let sizeRect = this.getSizeRect();
+            //let rect = this.getSizeRect();
 
             let scaleBack = 1 / this.zoom;
-            let translateXBack = -this.translateX - rect.x * this.zoom;
-            let translateYBack = -this.translateY - rect.y * this.zoom;
+            let translateXBack = -this.translateX - sizeRect.x * this.zoom;
+            let translateYBack = -this.translateY - sizeRect.y * this.zoom;
 
-            rect = {
+            let rect = {
                 x: 0,
                 y: 0,
-                width: rect.width,
-                height: rect.height
+                width: sizeRect.width,
+                height: sizeRect.height
             };
 
             let rectStr = '';
             if (withBackgroundAsRect) {
                 // load the background color into an image, the background into a pattern
 
-                rectStr = `<rect fill="${this.board.backgroundColor.toString()}" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" />`
+                rectStr = `<rect fill="${this.board.backgroundColor.toString()}" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" />`;
                 
                 if (this.board.backgroundImage != '') {
                     
@@ -273,7 +274,7 @@ export class Page {
                             <image width="${rectBGImg.width}" height="${rectBGImg.height}" href="${this.board.backgroundImage}" />
                         </pattern>
                     </defs>
-                    <rect width="${rect.width}" height="${rect.height}" fill="url(#pat1)"/>`;
+                    <rect x="${-sizeRect.x}" y="${-sizeRect.y}" width="${rect.width}" height="${rect.height}" transform="translate(${sizeRect.x} ${sizeRect.y})" fill="url(#pat1)"/>`;
                 }
             }
   

@@ -1,3 +1,4 @@
+import { ActiveWhiteboardService } from './global-services/active-whiteboard-service.service';
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
@@ -11,7 +12,7 @@ export class AppComponent {
   title = 'Sirius';
   opened = false;
 
-  constructor(private readonly location: Location) {
+  constructor(private readonly location: Location, public readonly activeWhiteboardService: ActiveWhiteboardService) {
     /*this.location.onUrlChange((url: string, state: unknown) => {
       console.log(url, state);
     })*/

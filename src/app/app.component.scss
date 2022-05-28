@@ -30,3 +30,10 @@ mat-sidenav {
 .icon {
     margin-right: 16px;
 }
+
+.fabButton {
+    position: fixed;
+    left: 30px;
+    top: 30px;
+    z-index: 6;
+}

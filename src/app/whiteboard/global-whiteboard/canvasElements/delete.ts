@@ -127,8 +127,6 @@ export class Delete extends CanvasItem {
             const distance = distanceCalculator(r);
 
             let rect = this.board.getRectRealPosInCanvas(r.getBoundingClientRect());    //BOUNDING BOX OF THE OBJECT
-
-            console.log(rect, distance);
         
             //CHECK IF THE TWO BOUNDING BOXES OVERLAP (+ the distance)
             return !((rect.x - distance) > p.x || 
@@ -155,15 +153,11 @@ export class Delete extends CanvasItem {
 
         // save all the svgpathelements in res that could potentially intersect with the point
 
-        let counter: number = 0;
-
         let res: SVGPathElement[] = [];
         if (this.board.canvas && this.board.canvas.gElement) {
 
             for (let i in this.board.canvas.gElement.children) {
                 let el = this.board.canvas.gElement.children[i];
-
-                if (el instanceof SVGPathElement) counter++;
                 if (el instanceof SVGPathElement && intersectRect(el)) {
                     res.push(el);
                 }

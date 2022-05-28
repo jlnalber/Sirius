@@ -1,5 +1,5 @@
 <div class="main">
-  <mat-toolbar color="primary">
+  <mat-toolbar *ngIf="!this.activeWhiteboardService.isWhiteboardActive" color="primary">
     <button mat-icon-button class="icon" (click)="this.opened = !this.opened">
       <mat-icon>menu</mat-icon>
     </button>
@@ -9,6 +9,10 @@
     <span>Sirius</span>
     <span class="spacer"></span>
   </mat-toolbar>
+
+  <button *ngIf="this.activeWhiteboardService.isWhiteboardActive" color="primary" mat-mini-fab class="icon" [routerLink]="this.goBackUrl()" class="fabButton">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
 
   <mat-sidenav-container>
     <mat-sidenav [(opened)]="this.opened">

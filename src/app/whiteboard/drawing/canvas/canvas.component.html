@@ -1,6 +1,10 @@
 <div class="svgWrapper">
     <whiteboard-selector [board]="this.board"></whiteboard-selector>
-    <svg #canvas [ngStyle]="{'background-color': this.board.backgroundColor.toString(), 'background-image': 'url(\'' + this.board.backgroundImage + '\')'}">
+    <svg #canvas [ngStyle]="{'background-color': this.board.backgroundColor.toString()}">
+        <pattern #bgImgPattern id="bg-pattern" x="0" y="0" width="75" height="75" patternUnits="userSpaceOnUse">
+            <image #bgImg width="75" height="75"></image>
+        </pattern>
+        <rect #patternRect x="0" y="0" width="100%" height="100%" fill="url(#bg-pattern)"></rect>
         <g #g>
 
         </g>
