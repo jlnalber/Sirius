@@ -267,14 +267,16 @@ export class Page {
                 if (this.board.backgroundImage != '') {
                     
                     let rectBGImg = await getImageDimensions(this.board.backgroundImage);
+
+                    const someWeirdOffset = 80;
                     
-                    rectStr += `
+                    rectStr += `E
                     <defs>
                         <pattern width="${rectBGImg.width}" height="${rectBGImg.height}" patternUnits="userSpaceOnUse" id="pat1" x="0" y="0">
                             <image width="${rectBGImg.width}" height="${rectBGImg.height}" href="${this.board.backgroundImage}" />
                         </pattern>
                     </defs>
-                    <rect x="${-sizeRect.x}" y="${-sizeRect.y}" width="${rect.width}" height="${rect.height}" transform="translate(${sizeRect.x} ${sizeRect.y})" fill="url(#pat1)"/>`;
+                    <rect x="${-sizeRect.x}" y="${-sizeRect.y}" width="${rect.width}" height="${rect.height}" transform="translate(${sizeRect.x + someWeirdOffset / (sizeRect.width - 2 * 40)} ${sizeRect.y + someWeirdOffset / (sizeRect.height - 2 * 40)})" fill="url(#pat1)"/>`;
                 }
             }
   
