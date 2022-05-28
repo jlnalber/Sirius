@@ -2,6 +2,9 @@ import { CanvasItem } from "./canvasElement";
 import { Stroke } from "../essentials/stroke";
 import { Board } from "../board/board";
 import { Point } from "../interfaces/point";
+import { getDistance } from "../essentials/utils";
+
+const maxPointDistance = 50;
 
 export class Path extends CanvasItem {
 
@@ -126,6 +129,20 @@ export class Path extends CanvasItem {
 
     public touchMove(from: Point, to: Point): void {
         let realCurr = this.board.getActualPoint(to);
+
+        // add points in between so that there is not a great distance
+        let realFrom = this.board.getActualPoint(from);
+        let distance = getDistance(realCurr, realFrom);
+        let iterations = Math.round(distance / maxPointDistance) - 1;
+        for (let i = 1; i <= iterations; i++) {
+            this.addPoint({
+                x: realFrom.x + i / (iterations + 1) * (realCurr.x - realFrom.x),
+                y: realFrom.y + i / (iterations + 1) * (realCurr.y - realFrom.y)
+            })
+            console.log('point added', iterations, i);
+        }
+
+
         this.addPoint(realCurr);
     }
 
