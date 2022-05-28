@@ -24,6 +24,7 @@ import { Route, RouterModule } from '@angular/router';
 import { WhiteboardsComponent } from './whiteboards/whiteboards.component';
 import { WhiteboardWrapperComponent } from './whiteboard-wrapper/whiteboard-wrapper.component';
 import { AddWhiteboardDialogComponent } from './whiteboards/add-whiteboard-dialog/add-whiteboard-dialog.component';
+import { CategorySelectorComponent } from './category-selector/category-selector.component';
 
 const routes: Route[] = [
   {
@@ -78,7 +79,8 @@ const routes: Route[] = [
     EinheitComponent,
     WhiteboardsComponent,
     WhiteboardWrapperComponent,
-    AddWhiteboardDialogComponent
+    AddWhiteboardDialogComponent,
+    CategorySelectorComponent
   ],
   imports: [
     CommonModule,

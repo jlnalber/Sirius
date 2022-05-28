@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ElectronService } from 'ngx-electron';
 import { Whiteboard } from '../global/interfaces/fach';
+import { FaecherManagerService } from '../global/services/faecher-manager.service';
 
 @Component({
   selector: 'faecher-whiteboards',
@@ -17,7 +18,7 @@ export class WhiteboardsComponent implements OnInit {
   @Input()
   isAbleToAddWhiteboards: boolean = true;
 
-  constructor(public readonly electron: ElectronService, public dialog: MatDialog) { }
+  constructor(public readonly electron: ElectronService, public dialog: MatDialog, public readonly faecherManager: FaecherManagerService) { }
 
   ngOnInit(): void {
   }

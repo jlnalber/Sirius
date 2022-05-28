@@ -1,14 +1,15 @@
-<mat-card *ngIf="true || this.electron.isElectronApp">
+<mat-card *ngIf="this.electron.isElectronApp">
     <mat-card-title>
         <h3>Whiteboards</h3>
     </mat-card-title>
     <mat-card-content>
         <div class="whiteboardContainer">
-            <div *ngFor="let whiteboard of this.whiteboards" class="whiteboard" [routerLink]="'whiteboards/' + whiteboard.name">
-                <div class="text">
+            <div *ngFor="let whiteboard of this.whiteboards" class="whiteboard" [ngStyle]="{ 'border-left': this.faecherManager.getBorderStyle(whiteboard.categoryId)}">
+                <div class="text" [routerLink]="'whiteboards/' + whiteboard.name">
                     {{ whiteboard.name }}
                 </div>
                 <div align="right">
+                    <faecher-category-selector [(categoryId)]="whiteboard.categoryId"></faecher-category-selector>
                     <button class="remove" color="accent" mat-button (click)="this.removeWhiteboard(whiteboard)"><mat-icon>clear</mat-icon></button>
                 </div>
             </div>

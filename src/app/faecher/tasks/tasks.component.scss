@@ -12,6 +12,7 @@ $height: 36px;
     border-radius: 3px;
     margin-bottom: 10px;
     box-shadow: 1px 1px 3px #00000066;
+    transition: all 0.2s ease-in-out;
 }
 
 .checkBoxContainer {
@@ -27,11 +28,4 @@ $height: 36px;
 button {
     height: $height;
     top: -7px;
-}
-
-.category {
-    margin-right: 20px;
-    padding: none;
-    top: -3px;
-    height: 63px;
 }

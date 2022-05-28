@@ -303,15 +303,18 @@ export class FaecherManagerService {
     return '';
   }
 
-  public getColorOfCategory(cId?: string): string {
-    const defaultColor: string = '#FFFFFFFF'
-
-    if (!cId) return defaultColor;
+  public getColorOfCategory(cId?: string): string | undefined {
+    if (!cId) return undefined;
 
     let c = this.getCategoryToId(cId);
 
-    if (!c) return defaultColor;
+    if (!c) return undefined;
     
     return colorToHex(c.color);
+  }
+
+  public getBorderStyle(cId?: string): string {
+    let color = this.getColorOfCategory(cId);
+    return `6px solid ${color ? color : 'transparent'}`;
   }
 }

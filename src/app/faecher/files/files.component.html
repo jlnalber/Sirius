@@ -4,11 +4,12 @@
     </mat-card-title>
     <mat-card-content>
         <div class="fileContainer">
-            <div *ngFor="let file of this.files" class="file" (click)="this.openFile(file)">
-                <div class="text">
+            <div *ngFor="let file of this.files" class="file" [ngStyle]="{ 'border-left': this.faecherManager.getBorderStyle(file.categoryId)}">
+                <div class="text" (click)="this.openFile(file)" >
                     {{ file.name }}
                 </div>
                 <div align="right">
+                    <faecher-category-selector [(categoryId)]="file.categoryId"></faecher-category-selector>
                     <button class="remove" color="accent" mat-button (click)="this.removeFile(file)"><mat-icon>clear</mat-icon></button>
                 </div>
             </div>

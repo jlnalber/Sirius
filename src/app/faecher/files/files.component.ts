@@ -42,6 +42,7 @@ export class FilesComponent implements OnInit {
   }
 
   public openFile(file: FileFach): void {
+    console.log('opening')
     this.faecherManager.openFile(this.fach, this.einheit, file);
   }
 

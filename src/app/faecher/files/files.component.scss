@@ -8,19 +8,11 @@ $height: 36px;
     margin: 5px;
     padding: 10px;
     padding-left: 15px;
+    padding-bottom: 0px;
     border-radius: 3px;
     margin-bottom: 10px;
     box-shadow: 1px 1px 3px #00000066;
-    cursor: pointer;
     transition: all 0.2s ease-in-out;
-}
-
-.file:hover {
-    background-color: #eee;
-}
-
-.file:active {
-    background-color: #ccc;
 }
 
 input {
@@ -36,6 +28,7 @@ input {
 
 .remove {
     height: $height;
+    top: -7px;
 }
 
 .text {
@@ -45,4 +38,6 @@ input {
     align-items: center;
     width: max-content;
     height: $height;
+    margin-top: 9px;
+    cursor: pointer;
 }
