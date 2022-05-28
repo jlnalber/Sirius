@@ -1,7 +1,7 @@
 import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Einheit, Fach, Faecher } from '../interfaces/fach';
+import { Einheit, Fach, Faecher, Whiteboard } from '../interfaces/fach';
 import { Event } from '../../../whiteboard/global-whiteboard/essentials/event';
 
 const siriusConfigPath: string = 'sirius.config.json';
@@ -236,14 +236,14 @@ export class FaecherManagerService {
     return '';
   }
 
-  public getPathForWhiteboard(fachid: string | undefined, einheitid: string | undefined, whiteboardid: string | undefined): string {
-    if (fachid) {
-      let path = `faecher/${fachid}/`;
-      if (einheitid) {
-        path += `einheiten/${einheitid}/`;
+  public getPathForWhiteboard(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string | Whiteboard | undefined): string {
+    if (fach) {
+      let path = `faecher/${typeof fach == 'string' ? fach : fach.id}/`;
+      if (einheit) {
+        path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
       }
-      if (whiteboardid) {
-        path += `whiteboards/${whiteboardid}.json`;
+      if (whiteboard) {
+        path += `whiteboards/${typeof whiteboard == 'string' ? whiteboard : whiteboard.name}.json`;
         return path;
       }
     }
@@ -264,5 +264,19 @@ export class FaecherManagerService {
 
   public getLinkToEinheit(fach: Fach, einheit: Einheit): string {
     return `/faecher/${fach.id}/einheiten/${einheit.id}/`;
+  }
+
+  public getLinkToWhiteboard(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string | Whiteboard | undefined): string {
+    if (fach) {
+      let path = `/faecher/${typeof fach == 'string' ? fach : fach.id}/`;
+      if (einheit) {
+        path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
+      }
+      if (whiteboard) {
+        path += `whiteboards/${typeof whiteboard == 'string' ? whiteboard : whiteboard.name}/`;
+        return path;
+      }
+    }
+    return '';
   }
 }

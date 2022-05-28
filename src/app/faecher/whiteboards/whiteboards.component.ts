@@ -2,6 +2,7 @@ import { AddWhiteboardDialogComponent, DialogData } from './add-whiteboard-dialo
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ElectronService } from 'ngx-electron';
+import { Whiteboard } from '../global/interfaces/fach';
 
 @Component({
   selector: 'faecher-whiteboards',
@@ -11,7 +12,7 @@ import { ElectronService } from 'ngx-electron';
 export class WhiteboardsComponent implements OnInit {
   
   @Input()
-  whiteboards: string[] | undefined = [];
+  whiteboards: Whiteboard[] | undefined = [];
 
   @Input()
   isAbleToAddWhiteboards: boolean = true;
@@ -32,12 +33,14 @@ export class WhiteboardsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != undefined && result != "") {
         let res = result as DialogData;
-        this.whiteboards?.push(res.name);
+        this.whiteboards?.push({
+          name: res.name
+        });
       }
     });
   }
 
-  public removeWhiteboard(whiteboard: string): boolean {
+  public removeWhiteboard(whiteboard: Whiteboard): boolean {
     const index = this.whiteboards?.indexOf(whiteboard);
     if (index != undefined && index != -1) {
       this.whiteboards?.splice(index, 1);

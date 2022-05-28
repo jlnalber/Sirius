@@ -19,7 +19,7 @@ export interface Fach {
     einheiten: Einheit[],
     notes: string,
     tasks: Task[],
-    whiteboards: string[]
+    whiteboards: Whiteboard[]
 }
 
 export interface Einheit {
@@ -33,12 +33,12 @@ export interface Einheit {
 }
 
 export interface File {
-    path: string,
+    name: string,
     categoryId?: string
 }
 
 export interface Whiteboard {
-    path: string,
+    name: string,
     categoryId?: string
 }
 

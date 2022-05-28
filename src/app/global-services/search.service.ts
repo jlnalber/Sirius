@@ -111,11 +111,91 @@ export class SearchService {
   }
 
   private getEinheiten(s: string): SearchResult[] {
-    return [];
+    // suche nach geeigneten Einheiten
+    let res: SearchResult[] = [];
+
+    for (let fach of this.faecherManager.faecherData.faecher) {
+      for (let einheit of fach.einheiten) {
+        if (einheit.topic.toLowerCase().includes(s)) {
+          res.push({
+            header: einheit.topic,
+            description: '',
+            routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
+            type: 'einheit'
+          });
+        }
+        else if (einheit.description.toLowerCase().includes(s)) {
+          res.push({
+            header: einheit.topic,
+            description: einheit.description,
+            routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
+            type: 'einheit'
+          })
+        }
+        else if (einheit.notes.toLowerCase().includes(s)) {
+          res.push({
+            header: einheit.topic,
+            description: einheit.notes,
+            routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
+            type: 'einheit'
+          })
+        }
+      }
+    }
+
+    return res;
   }
 
   private getWhiteboards(s: string): SearchResult[] {
-    return [];
+    // suche nach geeigneten Whiteboards
+    let res: SearchResult[] = [];
+
+    for (let fach of this.faecherManager.faecherData.faecher) {
+
+      // durchsuche das Fach
+      for (let whiteboard of fach.whiteboards) {
+        if (whiteboard.name.toLowerCase().includes(s)) {
+          res.push({
+            header: whiteboard.name,
+            description: '',
+            routerLink: this.faecherManager.getLinkToWhiteboard(fach, undefined, whiteboard),
+            type: 'whiteboard'
+          })
+        }
+        else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId).toLowerCase().includes(s)) {
+          res.push({
+            header: whiteboard.name,
+            description: `In: ${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}`,
+            routerLink: this.faecherManager.getLinkToWhiteboard(fach, undefined, whiteboard),
+            type: 'whiteboard'
+          })
+        }
+      }
+
+      // durchsuche die Einheiten
+      for (let einheit of fach.einheiten) {
+        for (let whiteboard of einheit.whiteboards) {
+          if (whiteboard.name.toLowerCase().includes(s)) {
+            res.push({
+              header: whiteboard.name,
+              description: '',
+              routerLink: this.faecherManager.getLinkToWhiteboard(fach, einheit, whiteboard),
+              type: 'whiteboard'
+            })
+          }
+          else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId).toLowerCase().includes(s)) {
+            res.push({
+              header: whiteboard.name,
+              description: `In: ${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}`,
+              routerLink: this.faecherManager.getLinkToWhiteboard(fach, einheit, whiteboard),
+              type: 'whiteboard'
+            })
+          }
+        }
+      }
+    }
+
+    return res;
   }
 
   private getFiles(s: string): SearchResult[] {

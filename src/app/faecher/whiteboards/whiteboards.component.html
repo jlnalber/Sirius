@@ -4,9 +4,9 @@
     </mat-card-title>
     <mat-card-content>
         <div class="whiteboardContainer">
-            <div *ngFor="let whiteboard of this.whiteboards" class="whiteboard" [routerLink]="'whiteboards/' + whiteboard">
+            <div *ngFor="let whiteboard of this.whiteboards" class="whiteboard" [routerLink]="'whiteboards/' + whiteboard.name">
                 <div class="text">
-                    {{ whiteboard }}
+                    {{ whiteboard.name }}
                 </div>
                 <div align="right">
                     <button class="remove" color="accent" mat-button (click)="this.removeWhiteboard(whiteboard)"><mat-icon>clear</mat-icon></button>
