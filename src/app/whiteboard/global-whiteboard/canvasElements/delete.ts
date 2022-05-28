@@ -126,13 +126,15 @@ export class Delete extends CanvasItem {
         let intersectRect = (r: SVGPathElement) => {
             const distance = distanceCalculator(r);
 
-            let rect = r.getBoundingClientRect();    //BOUNDING BOX OF THE OBJECT
+            let rect = this.board.getRectRealPosInCanvas(r.getBoundingClientRect());    //BOUNDING BOX OF THE OBJECT
+
+            console.log(rect, distance);
         
             //CHECK IF THE TWO BOUNDING BOXES OVERLAP (+ the distance)
-            return !((rect.left - distance) > p.x || 
-                (rect.right + distance) < p.x || 
-                (rect.top - distance) > p.y ||
-                (rect.bottom + distance) < p.y);
+            return !((rect.x - distance) > p.x || 
+                (rect.x + rect.width + distance) < p.x || 
+                (rect.y - distance) > p.y ||
+                (rect.y + rect.height + distance) < p.y);
         }
 
         let setSameProperty = (oldPath: SVGElement, newPath: SVGElement, property: string) => {
@@ -152,11 +154,16 @@ export class Delete extends CanvasItem {
 
 
         // save all the svgpathelements in res that could potentially intersect with the point
+
+        let counter: number = 0;
+
         let res: SVGPathElement[] = [];
         if (this.board.canvas && this.board.canvas.gElement) {
 
             for (let i in this.board.canvas.gElement.children) {
                 let el = this.board.canvas.gElement.children[i];
+
+                if (el instanceof SVGPathElement) counter++;
                 if (el instanceof SVGPathElement && intersectRect(el)) {
                     res.push(el);
                 }
