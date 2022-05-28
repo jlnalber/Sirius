@@ -59,19 +59,41 @@ export class EinheitenComponent implements OnInit {
     let res = '';
     let tasks = einheit.tasks.length;
     let files = einheit.files.length;
+    let whiteboards = einheit.whiteboards.length;
 
     if (tasks == 0) {
       res += 'Keine Aufgaben, '
+    }
+    else if (tasks == 1) {
+      if (getUnfinishedTasksLength(einheit) == 1) {
+        res += 'Eine offene Aufgabe, ';
+      }
+      else {
+        res += 'Eine abgeschlossene Aufgabe, '
+      }
     }
     else {
       res += `${tasks} Aufgaben, davon ${getUnfinishedTasksLength(einheit)} noch offen und ${getFinishedTasksLength(einheit)} abgeschlossen, `;
     }
     if (files == 0) {
-      res += 'keine Dateien.'
+      res += 'keine Dateien, '
+    }
+    else if (files == 1) {
+      res += 'eine Datei, '
     }
     else {
-      res += `${files} Dateien.`;
+      res += `${files} Dateien, `;
     }
+    if (whiteboards == 0) {
+      res += 'keine Whiteboards.'
+    }
+    else if (whiteboards == 1) {
+      res += 'ein Whiteboard.'
+    }
+    else {
+      res += `${whiteboards} Whiteboards.`
+    }
+
     return res;
   }
 

@@ -1,14 +1,14 @@
 import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { Einheit, Fach } from '../interfaces/fach';
+import { Einheit, Fach, Faecher } from '../interfaces/fach';
 import { Event } from '../../../whiteboard/global-whiteboard/essentials/event';
 
 const siriusConfigPath: string = 'sirius.config.json';
 const onSiriusConfigFileChannel: string = 'siriusConfigFile';
 const faecherFilePath: string = 'faecher.json';
 const onGetFileChannel: string = 'fileRequester';
-const cacheVariable: string = 'faecher';
+const cacheVariable: string = 'faecherData';
 
 @Injectable({
   providedIn: 'root'
@@ -16,57 +16,10 @@ const cacheVariable: string = 'faecher';
 export class FaecherManagerService {
   private siriusConfig: SiriusConfig = { directories: [] };
 
-  public faecher: Fach[] = [{
-    id: "d",
-    name: "Deutsch",
-    description: "Literatur und deutsche Sprache",
-    files: [],
-    tasks: [],
-    notes: '',
-    einheiten: [
-      {
-        id: 'Dramen',
-        topic: 'Dramen',
-        description: '',
-        notes: '',
-        tasks: [],
-        files: [],
-        whiteboards: []
-      }
-    ],
-    whiteboards: []
-  }, {
-    id: "m",
-    name: "Mathematik",
-    description: "Untersuchung und Abstraktion komplexer Probleme",
-    files: [],
-    tasks: [{
-      description: 'Task 1',
-      closed: true
-    }],
-    notes: '',
-    einheiten: [
-      {
-        id: 'Trigonometrie',
-        topic: 'Trigonometrie',
-        description: '',
-        notes: '',
-        tasks: [],
-        files: [],
-        whiteboards: []
-      },
-      {
-        id: 'Analysis',
-        topic: 'Analysis',
-        description: 'Kurvendiskussion, Funktionen, ...',
-        notes: '',
-        tasks: [],
-        files: [],
-        whiteboards: []
-      }
-    ],
-    whiteboards: []
-  }];
+  public faecherData: Faecher = {
+    faecher: [],
+    categories: []
+  };
 
   public readonly whiteboardSavers: Event = new Event();
 
@@ -95,11 +48,11 @@ export class FaecherManagerService {
 
   public loadFromCache() {
     let cache = localStorage[cacheVariable];
-    this.faecher = cache ? JSON.parse(cache) : [];
+    this.faecherData = cache ? JSON.parse(cache) : { faecher: [], categories: [] };
   }
 
   public saveInCache() {
-    localStorage[cacheVariable] = JSON.stringify(this.faecher);
+    localStorage[cacheVariable] = JSON.stringify(this.faecherData);
   }
 
   private loadSiriusConfig() {
@@ -126,7 +79,7 @@ export class FaecherManagerService {
   private loadFaecher() {
     this.getFile(faecherFilePath, (file: string | Buffer | undefined) => {
       if (file) {
-        this.faecher = JSON.parse(file as string);
+        this.faecherData = JSON.parse(file as string);
       }
       else {
         this.createFaecher();
@@ -135,8 +88,11 @@ export class FaecherManagerService {
   }
 
   private createFaecher() {
-    this.faecher = [];
-    this.postFile(faecherFilePath, JSON.stringify(this.faecher));
+    this.faecherData = { 
+      faecher: [],
+      categories: []
+    };
+    this.postFile(faecherFilePath, JSON.stringify(this.faecherData));
   }
 
   private createSiriusConfig() {
@@ -151,7 +107,7 @@ export class FaecherManagerService {
   }
 
   public save(): void {
-    let str = JSON.stringify(this.faecher);
+    let str = JSON.stringify(this.faecherData);
     for (let path of this.siriusConfig.directories) {
       this.electron.ipcRenderer.sendSync('writeFile', [ path + faecherFilePath, str ])
     }
@@ -188,7 +144,7 @@ export class FaecherManagerService {
   }
 
   public getFachById(id: string): Fach | undefined {
-    for (let fach of this.faecher) {
+    for (let fach of this.faecherData.faecher) {
       if (fach.id == id) return fach;
     }
     return undefined;
@@ -205,7 +161,7 @@ export class FaecherManagerService {
   }
 
   public addFach(fach: Fach): void {
-    this.faecher.push(fach);
+    this.faecherData.faecher.push(fach);
   }
 
   public addFachWithData(id: string, name: string, description: string): void {
@@ -251,9 +207,9 @@ export class FaecherManagerService {
   }
 
   public removeFach(fach: Fach): boolean {
-    let index = this.faecher.indexOf(fach);
+    let index = this.faecherData.faecher.indexOf(fach);
     if (index > -1) {
-      this.faecher.splice(index, 1);
+      this.faecherData.faecher.splice(index, 1);
       return true;
     }
     return false;
@@ -292,5 +248,21 @@ export class FaecherManagerService {
       }
     }
     return '';
+  }
+
+  public getCategoryNameToId(id: string): string {
+    // method returns the name to the id
+    for (let c of this.faecherData.categories) {
+      if (c.id == id) return c.name;
+    }
+    return '';
+  }
+
+  public getLinkToFach(fach: Fach): string {
+    return `/faecher/${fach.id}/`;
+  }
+
+  public getLinkToEinheit(fach: Fach, einheit: Einheit): string {
+    return `/faecher/${fach.id}/einheiten/${einheit.id}/`;
   }
 }

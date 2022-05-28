@@ -22,12 +22,16 @@ import { MatSliderModule } from '@angular/material/slider';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { NgxElectronModule } from 'ngx-electron';
+import { SettingsComponent } from './settings/settings.component';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
-    SidenavComponent
+    SidenavComponent,
+    SettingsComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,

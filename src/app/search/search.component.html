@@ -1,0 +1,22 @@
+<div *ngIf="this.searchService.input == ''">
+    Zum Suchen in die Suchleiste tippen!
+</div>
+<div *ngIf="this.searchService.input != '' && this.searchService.searchResults.length == 0">
+    Kein Ergebnis gefunden!
+</div>
+<mat-nav-list *ngIf="this.searchService.input != '' && this.searchService.searchResults.length != 0">
+    <mat-list-item *ngFor="let res of this.searchService.searchResults" [routerLink]="res.routerLink" (click)="res.additionalClickAction != undefined ? res.additionalClickAction() : ''">
+        <mat-icon matListIcon>
+            {{
+                res.type == 'file' ? 'insert_drive_file'
+            :   res.type == 'einheit' ? 'subject'
+            :   res.type == 'fach' ? 'tab'
+            :   res.type == 'whiteboard' ? 'receipt'
+            :   res.type == 'task' ? 'check_circle_outline'
+            :   res.type == 'setting' ? 'settings_applicationsx' : ''
+            }}
+        </mat-icon>
+        <h3 class="header" matLine>{{ res.header }}</h3>
+        <p matLine>{{ res.description }}</p>
+    </mat-list-item>
+</mat-nav-list>

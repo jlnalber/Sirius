@@ -3,7 +3,7 @@
     <button mat-button class="floatRight" (click)="this.openDialog()">Hinzufügen</button>
 
     <div class="faecherContainer">
-        <mat-card *ngFor="let fach of this.faecherManager.faecher">
+        <mat-card *ngFor="let fach of this.faecherManager.faecherData.faecher">
             <mat-card-title>
                 <h2>{{ fach.name }}</h2>
             </mat-card-title>

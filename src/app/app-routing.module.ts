@@ -1,3 +1,5 @@
+import { SearchComponent } from './search/search.component';
+import { SettingsComponent } from './settings/settings.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -16,6 +18,14 @@ const routes: Routes = [
   {
     path: 'whiteboard',
     component: WhiteboardComponent
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent
+  },
+  {
+    path: 'search',
+    component: SearchComponent
   },
   {
     path: '**',

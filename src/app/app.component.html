@@ -6,8 +6,19 @@
     <button mat-icon-button class="icon" [routerLink]="this.goBackUrl()">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <span>Sirius</span>
+    <button mat-icon-button routerLink="/faecher/" class="icon">
+      <mat-icon>home</mat-icon>
+    </button>
+
     <span class="spacer"></span>
+
+    <div class="search" routerLink="/search/" routerLinkActive="searchActive">
+      <input type="text" placeholder="Suchen..." [(ngModel)]="this.searchService.input">
+    </div>
+
+    <button mat-icon-button class="icon" [routerLink]="'settings'">
+      <mat-icon>settings</mat-icon>
+    </button>
   </mat-toolbar>
 
   <button *ngIf="this.activeWhiteboardService.isWhiteboardActive" color="primary" mat-mini-fab class="icon" [routerLink]="this.goBackUrl()" class="fabButton">

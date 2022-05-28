@@ -3,7 +3,7 @@
   <div>
     <mat-form-field appearance="outline" class="fill">
       <mat-label>Einheit</mat-label>
-      <input matInput [(ngModel)]="data.topic" class="fill" required>
+      <input matInput [(ngModel)]="data.topic" class="fill" required cdkFocusInitial>
     </mat-form-field>
   </div>
   <div>
@@ -15,5 +15,5 @@
 </div>
 <div mat-dialog-actions align="end" class="fill">
   <button color="accent" mat-button (click)="onNoClick()">Abbrechen</button>
-  <button [disabled]="data.topic == ''" mat-button [mat-dialog-close]="data" cdkFocusInitial>Hinzufügen</button>
+  <button [disabled]="data.topic == ''" mat-button [mat-dialog-close]="data">Hinzufügen</button>
 </div>

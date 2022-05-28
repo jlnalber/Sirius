@@ -3,12 +3,16 @@
         <mat-list-item [routerLink]="'/faecher/'" class="fill" (click)="this.openedChange.emit(false)">
             Übersicht
         </mat-list-item>
+        <mat-divider *ngIf="this.faecherManager.faecherData.faecher.length != 0"></mat-divider>
+        <mat-list-item routerLinkActive="activeLink" *ngFor="let fach of this.faecherManager.faecherData.faecher" [routerLink]="'/faecher/' + fach.id" class="fill" (click)="this.openedChange.emit(false)">
+            {{ fach.name }}
+        </mat-list-item>
+        <mat-divider></mat-divider>
         <mat-list-item routerLinkActive="activeLink" [routerLink]="'/whiteboard/'" class="fill" (click)="this.openedChange.emit(false)">
             Whiteboard
         </mat-list-item>
-        <mat-divider *ngIf="this.faecherManager.faecher.length != 0"></mat-divider>
-        <mat-list-item routerLinkActive="activeLink" *ngFor="let fach of this.faecherManager.faecher" [routerLink]="'/faecher/' + fach.id" class="fill" (click)="this.openedChange.emit(false)">
-            {{ fach.name }}
+        <mat-list-item routerLinkActive="activeLink" [routerLink]="'/settings/'" class="fill" (click)="this.openedChange.emit(false)">
+            Einstellungen
         </mat-list-item>
     </mat-nav-list>
     <!--<div class="fachContainer fill">
