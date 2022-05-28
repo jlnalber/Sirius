@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
 import { Board } from '../../global-whiteboard/board/board';
 import { Color } from '../../global-whiteboard/essentials/color';
+import { Color as IColor } from '../../global-whiteboard/interfaces/whiteboard';
 
 @Component({
   selector: 'whiteboard-stroke-picker',
@@ -12,7 +13,7 @@ export class StrokePickerComponent implements OnInit {
   
   @Input() board!: Board;
 
-  @Input() listener: (c: Color) => void = () => {};
+  @Input() listener: (c: Color | IColor) => void = () => {};
   @Input() strokeWidthListener: (strokeThickness: number) => void = () => {};
 
   getSliderValue(): number {
@@ -29,8 +30,8 @@ export class StrokePickerComponent implements OnInit {
   currentColor = () => {
     return this.board.stroke.color;
   }
-  setColor = (c: Color) => {
-    this.board.stroke.color = c;
+  setColor = (c: Color | IColor) => {
+    this.board.stroke.color = c instanceof Color ? c : Color.from(c);
     this.listener(c);
   }
 

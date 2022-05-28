@@ -60,7 +60,7 @@ export class SearchService {
     this.reload();
   }
 
-  private reload(): void {
+  public reload(): void {
     let results: SearchResult[] = [];
 
     let input = this.input.toLowerCase().trim();
@@ -72,6 +72,7 @@ export class SearchService {
     results.push(...this.getFiles(input));
     results.push(...this.getTasks(input));
     results.push(...this.getSettings(input));
+    results.push(...this.getAdditionalPlaces(input));
 
     this.searchResults = results;
   }
@@ -162,10 +163,10 @@ export class SearchService {
             type: 'whiteboard'
           })
         }
-        else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId).toLowerCase().includes(s)) {
+        else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId)?.toLowerCase().includes(s)) {
           res.push({
             header: whiteboard.name,
-            description: `In ${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)} im Fach '${fach.name}'`,
+            description: `In '${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}' im Fach '${fach.name}'`,
             routerLink: this.faecherManager.getLinkToWhiteboard(fach, undefined, whiteboard),
             type: 'whiteboard'
           })
@@ -183,10 +184,10 @@ export class SearchService {
               type: 'whiteboard'
             })
           }
-          else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId).toLowerCase().includes(s)) {
+          else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId)?.toLowerCase().includes(s)) {
             res.push({
               header: whiteboard.name,
-              description: `In ${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)} in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              description: `In '${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
               routerLink: this.faecherManager.getLinkToWhiteboard(fach, einheit, whiteboard),
               type: 'whiteboard'
             })
@@ -215,10 +216,10 @@ export class SearchService {
             additionalClickAction: () => { this.faecherManager.openFile(fach, undefined, file); }
           })
         }
-        else if (file.categoryId && this.faecherManager.getCategoryNameToId(file.categoryId).toLowerCase().includes(s)) {
+        else if (file.categoryId && this.faecherManager.getCategoryNameToId(file.categoryId)?.toLowerCase().includes(s)) {
           res.push({
             header: file.name,
-            description: `In ${this.faecherManager.getCategoryNameToId(file.categoryId)} im Fach '${fach.name}'`,
+            description: `In '${this.faecherManager.getCategoryNameToId(file.categoryId)}' im Fach '${fach.name}'`,
             routerLink: this.faecherManager.getLinkToFach(fach),
             type: 'file',
             additionalClickAction: () => { this.faecherManager.openFile(fach, undefined, file); }
@@ -238,10 +239,10 @@ export class SearchService {
               additionalClickAction: () => { this.faecherManager.openFile(fach, einheit, file); }
             })
           }
-          else if (file.categoryId && this.faecherManager.getCategoryNameToId(file.categoryId).toLowerCase().includes(s)) {
+          else if (file.categoryId && this.faecherManager.getCategoryNameToId(file.categoryId)?.toLowerCase().includes(s)) {
             res.push({
               header: file.name,
-              description: `In ${this.faecherManager.getCategoryNameToId(file.categoryId)} in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              description: `In '${this.faecherManager.getCategoryNameToId(file.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
               routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
               type: 'file',
               additionalClickAction: () => { this.faecherManager.openFile(fach, einheit, file); }
@@ -270,10 +271,10 @@ export class SearchService {
             type: task.closed ? 'task' : 'taskOpen'
           })
         }
-        else if (task.categoryId && this.faecherManager.getCategoryNameToId(task.categoryId).toLowerCase().includes(s)) {
+        else if (task.categoryId && this.faecherManager.getCategoryNameToId(task.categoryId)?.toLowerCase().includes(s)) {
           res.push({
             header: task.description,
-            description: `In ${this.faecherManager.getCategoryNameToId(task.categoryId)} im Fach '${fach.name}'`,
+            description: `In '${this.faecherManager.getCategoryNameToId(task.categoryId)}' im Fach '${fach.name}'`,
             routerLink: this.faecherManager.getLinkToFach(fach),
             type: task.closed ? 'task' : 'taskOpen'
           })
@@ -291,10 +292,10 @@ export class SearchService {
               type: task.closed ? 'task' : 'taskOpen'
             })
           }
-          else if (task.categoryId && this.faecherManager.getCategoryNameToId(task.categoryId).toLowerCase().includes(s)) {
+          else if (task.categoryId && this.faecherManager.getCategoryNameToId(task.categoryId)?.toLowerCase().includes(s)) {
             res.push({
               header: task.description,
-              description: `In ${this.faecherManager.getCategoryNameToId(task.categoryId)} in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              description: `In '${this.faecherManager.getCategoryNameToId(task.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
               routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
               type: task.closed ? 'task' : 'taskOpen'
             })
@@ -322,6 +323,46 @@ export class SearchService {
       }
     }
 
+    for (let c of this.faecherManager.faecherData.categories) {
+      if (c.name.toLowerCase().includes(s)) {
+        res.push({
+          header: c.name,
+          description: 'Kategorie',
+          routerLink: '/settings/',
+          type: 'setting'
+        });
+      }
+    }
+
+    return res;
+  }
+
+  private getAdditionalPlaces(s: string): SearchResult[] {
+    // Suche nach besonderen Plätzen
+    const places: { name: string, link: string }[] = [
+      {
+        name: 'Übersicht',
+        link: '/faecher/'
+      },
+      {
+        name: 'Einstellungen',
+        link: '/settings/'
+      }
+    ];
+
+    let res: SearchResult[] = [];
+
+    for (let place of places) {
+      if (place.name.toLowerCase().includes(s)) {
+        res.push({
+          header: place.name,
+          description: '',
+          routerLink: place.link,
+          type: 'place'
+        })
+      }
+    }
+
     return res;
   }
 
@@ -331,7 +372,7 @@ export class SearchService {
 export interface SearchResult {
   header: string,
   description: string,
-  type: 'fach' | 'einheit' | 'file' | 'task' | 'taskOpen' | 'whiteboard' | 'setting',
+  type: 'fach' | 'einheit' | 'file' | 'task' | 'taskOpen' | 'whiteboard' | 'setting' | 'place',
   routerLink: string,
   additionalClickAction?: () => void
 }

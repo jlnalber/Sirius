@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { WhiteboardModule } from '../whiteboard/whiteboard.module';
 import { NgModule } from '@angular/core';
@@ -92,6 +93,7 @@ const routes: Route[] = [
     MatExpansionModule,
     MatSliderModule,
     MatIconModule,
+    MatSelectModule,
     NgxElectronModule,
     RouterModule.forChild(routes)
   ],

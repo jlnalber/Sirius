@@ -11,6 +11,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   constructor(public readonly searchService: SearchService, private readonly activeService: ActiveService) { 
     this.activeService.isSearchActive = true;
+    this.searchService.reload();
   }
 
   ngOnDestroy(): void {

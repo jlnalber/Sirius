@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
+import { Color as IColor } from 'src/app/whiteboard/global-whiteboard/interfaces/whiteboard';
 
 @Component({
   selector: 'whiteboard-color-picker',
@@ -8,7 +9,7 @@ import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
 })
 export class ColorPickerComponent implements OnInit {
 
-  @Input() color!: Color;
+  @Input() color!: (Color | IColor);
 
   constructor() { }
 

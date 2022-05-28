@@ -1,5 +1,5 @@
 <div class="wrapper">
-    <div class="color" [ngClass]="this.color.sameColorAs(this.currentColor()) ? 'sameColor' : ''" (click)="this.listener(this.color)" (dblclick)="this.onDblClick()">
+    <div class="color" [ngClass]="this.sameColorAs(this.currentColor()) ? 'sameColor' : ''" (click)="this.listener(this.color)" (dblclick)="this.onDblClick()">
         <div class="bg" [ngStyle]="{'background-color': this.color.toString()}">
         </div>
     </div>

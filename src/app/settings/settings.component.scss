@@ -1,6 +1,59 @@
 @import "../faecher/global/styles/global";
 
+$height: 36px;
+$padding: 10px;
+
 .settingsContainer {
     margin: 20px;
     padding: 16px;
+}
+
+.categorySettingsContainer {
+    margin-top: 20px;
+}
+
+.title {
+    font-weight: 500;
+}
+
+.categoryContainer {
+    padding: 10px;
+}
+
+.category {
+    padding: $padding;
+    height: calc($height + 2 * $padding);
+    margin: 5px;
+    padding: 10px;
+    padding-left: 15px;
+    padding-bottom: 0px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 3px #00000066;
+}
+
+.categoryTitleContainer {
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    height: $height;
+    margin-top: 5px;
+    margin-right: 150px;
+    font-size: 12pt;
+}
+
+button {
+    height: $height;
+    top: 5px;
+}
+
+.colorset {
+    width: 250px;
+    overflow: visible;
+}
+
+.addButton {
+    margin-bottom: 8px !important;
 }

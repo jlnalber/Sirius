@@ -13,7 +13,7 @@
     <span class="spacer"></span>
 
     <div class="search" [ngClass]="{'searchActive': this.activeWhiteboardService.isSearchActive}">
-      <input type="text" placeholder="Suchen..." routerLink="/search/" [(ngModel)]="this.searchService.input">
+      <input type="text" onfocus="this.select();" onmouseup="return false;"  placeholder="Suchen..." routerLink="/search/" [(ngModel)]="this.searchService.input">
       <button (click)="this.searchService.input = ''" routerLink="/faecher/">
         <mat-icon>
           clear

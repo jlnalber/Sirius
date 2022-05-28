@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, AfterViewInit, Input } from '@angular
 import { Board, BoardModes } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Control } from 'src/app/whiteboard/global-whiteboard/controls/control';
 import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
+import { Color as IColor } from 'src/app/whiteboard/global-whiteboard/interfaces/whiteboard';
 import { ShapePickerComponent } from '../../shape-picker/shape-picker.component';
 
 @Component({
@@ -18,7 +19,7 @@ export class ShapeControlComponent extends Control implements AfterViewInit {
   @ViewChild('shapePicker')
   public sPicker!: ElementRef;
 
-  cListener = (c: Color) => {
+  cListener = (c: Color | IColor) => {
     if (this.cardOpen && this.isActive() && this.sPicker) {
       (this.sPicker as any as ShapePickerComponent).reloadShapes(this.board.stroke.getThickness())
     }

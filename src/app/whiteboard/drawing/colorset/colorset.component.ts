@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Color } from '../../global-whiteboard/essentials/color';
+import { Color as IColor } from '../../global-whiteboard/interfaces/whiteboard';
 
 @Component({
   selector: 'whiteboard-colorset',
@@ -8,7 +9,7 @@ import { Color } from '../../global-whiteboard/essentials/color';
 })
 export class ColorsetComponent implements OnInit {
 
-  @Input() defaultColors: Color[] = [
+  @Input() defaultColors: (Color | IColor)[] = [
     new Color(0, 0, 0),
     new Color(255, 0, 0),
     new Color(0, 255, 0),
@@ -26,10 +27,10 @@ export class ColorsetComponent implements OnInit {
     new Color(71, 237, 71, 127)
   ]
 
-  @Input() colors: Color[] = [];
+  @Input() colors: (Color | IColor)[] = [];
 
-  @Input() listener!: ((c: Color) => void);
-  @Input() currentColor!: () => Color;
+  @Input() listener!: ((c: Color | IColor) => void);
+  @Input() currentColor!: () => Color | IColor;
 
   constructor() { }
 

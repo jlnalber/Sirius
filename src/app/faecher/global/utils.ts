@@ -1,4 +1,5 @@
 import { Color } from "src/app/whiteboard/global-whiteboard/interfaces/whiteboard";
+import { Category } from "./interfaces/fach";
 
 export function colorToHex(color: Color): string {
     let str = '#' + toHex(color.r) + toHex(color.g) + toHex(color.b);
@@ -26,4 +27,18 @@ export function toHex(num: number | null, length: number = 2): string {
         return str;
     }
     return multiply('0', length);
+}
+
+export function getNewId(ids: string[], alphabet: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTVWXYZ123456789'): string {
+    // gibt eine neue Id zurück
+    let getRandomLetter = (): string => {
+        return alphabet[Math.round(Math.random() * (alphabet.length - 1))];
+    }
+
+    let id = getRandomLetter();
+
+    while (ids.indexOf(id) >= 0) {
+        id += getRandomLetter();
+    }
+    return id;
 }

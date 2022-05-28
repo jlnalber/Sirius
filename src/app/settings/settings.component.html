@@ -1,6 +1,28 @@
 <div class="settingsContainer">
     <h1>Einstellungen</h1>
     <!--    <h2 id="Speicherorte">Speicherorte</h2>-->
-    <h2 id="Kategorien">Kategorien</h2>
     
+    <div class="categorySettingsContainer">
+        <mat-card id="Kategorien">
+            <mat-card-title class="title">
+                <h3 class="title">Kategorien</h3>
+            </mat-card-title>
+            <mat-card-content>
+                <div class="categoryContainer">
+                    <div *ngFor="let category of this.faecherManager.faecherData.categories" class="category">
+                        <div align="left" class="categoryTitleContainer">
+                            {{ category.name }}
+                        </div>
+                        <div align="right">
+                            <whiteboard-colorset class="colorset" [defaultColors]="this.defaultColors" [currentColor]="this.currentColor(category)" [listener]="this.colorListener(category)"></whiteboard-colorset>
+                            <button color="accent" mat-button (click)="this.removeCategory(category)"><mat-icon>clear</mat-icon></button>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+            <mat-card-actions align="end">
+                <button mat-button (click)="this.addCategory()" class="addButton">Kategorie hinzufügen</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
 </div>

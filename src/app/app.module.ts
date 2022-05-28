@@ -18,12 +18,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { NgxElectronModule } from 'ngx-electron';
 import { SettingsComponent } from './settings/settings.component';
 import { SearchComponent } from './search/search.component';
+import { AddCategoryDialogComponent } from './settings/add-category-dialog/add-category-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,8 @@ import { SearchComponent } from './search/search.component';
     PageNotFoundComponent,
     SidenavComponent,
     SettingsComponent,
-    SearchComponent
+    SearchComponent,
+    AddCategoryDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -48,6 +52,8 @@ import { SearchComponent } from './search/search.component';
     MatExpansionModule,
     MatListModule,
     MatSliderModule,
+    MatFormFieldModule,
+    MatInputModule,
     NgxElectronModule,
     WhiteboardModule,
     FaecherModule

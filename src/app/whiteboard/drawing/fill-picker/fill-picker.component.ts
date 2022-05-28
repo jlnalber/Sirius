@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Board } from '../../global-whiteboard/board/board';
 import { Color } from '../../global-whiteboard/essentials/color';
+import { Color as IColor } from '../../global-whiteboard/interfaces/whiteboard';
 
 @Component({
   selector: 'whiteboard-fill-picker',
@@ -11,13 +12,13 @@ export class FillPickerComponent implements OnInit {
 
   @Input() board!: Board;
 
-  @Input() listener: (c: Color) => void = () => {};
+  @Input() listener: (c: Color | IColor) => void = () => {};
 
   currentColor = () => {
     return this.board.fill;
   }
-  setColor = (c: Color) => {
-    this.board.fill = c;
+  setColor = (c: Color | IColor) => {
+    this.board.fill = c instanceof Color ? c : Color.from(c);
     this.listener(c);
   }
   colors: Color[] = [

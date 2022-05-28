@@ -1,6 +1,8 @@
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
+import { Color as IColor } from '../interfaces/whiteboard';
 import { Vector, Point } from './../interfaces/point';
 import { Rect } from './../interfaces/rect';
+import { Color } from './color';
 
 export function max<T>(coll: T[], func: (t: T) => number): number | undefined {
     if (coll.length != 0) {
@@ -190,4 +192,8 @@ export function splitByPoints(origPoints: Point[], pointsToSplit: Point[]): Poin
     }
 
     return pointArrays;
+}
+
+export function sameColorAs(c1: Color | IColor, c2: Color | IColor): boolean {
+    return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && (c1.a == c2.a || (!c1.a && c2.a == 255) || (!c2.a && c1.a == 255));
 }

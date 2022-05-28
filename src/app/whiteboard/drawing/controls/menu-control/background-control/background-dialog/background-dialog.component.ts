@@ -2,6 +2,7 @@ import { Component, Inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
+import { Color as IColor } from 'src/app/whiteboard/global-whiteboard/interfaces/whiteboard';
 import { cross, karo, line, none, music } from 'src/app/whiteboard/global-whiteboard/board/background/backgroundImage';
 
 export interface DialogData {
@@ -23,8 +24,8 @@ export class BackgroundDialogComponent {
     this.dialogRef.close();
   }
 
-  listener = (c: Color) => {
-    this.data.board.backgroundColor = c;
+  listener = (c: Color | IColor) => {
+    this.data.board.backgroundColor = c instanceof Color ? c : Color.from(c);
   }
 
   currentColor = () => {

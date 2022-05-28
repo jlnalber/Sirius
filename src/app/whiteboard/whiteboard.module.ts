@@ -104,7 +104,8 @@ import { ExportAsSvgControlComponent } from './drawing/controls/menu-control/exp
     MatInputModule
   ],
   exports: [
-    WhiteboardComponent
+    WhiteboardComponent,
+    ColorsetComponent
   ],
   providers: [
     BoardService

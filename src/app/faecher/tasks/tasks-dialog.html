@@ -2,10 +2,10 @@
 <div mat-dialog-content class="fill">
   <mat-form-field appearance="outline" class="file fill">
     <mat-label>Aufgabe</mat-label>
-    <input class="fill" matInput [(ngModel)]="data.description" required>
+    <input class="fill" matInput [(ngModel)]="data.description" required cdkFocusInitial>
   </mat-form-field>
 </div>
 <div mat-dialog-actions align="end" class="fill">
   <button color="accent" mat-button (click)="onNoClick()">Abbrechen</button>
-  <button [disabled]="data.description == ''" mat-button [mat-dialog-close]="data.description" cdkFocusInitial>Hinzufügen</button>
+  <button [disabled]="data.description == ''" mat-button [mat-dialog-close]="data.description">Hinzufügen</button>
 </div>

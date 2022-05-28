@@ -4,13 +4,20 @@
     </mat-card-title>
     <mat-card-content>
         <div class="taskContainer">
-            <div *ngFor="let task of this.tasks" class="task">
+            <div *ngFor="let task of this.tasks" class="task" [ngStyle]="{ 'border-left': '6px solid ' + (task.categoryId ? this.faecherManager.getColorOfCategory(task.categoryId) : '#ffffff') }">
                 <div align="left" class="checkBoxContainer">
                     <mat-checkbox color="primary" [(ngModel)]="task.closed">
                         {{ task.description }}
                     </mat-checkbox>
                 </div>
                 <div align="right">
+                    <mat-form-field class="category" appearance="outline">
+                        <mat-label>Kategorie</mat-label>
+                        <mat-select [(value)]="task.categoryId">
+                            <mat-option>Keine Kategorie</mat-option>
+                            <mat-option *ngFor="let c of this.faecherManager.faecherData.categories" [value]="c.id">{{ c.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                     <button color="accent" mat-button (click)="this.removeTask(task)"><mat-icon>clear</mat-icon></button>
                 </div>
             </div>

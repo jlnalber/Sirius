@@ -1,3 +1,4 @@
+import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { Task } from 'src/app/faecher/global/interfaces/fach';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -15,7 +16,7 @@ export class TasksComponent implements OnInit {
   @Input()
   isAbleToAddTasks: boolean = true;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, public readonly faecherManager: FaecherManagerService) { }
 
   ngOnInit(): void {
 

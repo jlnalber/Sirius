@@ -1,6 +1,7 @@
 import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Color as IColor } from 'src/app/whiteboard/global-whiteboard/interfaces/whiteboard';
 
 export interface DialogData {
   color: Color,
@@ -27,8 +28,8 @@ export class StickyNotesDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  listener = (c: Color) => {
-    this.data.color = c;
+  listener = (c: Color | IColor) => {
+    this.data.color = c instanceof Color ? c : Color.from(c);
   }
 
   currentColor = () => {

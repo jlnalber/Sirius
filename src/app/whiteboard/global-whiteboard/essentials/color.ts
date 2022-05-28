@@ -1,5 +1,6 @@
 import { Event } from "./event";
 import { Color as ColorExport } from "../interfaces/whiteboard";
+import { sameColorAs } from "./utils";
 
 export class Color {
 
@@ -89,6 +90,10 @@ export class Color {
         this._a = a;
     }
 
+    public static from(color: ColorExport): Color {
+        return new Color(color.r, color.g, color.b, color.a);
+    }
+
     public toString() {
         let str = '#' + Color.toHex(this.r) + Color.toHex(this.g) + Color.toHex(this.b);
         if (this.a != undefined) {
@@ -97,19 +102,27 @@ export class Color {
         return str;
     }
 
-    public sameColorAs(color: Color): boolean {
-        return this._r == color._r && this._g == color._g && this._b == color._b && (this._a == color._a || (!this._a && color._a == 255) || (!color._a && this._a == 255));
+    public sameColorAs(color: Color | ColorExport): boolean {
+        return sameColorAs(this, color);
     }
 
     public copy(): Color {
         return new Color(this.r as number, this.g as number, this.b as number, this.a);
     }
 
-    public setTo(c: Color) {
-        this._r = c._r;
-        this._g = c._g;
-        this._b = c._b;
-        this._a = c._a;
+    public setTo(c: Color | ColorExport) {
+        if (c instanceof Color) {
+            this._r = c._r;
+            this._g = c._g;
+            this._b = c._b;
+            this._a = c._a;
+        }
+        else {
+            this._r = c.r;
+            this._g = c.g;
+            this._b = c.b;
+            this._a = c.a;
+        }
         this.onchange.emit();
     }
 

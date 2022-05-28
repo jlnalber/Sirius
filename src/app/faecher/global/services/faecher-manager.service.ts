@@ -1,8 +1,10 @@
+import { Category } from './../interfaces/fach';
 import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { Einheit, Fach, Faecher, File as FileFach, Whiteboard } from '../interfaces/fach';
 import { Event } from '../../../whiteboard/global-whiteboard/essentials/event';
+import { colorToHex } from '../utils';
 
 const siriusConfigPath: string = 'sirius.config.json';
 const onSiriusConfigFileChannel: string = 'siriusConfigFile';
@@ -267,12 +269,16 @@ export class FaecherManagerService {
     return '';
   }
 
-  public getCategoryNameToId(id: string): string {
+  public getCategoryNameToId(id: string | undefined): string | undefined {
+    return this.getCategoryToId(id)?.name;
+  }
+
+  public getCategoryToId(id: string | undefined): Category | undefined {
     // method returns the name to the id
     for (let c of this.faecherData.categories) {
-      if (c.id == id) return c.name;
+      if (c.id == id) return c;
     }
-    return '';
+    return undefined;
   }
 
   public getLinkToFach(fach: Fach): string {
@@ -295,5 +301,17 @@ export class FaecherManagerService {
       }
     }
     return '';
+  }
+
+  public getColorOfCategory(cId?: string): string {
+    const defaultColor: string = '#FFFFFFFF'
+
+    if (!cId) return defaultColor;
+
+    let c = this.getCategoryToId(cId);
+
+    if (!c) return defaultColor;
+    
+    return colorToHex(c.color);
   }
 }

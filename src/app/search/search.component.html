@@ -14,7 +14,8 @@
             :   res.type == 'whiteboard' ? 'receipt'
             :   res.type == 'task' ? 'check_box'
             :   res.type == 'taskOpen' ? 'check_box_outline_blank'
-            :   res.type == 'setting' ? 'settings_applicationsx' : ''
+            :   res.type == 'setting' ? 'settings_applicationsx'
+            :   res.type == 'place' ? 'place' : ''
             }}
         </mat-icon>
         <h3 class="header" matLine>{{ res.header }}</h3>
