@@ -1,4 +1,4 @@
-import { ActiveService } from './../../global-services/active-whiteboard-service.service';
+import { ActiveService } from '../../global/services/active-whiteboard-service.service';
 import { Handler } from './../../whiteboard/global-whiteboard/essentials/handler';
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { ActivatedRoute } from '@angular/router';

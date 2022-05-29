@@ -1,0 +1,23 @@
+.paragraph {
+    text-align: center;
+    vertical-align: middle;
+    height: 100%;
+    width: 100%;
+    margin-top: clamp(25px, 10%, 50px);
+}
+
+.paragraph h1 {
+    font: 400 22px / 29px Roboto, "Helvetica Neue", sans-serif;
+}
+
+.paragraph span {
+    display: block;
+}
+
+.paragraph .iconSpan {
+    margin: 100px 0px 100px 0px;
+}
+
+.paragraph .icon {
+    transform: scale(5);
+}

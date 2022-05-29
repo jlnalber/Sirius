@@ -1,5 +1,5 @@
-import { ActiveService } from './../global-services/active-whiteboard-service.service';
-import { SearchService } from './../global-services/search.service';
+import { ActiveService } from '../global/services/active-whiteboard-service.service';
+import { SearchService } from './../global/services/search.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 @Component({

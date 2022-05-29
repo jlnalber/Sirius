@@ -1,5 +1,5 @@
-import { SearchService } from './global-services/search.service';
-import { ActiveService } from './global-services/active-whiteboard-service.service';
+import { SearchService } from './global/services/search.service';
+import { ActiveService } from './global/services/active-whiteboard-service.service';
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
