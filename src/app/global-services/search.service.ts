@@ -259,6 +259,8 @@ export class SearchService {
     // suche nach geeigneten Tasks
     let res: SearchResult[] = [];
 
+    const open = 'offen'.toLowerCase();
+
     for (let fach of this.faecherManager.faecherData.faecher) {
 
       // durchsuche das Fach
@@ -275,6 +277,14 @@ export class SearchService {
           res.push({
             header: task.description,
             description: `In '${this.faecherManager.getCategoryNameToId(task.categoryId)}' im Fach '${fach.name}'`,
+            routerLink: this.faecherManager.getLinkToFach(fach),
+            type: task.closed ? 'task' : 'taskOpen'
+          })
+        }
+        else if (!task.closed && open.includes(s)) {
+          res.push({
+            header: task.description,
+            description: `Offene Aufgabe im Fach '${fach.name}'`,
             routerLink: this.faecherManager.getLinkToFach(fach),
             type: task.closed ? 'task' : 'taskOpen'
           })
@@ -296,6 +306,14 @@ export class SearchService {
             res.push({
               header: task.description,
               description: `In '${this.faecherManager.getCategoryNameToId(task.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
+              type: task.closed ? 'task' : 'taskOpen'
+            })
+          }
+          else if (!task.closed && open.includes(s)) {
+            res.push({
+              header: task.description,
+              description: `Offene Aufgabe in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
               routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
               type: task.closed ? 'task' : 'taskOpen'
             })

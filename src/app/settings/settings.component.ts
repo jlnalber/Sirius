@@ -33,7 +33,7 @@ export class SettingsComponent implements OnInit {
         this.faecherManager.faecherData.categories.push({
           name: res.name,
           id: getNewId(this.faecherManager.faecherData.categories.map(c => c.id)),
-          color: { r: 255, g: 0, b: 0 }
+          color: this.defaultColors[0].export()
         })
       }
     });
