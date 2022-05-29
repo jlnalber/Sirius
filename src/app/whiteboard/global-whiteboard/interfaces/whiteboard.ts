@@ -18,3 +18,21 @@ export interface Color {
     b: number,
     a?: number
 }
+
+export const defaultWhiteboard: Whiteboard = {
+    backgroundColor: {
+        r: 255,
+        g: 255,
+        b: 255
+    },
+    backgroundImage: "",
+    pages: [
+        {
+            translateX: 0,
+            translateY: 0,
+            zoom: 1,
+            content: ""
+        }
+    ],
+    pageIndex: 0
+}

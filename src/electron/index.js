@@ -138,8 +138,13 @@ function createWindow () {
   mainWindow.on('close', (e) => {
     if (!onClosing) {
       e.preventDefault();
+      
+      console.log(ipcMain);
+      console.log(ipcRenderer);
 
-      try{
+      mainWindow.webContents.send('closing')
+
+      /*try{
         mainWindow.webContents
           .executeJavaScript('localStorage.getItem("faecher");', true)
           .then(result => {
@@ -153,11 +158,19 @@ function createWindow () {
       }
       catch (e) {
         console.log(e);
-      }
+      }*/
 
       onClosing = true;
-      app.quit();
+      //app.quit();
     }
+  })
+
+  mainWindow.on('please_close', function () {
+    app.quit();
+  })
+
+  ipcMain.on('please_close', function () {
+    app.quit();
   })
 
   mainWindow.on('closed', function () {

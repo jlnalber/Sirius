@@ -29,7 +29,7 @@ export function toHex(num: number | null, length: number = 2): string {
     return multiply('0', length);
 }
 
-export function getNewId(ids: string[], alphabet: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTVWXYZ123456789'): string {
+export function getNewId(ids: string[], minLength: number = 5, alphabet: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTVWXYZ123456789'): string {
     // gibt eine neue Id zurück
     let getRandomLetter = (): string => {
         return alphabet[Math.round(Math.random() * (alphabet.length - 1))];
@@ -37,7 +37,7 @@ export function getNewId(ids: string[], alphabet: string = 'abcdefghijklmnopqrst
 
     let id = getRandomLetter();
 
-    while (ids.indexOf(id) >= 0) {
+    while (ids.indexOf(id) >= 0 || id.length < minLength) {
         id += getRandomLetter();
     }
     return id;

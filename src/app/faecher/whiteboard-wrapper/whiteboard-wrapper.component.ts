@@ -1,12 +1,11 @@
 import { ActiveService } from '../../global/services/active-whiteboard-service.service';
 import { Handler } from './../../whiteboard/global-whiteboard/essentials/handler';
-import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
+import { FaecherManagerService, WhiteboardSaveConfig } from 'src/app/faecher/global/services/faecher-manager.service';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { Board } from './../../whiteboard/global-whiteboard/board/board';
-import { WhiteboardComponent } from './../../whiteboard/whiteboard.component';
-import { Whiteboard } from './../../whiteboard/global-whiteboard/interfaces/whiteboard';
-import { Component, AfterViewInit, Input, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { defaultWhiteboard, Whiteboard } from './../../whiteboard/global-whiteboard/interfaces/whiteboard';
+import { Component, AfterViewInit, Input, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-whiteboard-wrapper',
@@ -16,55 +15,62 @@ import { Component, AfterViewInit, Input, ViewChild, ElementRef, OnDestroy } fro
 export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
 
   @Input()
-  whiteboard: string | undefined;
+  whiteboard: Whiteboard | undefined;
   
   afterWhiteboardViewInit = (board: Board) => {
-    board.import(JSON.parse(this.whiteboard as string));
+    if (this.whiteboard) {
+      board.import(this.whiteboard);
+    }
   }
 
   export: Handler<Whiteboard> = new Handler();
 
-  private path: string = '';
+  private fachId: string = "";
+  private einheitId?: string;
+  private whiteboardId: string = "";
 
-  private active: boolean = true;
-
-  private saveListener = () => {
-    if (this.active) {
-      this.save();
-    }
+  private whiteboardSaveConfigProvider: () => WhiteboardSaveConfig = () => {
+    return this.getWhiteboardSaveConfig();
   }
 
-  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService, private readonly activeWhiteboardService: ActiveService) { 
-    this.activeWhiteboardService.isWhiteboardActive = true;
+  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService, private readonly activeService: ActiveService) { 
+    this.activeService.isWhiteboardActive = true;
     
     // get the whiteboard
     if (this.electron.isElectronApp) {
-      this.activeRoute.params.subscribe((params: any) => {
-        this.path = this.faecherManager.getPathForWhiteboard(params.fachid, params.einheitid, params.whiteboardid);
-        this.electron.ipcRenderer.invoke('request-whiteboard', this.path).then((value: any) => {
+      this.activeRoute.params.subscribe(async (params: any) => {
+        this.fachId = params.fachid;
+        this.einheitId = params.einheitid;
+        this.whiteboardId = params.whiteboardid;
+
+        this.whiteboard = await this.faecherManager.getWhiteboard(this.fachId, this.einheitId, this.whiteboardId);
+        /*this.electron.ipcRenderer.invoke('request-whiteboard', this.path).then((value: any) => {
           this.whiteboard = value;
-        });
+        });*/
       })
     }
 
-    this.faecherManager.whiteboardSavers.addListener(this.saveListener)
+    this.faecherManager.whiteboardSavers.addProvider(this.whiteboardSaveConfigProvider)
   }
 
   ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {
-    this.save();
-    this.active = false;
-    this.faecherManager.whiteboardSavers.removeListener(this.saveListener);
-    this.activeWhiteboardService.isWhiteboardActive = false;
+    // finish everything
+    this.faecherManager.writeWhiteboard(this.getWhiteboardSaveConfig())
+    this.faecherManager.whiteboardSavers.removeProvider(this.whiteboardSaveConfigProvider);
+
+    // save some data
+    this.activeService.isWhiteboardActive = false;
   }
 
-  save() {
-    if (this.electron.isElectronApp && this.path != undefined && this.export.handler) {
-      let whiteboard = this.export.handler();
-      console.log('still here')
-      this.electron.ipcRenderer.invoke('write-whiteboard', this.path, JSON.stringify(whiteboard));
+  getWhiteboardSaveConfig(): WhiteboardSaveConfig {
+    return {
+      fachId: this.fachId,
+      einheitId: this.einheitId,
+      whiteboardId: this.whiteboardId,
+      content: this.export.handler ? this.export.handler() : defaultWhiteboard
     }
   }
 

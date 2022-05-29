@@ -1,29 +1,24 @@
 import { Category } from './../interfaces/fach';
-import { SiriusConfig } from '../interfaces/sirius.config';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { Einheit, Fach, Faecher, File as FileFach, Whiteboard } from '../interfaces/fach';
-import { Event } from '../../../whiteboard/global-whiteboard/essentials/event';
-import { colorToHex } from '../utils';
+import { Exposer } from '../classes/exposer';
+import { colorToHex, getNewId } from '../utils';
+import { Whiteboard as WhiteboardContent } from '../../../whiteboard/global-whiteboard/interfaces/whiteboard';
 
-const siriusConfigPath: string = 'sirius.config.json';
-const onSiriusConfigFileChannel: string = 'siriusConfigFile';
-const faecherFilePath: string = 'faecher.json';
-const onGetFileChannel: string = 'fileRequester';
 const cacheVariable: string = 'faecherData';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FaecherManagerService {
-  private siriusConfig: SiriusConfig = { directories: [] };
 
   public faecherData: Faecher = {
     faecher: [],
     categories: []
   };
 
-  public readonly whiteboardSavers: Event = new Event();
+  public readonly whiteboardSavers: Exposer<WhiteboardSaveConfig> = new Exposer<WhiteboardSaveConfig>();
 
   constructor(private readonly electron: ElectronService) {
     //load the sirius.config.json file
@@ -31,11 +26,25 @@ export class FaecherManagerService {
       this.loadSiriusConfig();
     }*/
 
+    console.log(this.electron);
+    this.electron.ipcRenderer.on('closing', () => {
+      this.saveInCache();
+
+      console.log('received closing')
+
+      this.whiteboardSavers.request(t => {
+        this.writeWhiteboard(t);
+      })
+
+      this.electron.ipcRenderer.sendSync('please_close');
+    })
+    
+
     window.addEventListener('beforeunload', () => {
-      try {
+      /*try {
         this.whiteboardSavers.emit();
       }
-      catch { }
+      catch { }*/
       
       this.saveInCache();
     })
@@ -48,196 +57,7 @@ export class FaecherManagerService {
     this.loadFromCache();
   }
 
-  public loadFromCache() {
-    let cache = localStorage[cacheVariable];
-    this.faecherData = cache ? JSON.parse(cache) : { faecher: [], categories: [] };
-  }
-
-  public saveInCache() {
-    localStorage[cacheVariable] = JSON.stringify(this.faecherData);
-  }
-
-  private loadSiriusConfig() {
-    this.electron.ipcRenderer.once(onSiriusConfigFileChannel, (event, arg) => {
-      if (arg) {
-        try {
-          this.siriusConfig = JSON.parse(arg as string) as SiriusConfig;
-        }
-        catch {
-          this.createSiriusConfig();
-        }
-      }
-      else {
-        this.createSiriusConfig();
-      }
-
-      console.log(this.siriusConfig);
-
-      this.loadFaecher();
-    });
-    this.electron.ipcRenderer.sendSync('readFile', [ siriusConfigPath, onSiriusConfigFileChannel ]);
-  }
-
-  private loadFaecher() {
-    this.getFile(faecherFilePath, (file: string | Buffer | undefined) => {
-      if (file) {
-        this.faecherData = JSON.parse(file as string);
-      }
-      else {
-        this.createFaecher();
-      }
-    });
-  }
-
-  private createFaecher() {
-    this.faecherData = { 
-      faecher: [],
-      categories: []
-    };
-    this.postFile(faecherFilePath, JSON.stringify(this.faecherData));
-  }
-
-  private createSiriusConfig() {
-    this.siriusConfig = {
-      directories: [
-        'C:\\Users\\Julian Alber\\OneDrive\\Sirius\\',
-        ''
-      ]
-    };
-
-    this.electron.ipcRenderer.sendSync('writeFile', [ siriusConfigPath, JSON.stringify(this.siriusConfig) ]);
-  }
-
-  public save(): void {
-    let str = JSON.stringify(this.faecherData);
-    for (let path of this.siriusConfig.directories) {
-      this.electron.ipcRenderer.sendSync('writeFile', [ path + faecherFilePath, str ])
-    }
-  }
-
-  public postFile(path: string, content: string): void {
-    for (let d of this.siriusConfig.directories) {
-      this.electron.ipcRenderer.sendSync('writeFile', [ d + path, content ]);
-    }
-  }
-
-  public getFile(path: string, callback: (file: string | Buffer | undefined) => void): void {
-    let foundSomething: boolean = false;
-    let counter2: number = 0;// will count how many response were received in order to make a last callback
-    for (let counter: number = 0; foundSomething || counter < this.siriusConfig.directories.length; counter++) {
-      this.electron.ipcRenderer.once(onGetFileChannel, (event, arg) => {
-        counter2++;
-        if (!foundSomething && arg) {
-          foundSomething = true;
-
-          try {
-            callback(arg as string | Buffer);
-          }
-          catch { }
-        }
-
-        if (counter2 == this.siriusConfig.directories.length && !foundSomething) {
-          callback(undefined);// make last callback
-        }
-      })
-      this.electron.ipcRenderer.sendSync('readFile', [ this.siriusConfig.directories[counter] + path, onGetFileChannel ]);
-      
-    }
-  }
-
-  public getFachById(id: string): Fach | undefined {
-    for (let fach of this.faecherData.faecher) {
-      if (fach.id == id) return fach;
-    }
-    return undefined;
-  }
-
-  public getEinheitById(fachId: string, einheitId: string): Einheit | undefined {
-    let fach = this.getFachById(fachId);
-    if (fach != undefined) {
-      for (let einheit of fach.einheiten) {
-        if (einheit.id == einheitId) return einheit;
-      }
-    }
-    return undefined;
-  }
-
-  public addFach(fach: Fach): void {
-    this.faecherData.faecher.push(fach);
-  }
-
-  public addFachWithData(id: string, name: string, description: string): void {
-    this.addFach({
-      id: this.toID(id),
-      name: name,
-      description: description,
-      notes: '',
-      tasks: [],
-      einheiten: [],
-      files: [],
-      whiteboards: []
-    })
-  }
-
-  private static replaceAll(str: string, what: string[], by: string): string {
-    for (let w of what) {
-      while (str.indexOf(w) != -1) {
-        str = str.replace(w, by);
-      }
-    }
-    return str;
-  }
-
-  private toID(str: string): string {
-    return FaecherManagerService.replaceAll(str.trim().toLowerCase(), [' ', '\r', '\n', '\\', '/', '&', '.', ',', '\'', '"', ';', ':'], '');
-  }
-
-  public addEinheitWithData(fach: Fach, topic: string, description: string): void {
-    fach.einheiten.push(this.getEinheitFromData(topic, description));
-  }
-
-  public getEinheitFromData(topic: string, description: string): Einheit {
-    return {
-      id: this.toID(topic),
-      topic: topic,
-      description: description,
-      tasks: [],
-      notes: '',
-      files: [],
-      whiteboards: []
-    };
-  }
-
-  public removeFach(fach: Fach): boolean {
-    let index = this.faecherData.faecher.indexOf(fach);
-    if (index > -1) {
-      this.faecherData.faecher.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
-
-  public removeEinheit(fach: Fach, einheit: Einheit): boolean {
-    let index = fach.einheiten.indexOf(einheit);
-    if (index > -1) {
-      fach.einheiten.splice(index, 1);
-      return true;
-    }
-    return false;
-  }
-
-  public getPathForFileDir(fach: string | Fach | undefined, einheit: string | Einheit | undefined): string {
-    if (fach) {
-      let path = `faecher/${typeof fach == 'string' ? fach : fach.id}/`;
-      if (einheit) {
-        path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
-      }
-      path += 'dateien/'
-      return path;
-    }
-    return '';
-  }
-
+  //#region handling files and whiteboards
   public openFile(fach: Fach | string, einheit: Einheit | string | undefined, file: FileFach | string) {
     // Öffne die gegebene Datei
     if (this.electron.isElectronApp) {
@@ -255,6 +75,27 @@ export class FaecherManagerService {
     return '';
   }
 
+  public getPathForFileDir(fach: string | Fach | undefined, einheit: string | Einheit | undefined): string {
+    if (fach) {
+      let path = `faecher/${typeof fach == 'string' ? fach : fach.id}/`;
+      if (einheit) {
+        path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
+      }
+      path += 'dateien/'
+      return path;
+    }
+    return '';
+  }
+
+
+  public writeWhiteboard(config: WhiteboardSaveConfig) {
+    this.electron.ipcRenderer.invoke('write-whiteboard', this.getPathForWhiteboard(config.fachId, config.einheitId, config.whiteboardId), JSON.stringify(config.content));
+  }
+
+  public async getWhiteboard(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string | Whiteboard | undefined): Promise<WhiteboardContent> {
+    return JSON.parse(await this.electron.ipcRenderer.invoke('request-whiteboard', this.getPathForWhiteboard(fach, einheit, whiteboard))) as WhiteboardContent;
+  }
+
   public getPathForWhiteboard(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string | Whiteboard | undefined): string {
     if (fach) {
       let path = `faecher/${typeof fach == 'string' ? fach : fach.id}/`;
@@ -269,26 +110,6 @@ export class FaecherManagerService {
     return '';
   }
 
-  public getCategoryNameToId(id: string | undefined): string | undefined {
-    return this.getCategoryToId(id)?.name;
-  }
-
-  public getCategoryToId(id: string | undefined): Category | undefined {
-    // method returns the name to the id
-    for (let c of this.faecherData.categories) {
-      if (c.id == id) return c;
-    }
-    return undefined;
-  }
-
-  public getLinkToFach(fach: Fach): string {
-    return `/faecher/${fach.id}/`;
-  }
-
-  public getLinkToEinheit(fach: Fach, einheit: Einheit): string {
-    return `/faecher/${fach.id}/einheiten/${einheit.id}/`;
-  }
-
   public getLinkToWhiteboard(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string | Whiteboard | undefined): string {
     if (fach) {
       let path = `/faecher/${typeof fach == 'string' ? fach : fach.id}/`;
@@ -301,6 +122,119 @@ export class FaecherManagerService {
       }
     }
     return '';
+  }
+  //#endregion
+
+  //#region handling the cache
+  public loadFromCache() {
+    let cache = localStorage[cacheVariable];
+    this.faecherData = cache ? JSON.parse(cache) : { faecher: [], categories: [] };
+  }
+
+  public saveInCache() {
+    localStorage[cacheVariable] = JSON.stringify(this.faecherData);
+  }
+  //#endregion
+
+  //#region methods for handling Faecher and Einheiten
+  public addFach(fach: Fach): void {
+    this.faecherData.faecher.push(fach);
+  }
+
+  public addFachWithData(name: string, description: string): void {
+    this.addFach({
+      id: getNewId(this.faecherData.faecher.map(f => f.id)),
+      name: name,
+      description: description,
+      notes: '',
+      tasks: [],
+      einheiten: [],
+      files: [],
+      whiteboards: []
+    })
+  }
+
+  public getFachById(id: string): Fach | undefined {
+    for (let fach of this.faecherData.faecher) {
+      if (fach.id == id) return fach;
+    }
+    return undefined;
+  }
+
+  public getLinkToFach(fach: Fach): string {
+    return `/faecher/${fach.id}/`;
+  }
+
+  public removeFach(fach: Fach): boolean {
+    let index = this.faecherData.faecher.indexOf(fach);
+    if (index > -1) {
+      this.faecherData.faecher.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+
+  public addEinheit(fach: Fach, einheit: Einheit): void {
+    fach.einheiten.push(einheit);
+  }
+
+  public addEinheitWithData(fach: Fach, topic: string, description: string): void {
+    this.addEinheit(fach, this.getEinheitFromData(topic, description));
+  }
+
+  public getEinheitFromData(topic: string, description: string): Einheit {
+    let ids: string[] = [];
+    for (let fach of this.faecherData.faecher) {
+      ids.push(...fach.einheiten.map(e => e.id));
+    }
+
+    return {
+      id: getNewId(ids),
+      topic: topic,
+      description: description,
+      tasks: [],
+      notes: '',
+      files: [],
+      whiteboards: []
+    };
+  }
+
+  public getEinheitById(fachId: string, einheitId: string): Einheit | undefined {
+    let fach = this.getFachById(fachId);
+    if (fach != undefined) {
+      for (let einheit of fach.einheiten) {
+        if (einheit.id == einheitId) return einheit;
+      }
+    }
+    return undefined;
+  }
+
+  public getLinkToEinheit(fach: Fach, einheit: Einheit): string {
+    return `/faecher/${fach.id}/einheiten/${einheit.id}/`;
+  }
+
+  public removeEinheit(fach: Fach, einheit: Einheit): boolean {
+    let index = fach.einheiten.indexOf(einheit);
+    if (index > -1) {
+      fach.einheiten.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+  //#endregion
+
+  //#region methods for dealing with the categories
+  public getCategoryNameToId(id: string | undefined): string | undefined {
+    return this.getCategoryToId(id)?.name;
+  }
+
+  public getCategoryToId(id: string | undefined): Category | undefined {
+    // method returns the name to the id
+    for (let c of this.faecherData.categories) {
+      if (c.id == id) return c;
+    }
+    return undefined;
   }
 
   public getColorOfCategory(cId?: string): string | undefined {
@@ -317,4 +251,13 @@ export class FaecherManagerService {
     let color = this.getColorOfCategory(cId);
     return `6px solid ${color ? color : 'transparent'}`;
   }
+  //#endregion
+
+}
+
+export interface WhiteboardSaveConfig {
+  content: WhiteboardContent,
+  fachId: string,
+  einheitId?: string,
+  whiteboardId: string
 }

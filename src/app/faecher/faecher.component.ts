@@ -28,7 +28,7 @@ export class FaecherComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != undefined && result != "") {
         let res = result as DialogData;
-        this.faecherManager.addFachWithData(res.name, res.name, res.description);
+        this.faecherManager.addFachWithData(res.name, res.description);
       }
     });
   }
