@@ -37,7 +37,8 @@ export class FaecherComponent implements OnInit {
 
 export interface DialogData {
   name: string,
-  description: string
+  description: string,
+  edit?: boolean
 }
 
 @Component({

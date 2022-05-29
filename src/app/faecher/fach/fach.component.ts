@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
 import { AcceptDialogComponent } from '../accept-dialog/accept-dialog.component';
 import { Fach } from '../global/interfaces/fach';
+import { DialogData, FaecherDialogComponent } from '../faecher.component';
 
 @Component({
   selector: 'faecher-fach',
@@ -13,7 +14,7 @@ import { Fach } from '../global/interfaces/fach';
 export class FachComponent implements OnInit {
 
   @Input()
-  fach: Fach | undefined;
+  fach?: Fach;
 
   constructor(private readonly router: Router, 
     private readonly activatedRoute: ActivatedRoute, 
@@ -30,6 +31,7 @@ export class FachComponent implements OnInit {
   }
 
   onDeleteClick(): void {
+    // open the dialog to delete
     const dialogRef = this.dialog.open(AcceptDialogComponent, {
       data: {
         header: `Fach '${(this.fach as Fach).name}' wirklich löschen?`,
@@ -43,6 +45,28 @@ export class FachComponent implements OnInit {
         this.router.navigateByUrl('faecher');
       }
     })
+  }
+
+  onEditClick(): void {
+    // open the dialog to edit
+    if (this.fach) {
+      const dialogRef = this.dialog.open(FaecherDialogComponent, {
+        width: '500px',
+        data: { 
+          name: this.fach.name,
+          description: this.fach.description,
+          edit: true
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result != undefined && result != "" && this.fach) {
+          let res = result as DialogData;
+          this.fach.name = res.name;
+          this.fach.description = res.description;
+        }
+      });
+    }
   }
 
 }

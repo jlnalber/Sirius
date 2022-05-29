@@ -1,6 +1,7 @@
 
 <div class="fachContainer">
-    <button mat-button color="accent" class="floatRight" (click)="this.onDeleteClick()">Löschen</button>
+    <button mat-button color="accent" class="floatRight deleteButton" (click)="this.onDeleteClick()">Löschen</button>
+    <button mat-button class="floatRight" (click)="this.onEditClick()">Bearbeiten</button>
     <h1>
         {{ this.fach?.name }}
     </h1>

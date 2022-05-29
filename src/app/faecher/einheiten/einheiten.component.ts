@@ -101,7 +101,8 @@ export class EinheitenComponent implements OnInit {
 
 export interface DialogData {
   topic: string,
-  description: string
+  description: string,
+  edit?: boolean
 }
 
 @Component({

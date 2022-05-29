@@ -1,4 +1,4 @@
-<h1 mat-dialog-title class="fill">Fach hinzufügen</h1>
+<h1 mat-dialog-title class="fill">{{ data.edit ? 'Fach bearbeiten' : 'Fach hinzufügen' }}</h1>
 <div mat-dialog-content class="fill">
   <div>
     <mat-form-field appearance="outline" class="fill">
@@ -15,5 +15,5 @@
 </div>
 <div mat-dialog-actions align="end" class="fill">
   <button color="accent" mat-button (click)="onNoClick()">Abbrechen</button>
-  <button [disabled]="data.name == ''" mat-button [mat-dialog-close]="data">Hinzufügen</button>
+  <button [disabled]="data.name == ''" mat-button [mat-dialog-close]="data">{{ data.edit ? 'Bestätigen' : 'Hinzufügen' }}</button>
 </div>

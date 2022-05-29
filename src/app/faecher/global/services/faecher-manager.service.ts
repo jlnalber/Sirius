@@ -26,18 +26,17 @@ export class FaecherManagerService {
       this.loadSiriusConfig();
     }*/
 
-    console.log(this.electron);
-    this.electron.ipcRenderer.on('closing', () => {
-      this.saveInCache();
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.on('closing', () => {
+        this.saveInCache();
 
-      console.log('received closing')
+        this.whiteboardSavers.request(t => {
+          this.writeWhiteboard(t);
+        })
 
-      this.whiteboardSavers.request(t => {
-        this.writeWhiteboard(t);
+        this.electron.ipcRenderer.sendSync('please_close');
       })
-
-      this.electron.ipcRenderer.sendSync('please_close');
-    })
+    }
     
 
     window.addEventListener('beforeunload', () => {
