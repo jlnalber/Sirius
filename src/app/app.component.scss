@@ -133,3 +133,7 @@ mat-sidenav {
 .searchActive input:hover::placeholder, .searchActive input:focus::placeholder {
     color: #111320;
 }
+
+mat-toolbar {
+    height: 64px !important;
+}

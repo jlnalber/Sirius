@@ -1,9 +1,25 @@
 <div *ngIf="this.searchService.input == ''">
-    Zum Suchen in die Suchleiste tippen!
+    <p class="paragraph">
+        <span class="iconSpan">
+            <mat-icon class="icon">search</mat-icon>
+        </span>
+        <span>
+            <h1>Zum Suchen in die Suchleiste tippen!</h1>
+        </span>
+    </p>
 </div>
+
 <div *ngIf="this.searchService.input != '' && this.searchService.searchResults.length == 0">
-    Kein Ergebnis gefunden!
+    <p class="paragraph">
+        <span class="iconSpan">
+            <mat-icon class="icon">error_outline</mat-icon>
+        </span>
+        <span>
+            <h1>Kein Ergebnis gefunden!</h1>
+        </span>
+    </p>
 </div>
+
 <mat-nav-list *ngIf="this.searchService.input != '' && this.searchService.searchResults.length != 0">
     <mat-list-item *ngFor="let res of this.searchService.searchResults" [routerLink]="res.routerLink" (click)="res.additionalClickAction != undefined ? res.additionalClickAction() : ''">
         <mat-icon matListIcon>
