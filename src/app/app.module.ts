@@ -27,6 +27,7 @@ import { NgxElectronModule } from 'ngx-electron';
 import { SettingsComponent } from './settings/settings.component';
 import { SearchComponent } from './search/search.component';
 import { AddCategoryDialogComponent } from './settings/add-category-dialog/add-category-dialog.component';
+import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { AddCategoryDialogComponent } from './settings/add-category-dialog/add-c
     SidenavComponent,
     SettingsComponent,
     SearchComponent,
-    AddCategoryDialogComponent
+    AddCategoryDialogComponent,
+    LoadingScreenComponent
   ],
   imports: [
     BrowserModule,

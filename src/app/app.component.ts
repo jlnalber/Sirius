@@ -13,7 +13,7 @@ export class AppComponent {
   title = 'Sirius';
   opened = false;
 
-  constructor(private readonly location: Location, public readonly activeWhiteboardService: ActiveService, public readonly searchService: SearchService) {
+  constructor(private readonly location: Location, public readonly activeWhiteboardService: ActiveService, public readonly searchService: SearchService, public readonly faecherManager: FaecherManagerService) {
     /*this.location.onUrlChange((url: string, state: unknown) => {
       console.log(url, state);
     })*/

@@ -11,7 +11,7 @@ const url = require('url');
 const { getEnvironmentData } = require('worker_threads');
 const iconPath = path.join(__dirname, 'sirius', 'assets', 'icon.ico')
 
-ipcMain.on('test', (ev, ...args) => {
+/*ipcMain.on('test', (ev, ...args) => {
   console.log('wow')
   console.log(args);
   console.log(ipcMain)
@@ -22,7 +22,7 @@ ipcMain.on('test', (ev, ...args) => {
 ipcMain.handle('an-action', (event, arg) => {
   // do stuff
   return "foo";
-})
+})*/
 
 ipcMain.handle('request-file', (event, ...args) => {
   let path = arg[0];
@@ -74,6 +74,17 @@ ipcMain.handle('open-file', (event, ...args) => {
   }
 })
 
+ipcMain.handle('get-data', (event, ...args) => {
+  let content = readFileUTF8('faecher.json');
+  content = content == '' ? '{"faecher":[],"categories":[]}' : content;
+  return content;
+})
+
+ipcMain.handle('write-data', (event, ...args) => {
+  let content = args[0];
+  writeFileUTF8('faecher.json', content);
+})
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -106,13 +117,13 @@ function createWindow () {
   splash = new BrowserWindow({width: 500, icon: iconPath, height: 400, transparent: true, frame: false, alwaysOnTop: true})
   splash.loadURL(path.join(__dirname, 'sirius', 'assets', 'splashscreen.html'));
 
-  // let fileContent = fs.readFileSync('faecher.json', 'utf-8')
+  /*// let fileContent = fs.readFileSync('faecher.json', 'utf-8')
   let fileContent = readFileUTF8('faecher.json');
 
   // Write the data from the file into the localStorage
   // console.log(fileContent);
   mainWindow.webContents.executeJavaScript("localStorage.setItem('faecher', '" + fileContent + "'); console.log('" + fileContent + "');", true).then(_result => { });
-
+  */
   mainWindow.loadURL('about:blank')
 
   // and load the index.html of the app.
@@ -136,11 +147,10 @@ function createWindow () {
   // Emitted when the window is closed. Writes the data from the local storage into a file.
   let onClosing = false;
   mainWindow.on('close', (e) => {
+
     if (!onClosing) {
+
       e.preventDefault();
-      
-      console.log(ipcMain);
-      console.log(ipcRenderer);
 
       mainWindow.webContents.send('closing')
 

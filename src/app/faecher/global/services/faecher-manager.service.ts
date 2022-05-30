@@ -18,6 +18,9 @@ export class FaecherManagerService {
     categories: []
   };
 
+  public loaded = false;
+  public closing = false;
+
   public readonly whiteboardSavers: Exposer<WhiteboardSaveConfig> = new Exposer<WhiteboardSaveConfig>();
 
   constructor(private readonly electron: ElectronService) {
@@ -28,7 +31,9 @@ export class FaecherManagerService {
 
     if (this.electron.isElectronApp) {
       this.electron.ipcRenderer.on('closing', () => {
-        this.saveInCache();
+        this.closing = true;
+
+        this.saveDataElectron();
 
         this.whiteboardSavers.request(t => {
           this.writeWhiteboard(t);
@@ -53,7 +58,7 @@ export class FaecherManagerService {
     })
 
     //setTimeout(() => this.loadFromCache(), 2000)
-    this.loadFromCache();
+    this.loadData();
   }
 
   //#region handling files and whiteboards
@@ -125,13 +130,28 @@ export class FaecherManagerService {
   //#endregion
 
   //#region handling the cache
-  public loadFromCache() {
-    let cache = localStorage[cacheVariable];
-    this.faecherData = cache ? JSON.parse(cache) : { faecher: [], categories: [] };
+  public async loadData() {
+    if (this.electron.isElectronApp) {
+      this.faecherData = JSON.parse(await this.electron.ipcRenderer.invoke('get-data')) as Faecher;
+    }
+    else {
+      let cache = localStorage[cacheVariable];
+      this.faecherData = cache ? JSON.parse(cache) : { faecher: [], categories: [] };
+    }
+
+    this.loaded = true;
   }
 
   public saveInCache() {
-    localStorage[cacheVariable] = JSON.stringify(this.faecherData);
+    if (!this.electron.isElectronApp) {
+      localStorage[cacheVariable] = JSON.stringify(this.faecherData);
+    }
+  }
+
+  public saveDataElectron() {
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('write-data', JSON.stringify(this.faecherData));
+    }
   }
   //#endregion
 

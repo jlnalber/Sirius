@@ -1,4 +1,4 @@
-<div class="main">
+<div *ngIf="this.faecherManager.loaded && !this.faecherManager.closing" class="main">
   <mat-toolbar *ngIf="!this.activeWhiteboardService.isWhiteboardActive" color="primary">
     <button mat-icon-button class="icon" (click)="this.opened = !this.opened">
       <mat-icon>menu</mat-icon>
@@ -42,4 +42,7 @@
       </router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
+</div>
+<div *ngIf="!this.faecherManager.loaded || this.faecherManager.closing">
+  <app-loading-screen></app-loading-screen>
 </div>
