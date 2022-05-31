@@ -4,7 +4,7 @@ import { ElectronService } from 'ngx-electron';
 import { Einheit, Fach, Faecher, File as FileFach, Whiteboard } from '../interfaces/fach';
 import { Exposer } from '../classes/exposer';
 import { colorToHex, getNewId } from '../utils';
-import { Whiteboard as WhiteboardContent } from '../../../whiteboard/global-whiteboard/interfaces/whiteboard';
+import { defaultWhiteboard, Whiteboard as WhiteboardContent } from '../../../whiteboard/global-whiteboard/interfaces/whiteboard';
 
 const cacheVariable: string = 'faecherData';
 
@@ -65,14 +65,14 @@ export class FaecherManagerService {
   public openFile(fach: Fach | string, einheit: Einheit | string | undefined, file: FileFach | string) {
     // Öffne die gegebene Datei
     if (this.electron.isElectronApp) {
-      this.electron.ipcRenderer.invoke('open-file', this.getPathForFileDir(fach, einheit) + (typeof file == 'string' ? file : file.name));
+      this.electron.ipcRenderer.invoke('open-file', this.getPathForFile(fach, einheit, file));
     }
   }
 
   public async addFile(fach: Fach | string, einheit: Einheit | string | undefined, file: File | undefined): Promise<string> {
     if (this.electron.isElectronApp && file) {
       return await file.arrayBuffer().then(value => {
-        this.electron.ipcRenderer.invoke('write-file', this.getPathForFileDir(fach, einheit) + file.name, value);
+        this.electron.ipcRenderer.invoke('write-file', this.getPathForFile(fach, einheit, file), value);
         return file.name;
       })
     }
@@ -91,9 +91,49 @@ export class FaecherManagerService {
     return '';
   }
 
+  public getPathForFile(fach: string | Fach | undefined, einheit: string | Einheit | undefined, file : FileFach | File | string) : string {
+    return this.getPathForFileDir(fach, einheit) + (typeof file == 'string' ? file : file.name);
+  }
+
+  public deleteFile(fach: Fach | string, einheit: Einheit | string | undefined, file: FileFach | string): void {
+    // Lösche die gegebene Datei
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('delete', this.getPathForFile(fach, einheit, file));
+    }
+  }
+
+
+  public addWhiteboard(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string): Whiteboard {
+    // find all of the ids of the whiteboard
+    let ids: string[] = [];
+    for (let fach of this.faecherData.faecher) {
+      for (let whiteboard of fach.whiteboards) {
+        ids.push(whiteboard.id);
+      }
+
+      for (let einheit of fach.einheiten) {
+        for (let whiteboard of einheit.whiteboards) {
+          ids.push(whiteboard.id);
+        }
+      }
+    }
+
+    let res: Whiteboard = {
+      name: whiteboard,
+      id: getNewId(ids)
+    }
+
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('write-whiteboard', this.getPathForWhiteboard(fach, einheit, res.id), JSON.stringify(defaultWhiteboard));
+    }
+
+    return res;
+  }
 
   public writeWhiteboard(config: WhiteboardSaveConfig) {
-    this.electron.ipcRenderer.invoke('write-whiteboard', this.getPathForWhiteboard(config.fachId, config.einheitId, config.whiteboardId), JSON.stringify(config.content));
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('write-whiteboard', this.getPathForWhiteboard(config.fachId, config.einheitId, config.whiteboardId), JSON.stringify(config.content));
+    }
   }
 
   public async getWhiteboard(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string | Whiteboard | undefined): Promise<WhiteboardContent> {
@@ -107,7 +147,7 @@ export class FaecherManagerService {
         path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
       }
       if (whiteboard) {
-        path += `whiteboards/${typeof whiteboard == 'string' ? whiteboard : whiteboard.name}.json`;
+        path += `whiteboards/${typeof whiteboard == 'string' ? whiteboard : whiteboard.id}.json`;
         return path;
       }
     }
@@ -121,11 +161,17 @@ export class FaecherManagerService {
         path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
       }
       if (whiteboard) {
-        path += `whiteboards/${typeof whiteboard == 'string' ? whiteboard : whiteboard.name}/`;
+        path += `whiteboards/${typeof whiteboard == 'string' ? whiteboard : whiteboard.id}/`;
         return path;
       }
     }
     return '';
+  }
+
+  public deleteWhitebaord(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string | Whiteboard | undefined): void {
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('delete', this.getPathForWhiteboard(fach, einheit, whiteboard));
+    }
   }
   //#endregion
 

@@ -5,7 +5,7 @@
     <mat-card-content>
         <div class="whiteboardContainer">
             <div *ngFor="let whiteboard of this.whiteboards" class="whiteboard" [ngStyle]="{ 'border-left': this.faecherManager.getBorderStyle(whiteboard.categoryId)}">
-                <div class="text" [routerLink]="'whiteboards/' + whiteboard.name">
+                <div class="text" [routerLink]="'whiteboards/' + whiteboard.id">
                     {{ whiteboard.name }}
                 </div>
                 <div align="right">

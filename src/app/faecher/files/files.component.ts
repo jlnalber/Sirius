@@ -33,9 +33,13 @@ export class FilesComponent implements OnInit {
   }
 
   public removeFile(file: FileFach): boolean {
+    // Lösche die Datei
     const index = this.files?.indexOf(file);
     if (index != undefined && index != -1) {
       this.files?.splice(index, 1);
+
+      this.faecherManager.deleteFile(this.fach, this.einheit, file);
+
       return true;
     }
     return false;

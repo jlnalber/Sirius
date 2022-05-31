@@ -38,6 +38,7 @@ export interface File {
 }
 
 export interface Whiteboard {
+    id: string,
     name: string,
     categoryId?: string
 }

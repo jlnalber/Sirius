@@ -55,6 +55,12 @@ ipcMain.handle('write-whiteboard', (event, ...args) => {
   return res;
 })
 
+ipcMain.handle('delete', (event, ...args) => {
+  let path = args[0];
+  let res = deleteFile(path);
+  return res;
+})
+
 ipcMain.handle('open-file', (event, ...args) => {
   let path = args[0];
   try {
@@ -76,7 +82,14 @@ ipcMain.handle('open-file', (event, ...args) => {
 
 ipcMain.handle('get-data', (event, ...args) => {
   let content = readFileUTF8('faecher.json');
-  content = content == '' ? '{"faecher":[],"categories":[]}' : content;
+  console.log('Hallo!')
+  console.log(content)
+  if (content == '') {
+    console.log('Hier war ich auch schon!')
+    const defaultContent = '{"faecher":[],"categories":[]}';
+    content = defaultContent;
+    writeFileUTF8('faecher.json', content);
+  }
   return content;
 })
 
@@ -292,13 +305,27 @@ function writeFileUTF8(relativePath, data) {
   }
 }
 
+function deleteFile(relativePath) {
+  for (let dir of config.directories) {
+    try {
+      let path = joinPathsForFS(dir, relativePath);
+      checkPath(path);
+      fs.unlinkSync(path);
+    }
+    catch { }
+  }
+}
+
 function checkPath(path) {
   try {
     fs.accessSync(path);
   }
   catch {
-    let dir = path.substring(0, path.lastIndexOf('/'));
-    fs.mkdirSync(dir, {recursive: true})
+    try {
+      let dir = path.substring(0, path.lastIndexOf('/'));
+      fs.mkdirSync(dir, {recursive: true})
+    }
+    catch { }
   }
 }
 
