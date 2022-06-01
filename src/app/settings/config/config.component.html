@@ -1,0 +1,27 @@
+<div *ngIf="this.config" class="configSettingsContainer">
+    <mat-card id="Konfiguration">
+        <mat-card-title class="title">
+            <h3 class="title">Konfiguration</h3>
+        </mat-card-title>
+        <mat-card-content>
+            <div class="configContainer">
+                <div cdkDropList class="dropList" (cdkDropListDropped)="drop($event)">
+                    <div cdkDrag *ngFor="let path of this.config?.directories; let i = index" class="dragBox">
+                        <div>{{ path }}</div>
+                        <div class="actions">
+                            <button mat-button class="selectButton" (click)="this.openFolder(i)">
+                                <mat-icon>folder_open</mat-icon>
+                            </button>
+                            <button mat-button class="deleteButton" (click)="this.deleteFolder(i)" color="accent" *ngIf="this.config.directories.length != 1">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-button (click)="this.addFolder()" class="addButton">Hinzufügen</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

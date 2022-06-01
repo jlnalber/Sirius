@@ -10,6 +10,8 @@ const path = require('path')
 const url = require('url');
 const { getEnvironmentData } = require('worker_threads');
 const iconPath = path.join(__dirname, 'sirius', 'assets', 'icon.ico')
+const siriusConfigPath = 'sirius.config.json';
+const faecherFile = 'faecher.json';
 
 /*ipcMain.on('test', (ev, ...args) => {
   console.log('wow')
@@ -81,21 +83,43 @@ ipcMain.handle('open-file', (event, ...args) => {
 })
 
 ipcMain.handle('get-data', (event, ...args) => {
-  let content = readFileUTF8('faecher.json');
-  console.log('Hallo!')
+  let content = readFileUTF8(faecherFile);
   console.log(content)
+
   if (content == '') {
-    console.log('Hier war ich auch schon!')
     const defaultContent = '{"faecher":[],"categories":[]}';
     content = defaultContent;
-    writeFileUTF8('faecher.json', content);
+    writeFileUTF8(faecherFile, content);
   }
   return content;
 })
 
 ipcMain.handle('write-data', (event, ...args) => {
   let content = args[0];
-  writeFileUTF8('faecher.json', content);
+  writeFileUTF8(faecherFile, content);
+})
+
+ipcMain.handle('get-config', (event, ...args) => {
+  if (!config) {
+    readConfig();
+  }
+  return config;
+})
+
+ipcMain.handle('set-config', (event, ...args) => {
+  config = args[0];
+  writeConfig();
+})
+
+ipcMain.handle('open-folder-dialog', (event, ...args) => {
+  let defaultPath = undefined;
+  if (args && args[0]) defaultPath = args[0];
+
+  let dir = electron.dialog.showOpenDialogSync(mainWindow, {
+    properties: ['openDirectory'],
+    defaultPath: defaultPath
+  })
+  return dir[0];
 })
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -183,16 +207,13 @@ function createWindow () {
         console.log(e);
       }*/
 
-      onClosing = true;
+      //onClosing = true;
       //app.quit();
     }
   })
 
-  mainWindow.on('please_close', function () {
-    app.quit();
-  })
-
   ipcMain.on('please_close', function () {
+    onClosing = true;
     app.quit();
   })
 
@@ -234,19 +255,25 @@ function joinPathsForFS(dir, relativePath) {
 }
 
 function readConfig() {
-  let pathConfig = 'sirius.config.json'
   try {
-    let configStr = fs.readFileSync(pathConfig, 'utf-8');
+    let configStr = fs.readFileSync(siriusConfigPath, 'utf-8');
     config = JSON.parse(configStr);
   }
   catch {
     let defaultConfig = '{"directories":[""]}';
     config = JSON.parse(defaultConfig);
     try {
-      fs.writeFileSync(pathConfig, defaultConfig, 'utf-8');
+      fs.writeFileSync(siriusConfigPath, defaultConfig, 'utf-8');
     }
     catch { }
   }
+}
+
+function writeConfig() {
+  try {
+    fs.writeFileSync(siriusConfigPath, JSON.stringify(config), 'utf-8');
+  }
+  catch { }
 }
 
 function readFileUTF8(relativePath) {
