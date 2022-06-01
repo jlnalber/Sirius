@@ -6,50 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class SearchService {
 
-  public searchResults: SearchResult[] = [
-    {
-      header: 'Header',
-      description: 'Lorem ipsum dolor sit atem.',
-      type: 'fach',
-      routerLink: '/faecher/fach/einheiten/einheit',
-      additionalClickAction: () => { console.log('I was clicked!'); }
-    },
-    {
-      header: 'Header',
-      description: 'Lorem ipsum dolor sit atem.',
-      type: 'einheit',
-      routerLink: '/faecher/fach/einheiten/einheit',
-      additionalClickAction: () => { console.log('I was clicked!'); }
-    },
-    {
-      header: 'Header',
-      description: 'Lorem ipsum dolor sit atem.',
-      type: 'task',
-      routerLink: '/faecher/fach/einheiten/einheit',
-      additionalClickAction: () => { console.log('I was clicked!'); }
-    },
-    {
-      header: 'Header',
-      description: 'Lorem ipsum dolor sit atem.',
-      type: 'whiteboard',
-      routerLink: '/faecher/fach/einheiten/einheit',
-      additionalClickAction: () => { console.log('I was clicked!'); }
-    },
-    {
-      header: 'Header',
-      description: 'Lorem ipsum dolor sit atem.',
-      type: 'file',
-      routerLink: '/faecher/fach/einheiten/einheit',
-      additionalClickAction: () => { console.log('I was clicked!'); }
-    },
-    {
-      header: 'Header',
-      description: 'Lorem ipsum dolor sit atem.',
-      type: 'setting',
-      routerLink: '/faecher/fach/einheiten/einheit',
-      additionalClickAction: () => { console.log('I was clicked!'); }
-    }
-  ];
+  public searchResults: SearchResult[] = [];
 
   private _input: string = "";
   public get input(): string {
@@ -326,7 +283,8 @@ export class SearchService {
   }
 
   private getSettings(s: string): SearchResult[] {
-    const content = [ 'Kategorien' ];
+    // Durchsuche die Einstellungen
+    const content = [ 'Kategorien', 'Konfiguration' ];
 
     let res: SearchResult[] = [];
 
