@@ -1,4 +1,4 @@
-import { Category, Whiteboard } from './../faecher/global/interfaces/fach';
+import { Category } from './../faecher/global/interfaces/fach';
 import { AddCategoryDialogComponent, DialogData } from './add-category-dialog/add-category-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { getNewId } from '../faecher/global/utils';
 import { Color as WhiteboardColor } from '../whiteboard/global-whiteboard/essentials/color';
 import { Color } from '../whiteboard/global-whiteboard/interfaces/whiteboard';
+import { AcceptDialogComponent } from '../faecher/accept-dialog/accept-dialog.component';
 
 @Component({
   selector: 'app-settings',
@@ -39,13 +40,23 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  removeCategory(category: Category): boolean {
-    const index = this.faecherManager.faecherData.categories.indexOf(category);
-    if (index >= 0) {
-      this.faecherManager.faecherData.categories.splice(index, 1);
-      return true;
-    }
-    return false;
+  removeCategory(category: Category): void {
+    // open the dialog to delete
+    const dialogRef = this.dialog.open(AcceptDialogComponent, {
+      data: {
+        header: `Kategorie '${category.name}' wirklich löschen?`,
+        description: `Alle Elemente in dieser Kategorie verlieren ihr Label.`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != undefined && result != "") {
+        const index = this.faecherManager.faecherData.categories.indexOf(category);
+        if (index >= 0) {
+          this.faecherManager.faecherData.categories.splice(index, 1);
+        }
+      }
+    })
   }
 
   defaultColors: WhiteboardColor[] = [

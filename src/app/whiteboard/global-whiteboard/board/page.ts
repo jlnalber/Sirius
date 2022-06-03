@@ -8,6 +8,7 @@ import { Canvg, presets, RenderingContext2D } from "canvg";
 import { defaultRect, getBoundingRect, getImageDimensions, resizeRect } from "../essentials/utils";
 
 const maxStepsBack = 30;
+const offsetSizeRect = 40;
 
 export class Page {
 
@@ -199,12 +200,10 @@ export class Page {
             this.board.currentPageIndex = currentPageIndex;
         }
 
-        const offset = 40;
-
-        rect.width += 2 * offset /*+ rect.x > 0 ? rect.x : 0*/;
-        rect.height += 2 * offset /*+ rect.y > 0 ? rect.y : 0*/;
-        rect.x -= offset;
-        rect.y -= offset;
+        rect.width += 2 * offsetSizeRect /*+ rect.x > 0 ? rect.x : 0*/;
+        rect.height += 2 * offsetSizeRect /*+ rect.y > 0 ? rect.y : 0*/;
+        rect.x -= offsetSizeRect;
+        rect.y -= offsetSizeRect;
         //rect.x = rect.x < 0 ? rect.x : 0;
         //rect.y = rect.y < 0 ? rect.y : 0;
 
@@ -235,7 +234,7 @@ export class Page {
         }
     }
 
-    public async getSVG(withBackgroundAsRect: boolean = true): Promise<[string, Rect]> {
+    public async getSVG(): Promise<[string, Rect]> {
         // this method returns a string (and a rect for the shape) of a svg of this page, it moves the content and scales so that it makes sense
 
         if (this.canvas && this.canvas.svgElement && this.canvas.gElement) {
@@ -246,6 +245,8 @@ export class Page {
 
             let sizeRect = this.getSizeRect();
             //let rect = this.getSizeRect();
+
+            console.log(sizeRect);
 
             let scaleBack = 1 / this.zoom;
             let translateXBack = -this.translateX - sizeRect.x * this.zoom;
@@ -258,33 +259,32 @@ export class Page {
                 height: sizeRect.height
             };
 
-            let rectStr = '';
-            if (withBackgroundAsRect) {
-                // load the background color into an image, the background into a pattern
+            // load the background color into an image, the background into a pattern
+            let rectBGImg = await getImageDimensions(this.board.backgroundImage);
 
-                rectStr = `<rect fill="${this.board.backgroundColor.toString()}" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" />`;
+            let properties = `x="${-(this.translateX + Math.floor(translateXBack / rectBGImg.width + 1) * rectBGImg.width) / this.zoom}" y="${-(this.translateY + Math.floor(translateYBack / rectBGImg.height + 1) * rectBGImg.height) / this.zoom}" width="${Math.abs((rect.width + rectBGImg.width) / this.zoom)}" height="${Math.abs((rect.height + rectBGImg.height) / this.zoom)}" transform="translate(${this.translateX} ${this.translateY}) scale(${this.zoom})"`;
+
+            let rectStr = `<rect fill="${this.board.backgroundColor.toString()}" ${properties} />`;
+            
+            
+
+            let def = `<defs>
+            <pattern width="${rectBGImg.width}" height="${rectBGImg.height}" patternUnits="userSpaceOnUse" id="pat1" x="0" y="0">
+                <image width="${rectBGImg.width}" height="${rectBGImg.height}" href="${this.board.backgroundImage}" />
+            </pattern>
+        </defs>`;
+            
+            if (this.board.backgroundImage != '') {
                 
-                if (this.board.backgroundImage != '') {
-                    
-                    let rectBGImg = await getImageDimensions(this.board.backgroundImage);
-
-                    const someWeirdOffset = 80;
-                    
-                    rectStr += `E
-                    <defs>
-                        <pattern width="${rectBGImg.width}" height="${rectBGImg.height}" patternUnits="userSpaceOnUse" id="pat1" x="0" y="0">
-                            <image width="${rectBGImg.width}" height="${rectBGImg.height}" href="${this.board.backgroundImage}" />
-                        </pattern>
-                    </defs>
-                    <rect x="${-sizeRect.x}" y="${-sizeRect.y}" width="${rect.width}" height="${rect.height}" transform="translate(${sizeRect.x + someWeirdOffset / (sizeRect.width - 2 * 40)} ${sizeRect.y + someWeirdOffset / (sizeRect.height - 2 * 40)})" fill="url(#pat1)"/>`;
-                }
+                rectStr += `
+                <rect ${properties} fill="url(#pat1)"/>`;
             }
   
             let str = `<?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.board.backgroundColor.toString()}; background-image: url('${this.board.backgroundImage}');">
-            ${rectStr}
-            <g transform="scale(${scaleBack}) translate(${translateXBack} ${translateYBack})">${content}</g>
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background-color: ${this.board.backgroundColor.toString()};">
+            ${def}
+            <g transform="scale(${scaleBack}) translate(${translateXBack} ${translateYBack})">${rectStr} ${content}</g>
             </svg>`;
 
             return [str, rect];
@@ -338,7 +338,7 @@ export class Page {
 
         // this method returns the data url of the png image of this page
 
-        let svg = await this.getSVG(true);
+        let svg = await this.getSVG();
         let svgString = svg[0];
         let rect = svg[1];
 

@@ -1,8 +1,10 @@
+import { MatDialog } from '@angular/material/dialog';
 import { ElectronService } from 'ngx-electron';
 import { SiriusConfig } from './../../faecher/global/interfaces/siriusConfig';
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AcceptDialogComponent } from 'src/app/faecher/accept-dialog/accept-dialog.component';
 
 const errorMessage = 'Dieser Pfad ist bereits ausgewählt!'
 
@@ -17,7 +19,7 @@ export class ConfigComponent implements OnInit {
 
   public home: string = 'HOME';
 
-  constructor(private readonly electron: ElectronService, private readonly snackBar: MatSnackBar) { }
+  constructor(private readonly electron: ElectronService, private readonly snackBar: MatSnackBar, private readonly dialog: MatDialog) { }
 
   async ngOnInit(): Promise<void> {
     if (this.electron.isElectronApp) {
@@ -62,9 +64,21 @@ export class ConfigComponent implements OnInit {
   public deleteFolder(index: number): void {
     // Versuche einen Pfad zu löschen
     if (this.config && this.electron.isElectronApp) {
-      this.config.directories.splice(index, 1);
+      // open the dialog to delete
+      const dialogRef = this.dialog.open(AcceptDialogComponent, {
+        data: {
+          header: `Den Pfad wirklich entfernen?`,
+          description: `Es kann zum Datenverlust kommen.`
+        }
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result != undefined && result != "" && this.config) {
+          this.config.directories.splice(index, 1);
 
-      this.save();
+          this.save();
+        }
+      })
     }
   }
 
