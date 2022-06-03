@@ -1,5 +1,5 @@
 import { Point } from './../interfaces/point';
-import { getDistance, inRange } from './utils';
+import { getAngle, getDistance, inRange } from './utils';
 
 interface TouchControllerEvents {
     touchStart: (point: Point) => void,
@@ -17,16 +17,17 @@ interface TouchControllerEvents {
     mouseStart: (point: Point) => void,
     mouseMove: (from: Point, to: Point) => void,
     mouseEnd: (point: Point) => void,
-    pinchZoom?: (factor: number, point: Point) => void
+    pinchZoom?: (factor: number, point: Point) => void,
+    pinchTurn?: (angle: number, point: Point) => void
 }
 
 // this class is able to catch events fired in HTML or SVG elements and can distinguish between touch, mouse and stylus
 export class TouchController {
-    constructor (public touchControllerEvents: TouchControllerEvents, public readonly element: HTMLElement | SVGElement) {
+    constructor (public touchControllerEvents: TouchControllerEvents, public readonly element: HTMLElement | SVGElement, public readonly captureOnDocument: boolean = false) {
         this.captureEvents();
 
-        if (this.touchControllerEvents.pinchZoom) {
-            this.capturePinchZoomEvents();
+        if (this.touchControllerEvents.pinchZoom || this.touchControllerEvents.pinchTurn) {
+            this.capturePinchEvents();
         }
     }
 
@@ -156,24 +157,25 @@ export class TouchController {
             }
         }
 
+        let moveEndEl = this.captureOnDocument ? document : this.element;
 
         this.element.addEventListener('pointerdown', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             start(ev);
         })
-        this.element.addEventListener('pointermove', (ev: PointerEvent | Event) => {
+        moveEndEl.addEventListener('pointermove', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             move(ev);
         })
-        this.element.addEventListener('pointerup', (ev: PointerEvent | Event) => {
+        moveEndEl.addEventListener('pointerup', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             end(ev);
         })
-        this.element.addEventListener('pointerleave', (ev: PointerEvent | Event) => {
+        moveEndEl.addEventListener('pointerleave', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             end(ev);
         })
-        this.element.addEventListener('pointercancel', (ev: PointerEvent | Event) => {
+        moveEndEl.addEventListener('pointercancel', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             end(ev);
         })
@@ -195,11 +197,12 @@ export class TouchController {
         })
     }
     
-    private capturePinchZoomEvents() {
+    private capturePinchEvents() {
         // from mdn: https://github.com/mdn/dom-examples/blob/master/pointerevents/Pinch_zoom_gestures.html 
 
         // Global vars to cache event state
         let prevDiff = -1;
+        let prevAngle: number | undefined;
 
         let pointerdown_handler = (ev: PointerEvent | Event) => {
             if (ev instanceof PointerEvent && ev.pointerType == 'touch') {
@@ -245,6 +248,8 @@ export class TouchController {
                     }
                     let curDiff = Math.sqrt(Math.pow(p0.x - p1.x, 2) + Math.pow(p0.y - p1.y, 2));
 
+                    let curAngle = getAngle(p0, p1);
+
                     const rect = this.element.getBoundingClientRect() as DOMRect;
                     let averageP = {
                         x: (p0.x + p1.x) / 2 - rect.left,
@@ -262,11 +267,19 @@ export class TouchController {
                         }*/
                     }
 
+
+                    if (prevAngle != undefined && curAngle != prevAngle && this.touchControllerEvents.pinchTurn) {
+                        // turn around
+                        this.touchControllerEvents.pinchTurn(prevAngle - curAngle, averageP);
+                    }
+
                     // Cache the distance for the next move event 
                     prevDiff = curDiff;
+                    prevAngle = curAngle;
                 }
-                else if (this.evCache.length < 2 && prevDiff != -1) {
-                  prevDiff = -1;
+                else if (this.evCache.length < 2) { 
+                    prevDiff = -1;
+                    prevAngle = undefined;
                 }
             }
         }

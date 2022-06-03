@@ -48,6 +48,8 @@ import { CloneElementControlComponent } from './drawing/selector/task-bar/clone-
 import { MirrorElementHorizontallyControlComponent } from './drawing/selector/task-bar/mirror-element-control/mirror-element-horizontally-control.component';
 import { MirrorElementVerticallyControlComponent } from './drawing/selector/task-bar/mirror-element-control/mirror-element-vertically-control.component';
 import { ExportAsSvgControlComponent } from './drawing/controls/menu-control/export-as-svg-control/export-as-svg-control.component';
+import { LinealComponent } from './drawing/tools/lineal/lineal.component';
+import { CloseControlComponent } from './drawing/selector/task-bar/close-control/close-control.component';
 
 
 
@@ -91,7 +93,9 @@ import { ExportAsSvgControlComponent } from './drawing/controls/menu-control/exp
     CloneElementControlComponent,
     MirrorElementHorizontallyControlComponent,
     MirrorElementVerticallyControlComponent,
-    ExportAsSvgControlComponent
+    ExportAsSvgControlComponent,
+    LinealComponent,
+    CloseControlComponent
   ],
   imports: [
     CommonModule,

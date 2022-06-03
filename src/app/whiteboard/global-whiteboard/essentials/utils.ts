@@ -197,3 +197,12 @@ export function splitByPoints(origPoints: Point[], pointsToSplit: Point[]): Poin
 export function sameColorAs(c1: Color | IColor, c2: Color | IColor): boolean {
     return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && (c1.a == c2.a || (!c1.a && c2.a == 255) || (!c2.a && c1.a == 255));
 }
+
+export function getAngle(p1: Point, p2: Point): number {
+    let deltaY = p1.y - p2.y;
+    let deltaX = p1.x - p2.x;
+    let firstAngle = Math.atan(deltaY / deltaX); // first angle, that is only calculated by atan (no flip yet)
+    let finalAngle = firstAngle + (deltaX < 0 ? Math.PI : 0); // now with flip
+
+    return finalAngle;
+}
