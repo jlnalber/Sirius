@@ -2,32 +2,20 @@ import { Interval } from './../line';
 import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Board, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Point, Vector } from 'src/app/whiteboard/global-whiteboard/interfaces/point';
-import { DOMRectToRect, getDistance, getTouchControllerEventsAllSame, inRangeWithOrder } from 'src/app/whiteboard/global-whiteboard/essentials/utils';
-import { TouchController } from 'src/app/whiteboard/global-whiteboard/essentials/touchController';
 import { Line } from '../line';
-import { Tool } from '../tool';
+import { PolygonTool } from '../polygonTool';
 
 @Component({
   selector: 'whiteboard-lineal',
   templateUrl: './lineal.component.html',
   styleUrls: ['./lineal.component.scss']
 })
-export class LinealComponent extends Tool implements OnInit, AfterViewInit {
+export class LinealComponent extends PolygonTool implements OnInit, AfterViewInit {
 
   @Input() board!: Board;
 
   @Input() length: number = 800;
   @Input() thickness: number = 130;
-
-  private _angle: number = 0;
-  @Input() set angle(value: number) {
-    this._angle = (value + 2 * Math.PI) % (Math.PI * 2);
-    this.drawAngle();
-    this._lineCache = undefined;
-  }
-  get angle(): number {
-    return this._angle;
-  }
 
   @Input() position: Vector = {
     x: 0,
@@ -42,6 +30,13 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
   protected additionalInitialization = () => {
     this.drawLines();
     this.drawAngle();
+  }
+  protected angleSet = () => {
+    this.drawAngle();
+  }
+
+  protected get isActive(): boolean {
+    return this.board.linealOpen;
   }
 
   constructor() { 
@@ -61,27 +56,19 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
         this.intialize();
       }, 0);
     })
-
-    this.board.onWhiteboardViewChange.addListener(() => {
-      this._lineCache = undefined;
-    })
   }
 
   ngAfterViewInit(): void {
     this.intialize();
   }
 
-  protected _lineCache?: Line;
-
-  private getLine(): Line {
-    if (this._lineCache) return this._lineCache;
-
+  protected getLines(): Line[] {
+    // Gebe die Strecke zurück, die durch das Lineal modelliert wird
     let ps = this.getTwoPoints();
     let p1: Point = ps[0];
     let p2: Point = ps[1];
-    let line = Line.fromPoints(p1, p2, new Interval(p1.x, p2.x));
-    this._lineCache = line;
-    return line;
+    let line = Line.fromPoints(p1, p2, new Interval(p1.x, p2.x), new Interval(p1.y, p2.y));
+    return [ line ];
   }
 
   private getTwoPoints(): [Point, Point] {
@@ -92,30 +79,6 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
         y: this.position.y + Math.sin(this.angle) * this.length
       })
     ]
-  }
-  
-  public correctPoint(p: Point): Point {
-    if (this.board.linealOpen) {
-        let line = this.getLine();
-        let closestP = line.getClosestPointOnLineTo(p);
-
-        if (this.angle == Math.PI / 2 || this.angle == Math.PI * 3 / 2) {
-          let ps = this.getTwoPoints();
-          if (!inRangeWithOrder(closestP.y, ps[0].y, ps[1].y)) {
-            closestP = {
-              x: Number.MAX_VALUE,
-              y: Number.MAX_VALUE
-            }
-          }
-        }
-
-        const maxDistance = 40 / this.board.zoom;
-
-        if (getDistance(p, closestP) <= maxDistance) {
-            return closestP;
-        }
-    }
-    return p;
   }
 
   private drawAngle(): void {

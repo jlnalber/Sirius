@@ -122,7 +122,8 @@ export const defaultPoint: Point = {
     y: 0
 }
 
-export function getDistance(from: Point, to: Point): number {
+export function getDistance(from?: Point, to?: Point): number {
+    if (!from || !to) return Number.MAX_VALUE;
     return Math.sqrt((from.x - to.x) ** 2 + (from.y - to.y) ** 2);
 }
 

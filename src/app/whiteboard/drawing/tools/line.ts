@@ -14,12 +14,12 @@ export class Line {
         return this.c / this.b;
     }
 
-    constructor(public a: number, public b: number, public c: number, public interval?: Interval) {
+    constructor(public a: number, public b: number, public c: number, public interval?: Interval, public intervalY?: Interval) {
         if (this.a == 0 && this.b == 0) throw "Invalid line";
     }
 
     public intercepts(p: Point): boolean {
-        return (this.a * p.x + this.b * p.y == this.c) && (!this.interval || this.interval.isIn(p.x));
+        return (this.a * p.x + this.b * p.y == this.c) && (!this.interval || this.interval.isIn(p.x)) && (!this.intervalY || this.intervalY.isIn(p.y));
     }
 
     public getOrthogonal(p: Point): Line {
@@ -52,7 +52,9 @@ export class Line {
         // 4: Fall: Die aktuelle Gerade ist parallel zur y-Achse
         else if (this.b == 0) {
             let x = this.c / this.a;
-            return line.getPointToX(x);
+            let p = line.getPointToX(x);
+            if (this.isValidPoint(p)) return p;
+            return undefined;
         }
         // 5. Fall: Die andere Gerade ist parallel zur y-Achse
         else if (line.b == 0) {
@@ -67,9 +69,13 @@ export class Line {
         }
     }
 
+    public isValidPoint(p?: Point): boolean {
+        return p != undefined && (!this.interval || this.interval.isIn(p.x)) && (!this.intervalY || this.intervalY.isIn(p.y));
+    }
+
     public getPointToX(x: number): Point | undefined {
         if (this.b == 0) return undefined;
-        else if (this.interval && !this.interval.isIn(x)) return undefined;
+        else if ((this.interval && !this.interval.isIn(x)) || (this.intervalY && !this.intervalY.isIn((this.c - this.a * x) / this.b))) return undefined;
         else {
             return {
                 x: x,
@@ -80,7 +86,7 @@ export class Line {
 
     public getPointToY(y: number): Point | undefined {
         if (this.a == 0) return undefined;
-        else if (this.interval && !this.interval.isIn((this.c - this.b * y) / this.a)) return undefined;
+        else if ((this.interval && !this.interval.isIn((this.c - this.b * y) / this.a)) || (this.intervalY && !this.intervalY.isIn(y))) return undefined;
         else {
             return {
                 x: (this.c - this.b * y) / this.a,
@@ -93,15 +99,28 @@ export class Line {
         // Berechne den nächsten Punkt
         let closestP = this.getInterceptionPoint(this.getOrthogonal(p));
 
-        // für den Fall, dass der Punkt außerhalb des Intervalls liegt
+        // für den Fall, dass der Punkt außerhalb des Intervalls (für x) liegt
         if (this.interval && closestP && !this.interval.isIn(closestP.x)) {
-            let startP = this.getPointToX(this.interval.start) as Point;
+            console.log('Hallöchen!')
+            let startP = this.getPointToX(this.interval.start);
             let startDist = getDistance(p, startP);
 
-            let endP = this.getPointToX(this.interval.end) as Point;
+            let endP = this.getPointToX(this.interval.end);
             let endDist = getDistance(p, endP);
             
-            return startDist < endDist ? startP : endP;
+            closestP = startDist < endDist ? startP : endP;
+        }
+
+        // für den Fall, dass der Punkt außerhalb des Intervalls (für y) liegt
+        if (this.intervalY && closestP && !this.intervalY.isIn(closestP.y)) {
+            console.log('Und jetzt?')
+            let startP = this.getPointToY(this.intervalY.start);
+            let startDist = getDistance(p, startP);
+
+            let endP = this.getPointToY(this.intervalY.end);
+            let endDist = getDistance(p, endP);
+            
+            closestP = startDist < endDist ? startP : endP;
         }
 
         // Gebe den nächsten Punkt zurück
@@ -113,25 +132,25 @@ export class Line {
         return getDistance(p, this.getClosestPointOnLineTo(p));
     }
 
-    public static fromPoint(a: number, b: number, p: Point, interval?: Interval): Line {
-        return new Line(a, b, a * p.x + b * p.y, interval);
+    public static fromPoint(a: number, b: number, p: Point, interval?: Interval, intervalY?: Interval): Line {
+        return new Line(a, b, a * p.x + b * p.y, interval, intervalY);
     }
 
-    public static fromPointAndYIntercept(slope: number, yIntercept: number, interval?: Interval) {
-        return new Line(-slope, 1, yIntercept, interval);
+    public static fromPointAndYIntercept(slope: number, yIntercept: number, interval?: Interval, intervalY?: Interval) {
+        return new Line(-slope, 1, yIntercept, interval, intervalY);
     }
 
-    public static fromPointAndSlope(slope: number, p: Point, interval?: Interval): Line {
-        return Line.fromPoint(-slope, 1, p, interval);
+    public static fromPointAndSlope(slope: number, p: Point, interval?: Interval, intervalY?: Interval): Line {
+        return Line.fromPoint(-slope, 1, p, interval, intervalY);
     }
 
-    public static fromPoints(p1: Point, p2: Point, interval?: Interval): Line {
+    public static fromPoints(p1: Point, p2: Point, interval?: Interval, intervalY?: Interval): Line {
         if (p1.x == p2.x && p1.y == p2.y) throw 'Invalid input';
         else if (p1.x == p2.x || Math.abs((p1.y - p2.y) / (p1.x - p2.x)) > Math.pow(10, 5)) {
-            return new Line(1, 0, p1.x, interval);
+            return new Line(1, 0, p1.x, interval, intervalY);
         }
         else {
-            return Line.fromPointAndSlope((p1.y - p2.y) / (p1.x - p2.x), p1, interval);
+            return Line.fromPointAndSlope((p1.y - p2.y) / (p1.x - p2.x), p1, interval, intervalY);
         }
     }
 }

@@ -5,42 +5,63 @@ import { getTouchControllerEventsAllSame } from "../../global-whiteboard/essenti
 import { Point, Vector } from "../../global-whiteboard/interfaces/point";
 
 export abstract class Tool {
+
     public abstract correctPoint(p: Point): Point;
-    public abstract angle: number;
+    protected abstract clearCache: () => void;
+
     public abstract position: Vector;
     public abstract g: ElementRef;
     public abstract gElement?: SVGGElement;
     public abstract board: Board;
+    protected abstract get isActive(): boolean;
     protected abstract additionalInitialization?: () => void;
-    protected abstract _lineCache?: any;
+    protected abstract angleSet?: () => void;
+    
 
-    public get angleInDeg(): number {
-      //console.log('Hey!')
-      return this.angle / Math.PI * 180;
+    // managing the angle
+    private _angle: number = 0;
+    public set angle(value: number) {
+      this._angle = (value + 2 * Math.PI) % (Math.PI * 2);
+      this.clearCache();
+
+      if (this.angleSet) {
+          this.angleSet();
+      }
+    }
+    public get angle(): number {
+      return this._angle;
     }
 
-    public turnByAngle(angle: number, p: Point): void {
-        this.angle += angle;
+    public get angleInDeg(): number {
+      return this.angle / Math.PI * 180;
     }
 
     public intialize() {
         try {
+            // add myself to the events on the board
+            this.board.onWhiteboardViewChange.removeListener(this.clearCache);
+            this.board.onWhiteboardViewChange.addListener(this.clearCache);
+
+            // get the g element
             this.gElement = this.g.nativeElement;
     
+            // set position
             this.position = { x: 0, y: 0 }
             this.angle = 0;
-            this._lineCache = undefined;
+            this.clearCache();
     
+            // make additional intialization
             if (this.additionalInitialization) {
                 this.additionalInitialization();
             }
     
+            // set up the touch controller
             new TouchController(getTouchControllerEventsAllSame((p: Point) => { }, (from: Point, to: Point) => {
                 this.position.x += to.x - from.x;
                 this.position.y += to.y - from.y;
-                this._lineCache = undefined;
+                this.clearCache();
             }, (p: Point) => { }, undefined, (angle: number, p: Point) => {
-                this.turnByAngle(angle, p);
+                this.angle += angle;
             }), this.gElement as SVGGElement, this.board.canvas?.svgElement, document);
         }
         catch { }
