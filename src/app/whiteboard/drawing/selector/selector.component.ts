@@ -1,4 +1,4 @@
-import { TouchController } from './../../global-whiteboard/essentials/touchController';
+import { TouchController, TouchControllerEvents } from './../../global-whiteboard/essentials/touchController';
 import { SVGElementWrapper, SVGElementWrapperCollection } from './SVGElementWrapper';
 import { Component, Input, AfterViewInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
@@ -216,16 +216,29 @@ export class SelectorComponent implements AfterViewInit {
     })
 
     // capture the events
-    let startWrapper = (p: Point) => {};
-    let moveWrapper = (prev: Point, curr: Point) => {
+
+    let start = () => {
+      this.board.onMouseStart.emit();
+    }
+    let move = () => {
+      this.board.onMouseMove.emit();
+    }
+    let end = () => {
+      this.board.onMouseEnd.emit();
+      this.board.onInput.emit();
+    }
+
+    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+      start();
+    }, (prev: Point, curr: Point) => {
       curr = this.board.getActualPoint(curr);
       prev = this.board.getActualPoint(prev);
       this.svgElements.translateXBy(curr.x - prev.x);
       this.svgElements.translateYBy(curr.y - prev.y);
-    }
-    let endWrapper = (p: Point) => {};
-
-    new TouchController(getTouchControllerEventsAllSame(startWrapper, moveWrapper, endWrapper), this.wrapperEl as HTMLDivElement, this.board.canvas?.svgElement, document); 
+      move();
+    }, (p: Point) => {
+      end();
+    }), this.wrapperEl as HTMLDivElement, this.board.canvas?.svgElement, document); 
 
     /*this.captureEvent(this.wrapperEl as HTMLDivElement, (p: Point) => {
     }, (orig: Point, prev: Point, curr: Point) => {
@@ -234,15 +247,39 @@ export class SelectorComponent implements AfterViewInit {
     }, (orig: Point, p: Point) => {
     });*/
 
-    this.captureEvent(this.turnEl as HTMLDivElement, (p: Point) => {
+    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+      start();
       return;
-    }, (orig: Point, prev: Point, curr: Point) => {
+    }, (prev: Point, curr: Point) => {
+      prev = this.board.getActualPoint(prev);
+      curr = this.board.getActualPoint(curr);
       this.turnByPoints(prev, curr);
-    }, (orig: Point, p: Point) => {
+      move();
+    }, (p: Point) => {
+      end();
       return;
-    })
+    }), this.turnEl as HTMLDivElement, this.board.canvas?.svgElement, document)
+    
+    // this.captureEvent(this.turnEl as HTMLDivElement, )
 
-    this.captureEvent(this.ltrEl as HTMLDivElement, (p: Point) => {
+    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+      p = this.board.getActualPoint(p);
+      this.resize(Resize.Left, p);
+      this.resize(Resize.Top, p);
+      start();
+    }, (prev: Point, curr: Point) => {
+      curr = this.board.getActualPoint(curr);
+      this.resize(Resize.Left, curr);
+      this.resize(Resize.Top, curr);
+      move();
+    }, (p: Point) => {
+      p = this.board.getActualPoint(p);
+      this.resize(Resize.Left, p);
+      this.resize(Resize.Top, p);
+      end();
+    }), this.ltrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+
+    /*this.captureEvent(this.ltrEl as HTMLDivElement, (p: Point) => {
       this.resize(Resize.Left, p);
       this.resize(Resize.Top, p);
     }, (orig: Point, prev: Point, curr: Point) => {
@@ -251,9 +288,26 @@ export class SelectorComponent implements AfterViewInit {
     }, (orig: Point, p: Point) => {
       this.resize(Resize.Left, p);
       this.resize(Resize.Top, p);
-    })
+    })*/
 
-    this.captureEvent(this.lbrEl as HTMLDivElement, (p: Point) => {
+    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+      p = this.board.getActualPoint(p);
+      this.resize(Resize.Left, p);
+      this.resize(Resize.Bottom, p);
+      start();
+    }, (prev: Point, curr: Point) => {
+      curr = this.board.getActualPoint(curr);
+      this.resize(Resize.Left, curr);
+      this.resize(Resize.Bottom, curr);
+      move();
+    }, (p: Point) => {
+      p = this.board.getActualPoint(p);
+      this.resize(Resize.Left, p);
+      this.resize(Resize.Bottom, p);
+      end();
+    }), this.lbrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+
+    /*this.captureEvent(this.lbrEl as HTMLDivElement, (p: Point) => {
       this.resize(Resize.Left, p);
       this.resize(Resize.Bottom, p);
     }, (orig: Point, prev: Point, curr: Point) => {
@@ -262,9 +316,26 @@ export class SelectorComponent implements AfterViewInit {
     }, (orig: Point, p: Point) => {
       this.resize(Resize.Left, p);
       this.resize(Resize.Bottom, p);
-    })
+    })*/
 
-    this.captureEvent(this.rtrEl as HTMLDivElement, (p: Point) => {
+    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+      p = this.board.getActualPoint(p);
+      this.resize(Resize.Right, p);
+      this.resize(Resize.Top, p);
+      start();
+    }, (prev: Point, curr: Point) => {
+      curr = this.board.getActualPoint(curr);
+      this.resize(Resize.Right, curr);
+      this.resize(Resize.Top, curr);
+      move();
+    }, (p: Point) => {
+      p = this.board.getActualPoint(p);
+      this.resize(Resize.Right, p);
+      this.resize(Resize.Top, p);
+      end();
+    }), this.rtrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+
+    /*this.captureEvent(this.rtrEl as HTMLDivElement, (p: Point) => {
       this.resize(Resize.Right, p);
       this.resize(Resize.Top, p);
     }, (orig: Point, prev: Point, curr: Point) => {
@@ -273,9 +344,26 @@ export class SelectorComponent implements AfterViewInit {
     }, (orig: Point, p: Point) => {
       this.resize(Resize.Right, p);
       this.resize(Resize.Top, p);
-    })
+    })*/
 
-    this.captureEvent(this.rbrEl as HTMLDivElement, (p: Point) => {
+    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+      p = this.board.getActualPoint(p);
+      this.resize(Resize.Right, p);
+      this.resize(Resize.Bottom, p);
+      start();
+    }, (prev: Point, curr: Point) => {
+      curr = this.board.getActualPoint(curr);
+      this.resize(Resize.Right, curr);
+      this.resize(Resize.Bottom, curr);
+      move();
+    }, (p: Point) => {
+      p = this.board.getActualPoint(p);
+      this.resize(Resize.Right, p);
+      this.resize(Resize.Bottom, p);
+      end();
+    }), this.rbrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+
+    /*this.captureEvent(this.rbrEl as HTMLDivElement, (p: Point) => {
       this.resize(Resize.Right, p);
       this.resize(Resize.Bottom, p);
     }, (orig: Point, prev: Point, curr: Point) => {
@@ -284,10 +372,10 @@ export class SelectorComponent implements AfterViewInit {
     }, (orig: Point, p: Point) => {
       this.resize(Resize.Right, p);
       this.resize(Resize.Bottom, p);
-    })
+    })*/
   }
 
-  captureEvent(el: HTMLElement, start: (p: Point) => void, move: (orig: Point, prev: Point, curr: Point) => void, end: (orig: Point, p: Point) => void) {
+  /*captureEvent(el: HTMLElement, start: (p: Point) => void, move: (orig: Point, prev: Point, curr: Point) => void, end: (orig: Point, p: Point) => void) {
     let origPos: Point = {
       x: 0,
       y: 0
@@ -443,6 +531,8 @@ export class SelectorComponent implements AfterViewInit {
           this.board.onMouseMove.emit();
         }
       });
-  }
+  }*/
+
+
 
 }
