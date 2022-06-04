@@ -142,8 +142,8 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
     try {
       this.gElement = this.g.nativeElement;
 
-      this.position = { x: 100, y: 100 }
-      this.angle = Math.PI / 2;
+      this.position = { x: 0, y: 0 }
+      this.angle = 0;
       this._lineCache = undefined;
 
       this.drawLines();
