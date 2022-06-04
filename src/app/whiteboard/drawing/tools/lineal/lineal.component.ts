@@ -39,6 +39,11 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
 
   angleDisplayer?: SVGTextElement;
 
+  protected additionalInitialization = () => {
+    this.drawLines();
+    this.drawAngle();
+  }
+
   constructor() { 
     super();
   }
@@ -66,34 +71,9 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
     this.intialize();
   }
 
-  turnByAngle(angle: number, p: Point): void {
-    // calculate where the point is (relative)
-    /*let gElRect = DOMRectToRect(this.gElement?.getBoundingClientRect());
-    let newP: Point = {
-      x: p.x - gElRect.x,
-      y: p.y - gElRect.y
-    };*/
+  protected _lineCache?: Line;
 
-    // do the transformation
-    this.angle += angle;
-
-    // calculate where the new point is
-    /*setTimeout(() => {
-      let newPAfterTransformation: Point = {
-          x: newP.x * Math.cos(angle) + newP.y * Math.sin(angle),
-          y: -newP.x * Math.sin(angle) + newP.y * Math.cos(angle)
-      }
-
-      // move the elements so that it fits again
-      //this.position.x -= newP.x - newPAfterTransformation.x;
-      //this.position.y -= newP.y - newPAfterTransformation.y;
-
-    }, 0);*/
-  }
-
-  private _lineCache?: Line;
-
-  getLine(): Line {
+  private getLine(): Line {
     if (this._lineCache) return this._lineCache;
 
     let ps = this.getTwoPoints();
@@ -138,29 +118,7 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
     return p;
   }
 
-  intialize(): void {
-    try {
-      this.gElement = this.g.nativeElement;
-
-      this.position = { x: 0, y: 0 }
-      this.angle = 0;
-      this._lineCache = undefined;
-
-      this.drawLines();
-      this.drawAngle();
-
-      new TouchController(getTouchControllerEventsAllSame((p: Point) => { }, (from: Point, to: Point) => {
-        this.position.x += to.x - from.x;
-        this.position.y += to.y - from.y;
-        this._lineCache = undefined;
-      }, (p: Point) => { }, undefined, (angle: number, p: Point) => {
-        this.turnByAngle(angle, p);
-      }), this.gElement as SVGGElement, this.board.canvas?.svgElement, document);
-    }
-    catch { }
-  }
-
-  drawAngle(): void {
+  private drawAngle(): void {
     if (!this.angleDisplayer) {
       this.angleDisplayer = document.createElementNS(svgns, 'text');
 
@@ -175,7 +133,7 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
     this.angleDisplayer.textContent = (Math.round(this.angleInDeg * 100) / 100).toLocaleString() + '°';
   }
 
-  drawLines(): void {
+  private drawLines(): void {
     const offset = 25;
     const dist = 50;
 
@@ -196,21 +154,6 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
       this.gElement?.appendChild(text);
 
     }
-  }
-
-  get totalWidth(): number {
-    //console.log('Hello!')
-    return Math.cos(this.angle) * this.length + Math.sin(this.angle) * this.thickness;
-  }
-
-  get totalHeight(): number {
-    //console.log('Blubbber')
-    return Math.sin(this.angle) * this.length + Math.cos(this.angle) * this.thickness;
-  }
-
-  public get angleInDeg(): number {
-    //console.log('Hey!')
-    return this.angle / Math.PI * 180;
   }
 
 }
