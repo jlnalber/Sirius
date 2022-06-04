@@ -50,6 +50,7 @@ import { MirrorElementVerticallyControlComponent } from './drawing/selector/task
 import { ExportAsSvgControlComponent } from './drawing/controls/menu-control/export-as-svg-control/export-as-svg-control.component';
 import { LinealComponent } from './drawing/tools/lineal/lineal.component';
 import { CloseControlComponent } from './drawing/selector/task-bar/close-control/close-control.component';
+import { ToolsControlComponent } from './drawing/controls/tools-control/tools-control.component';
 
 
 
@@ -95,7 +96,8 @@ import { CloseControlComponent } from './drawing/selector/task-bar/close-control
     MirrorElementVerticallyControlComponent,
     ExportAsSvgControlComponent,
     LinealComponent,
-    CloseControlComponent
+    CloseControlComponent,
+    ToolsControlComponent
   ],
   imports: [
     CommonModule,

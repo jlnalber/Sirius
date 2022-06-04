@@ -91,10 +91,10 @@ export class Line {
 
     public getClosestPointOnLineTo(p: Point): Point {
         // Berechne den nächsten Punkt
-        let closestP = this.getInterceptionPoint(this.getOrthogonal(p)) as Point;
+        let closestP = this.getInterceptionPoint(this.getOrthogonal(p));
 
         // für den Fall, dass der Punkt außerhalb des Intervalls liegt
-        if (this.interval && !this.interval.isIn(closestP.x)) {
+        if (this.interval && closestP && !this.interval.isIn(closestP.x)) {
             let startP = this.getPointToX(this.interval.start) as Point;
             let startDist = getDistance(p, startP);
 
@@ -105,7 +105,7 @@ export class Line {
         }
 
         // Gebe den nächsten Punkt zurück
-        return closestP;
+        return closestP ?? { x: Number.MAX_VALUE, y: Number.MAX_VALUE };
     }
 
     public getDistance(p: Point): number {
@@ -124,11 +124,27 @@ export class Line {
     public static fromPointAndSlope(slope: number, p: Point, interval?: Interval): Line {
         return Line.fromPoint(-slope, 1, p, interval);
     }
+
+    public static fromPoints(p1: Point, p2: Point, interval?: Interval): Line {
+        if (p1.x == p2.x && p1.y == p2.y) throw 'Invalid input';
+        else if (p1.x == p2.x || Math.abs((p1.y - p2.y) / (p1.x - p2.x)) > Math.pow(10, 5)) {
+            return new Line(1, 0, p1.x, interval);
+        }
+        else {
+            return Line.fromPointAndSlope((p1.y - p2.y) / (p1.x - p2.x), p1, interval);
+        }
+    }
 }
 
 export class Interval {
     
-    constructor (public start: number, public end: number, public startOpen: boolean = false, public endOpen: boolean = false) { }
+    constructor (public start: number, public end: number, public startOpen: boolean = false, public endOpen: boolean = false) { 
+        if (this.start > this.end) {
+            let temp = this.start;
+            this.start = this.end;
+            this.end = temp;
+        }
+    }
 
     public isIn(num: number): boolean {
         return (this.startOpen ? (num > this.start) : (num >= this.start))

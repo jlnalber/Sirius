@@ -130,6 +130,11 @@ export function inRange(num: number, from: number, to: number): boolean {
     return num >= from && num <= to;
 }
 
+export function inRangeWithOrder(num: number, from: number, to: number): boolean {
+    if (from < to) return inRange(num, from, to);
+    return inRange(num, to, from);
+}
+
 export function clamp(min: number, num: number, max: number): number {
     if (num < min) return min;
     if (num > max) return max;

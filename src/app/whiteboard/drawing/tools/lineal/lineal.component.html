@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper" *ngIf="this.board.linealOpen">
     <svg>
         <g #g [style]="'transform: translate(' + this.position.x + 'px, ' + this.position.y + 'px) rotate(' + this.angleInDeg + 'deg);'">
             <rect x="0" y="0" rx="5" ry="5" fill="#55555599" [ngStyle]="{ 'width': this.length, 'height': this.thickness }">

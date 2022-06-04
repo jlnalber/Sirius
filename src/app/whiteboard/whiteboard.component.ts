@@ -32,7 +32,8 @@ export class WhiteboardComponent implements AfterViewInit {
     enableSelectControl: true,
     enableShapeControl: true,
     enableStickyNotesControl: true,
-    enablePagesControl: true
+    enablePagesControl: true,
+    enableToolsControl: true
   }
 
   @HostListener('dblclick', ['$event'])

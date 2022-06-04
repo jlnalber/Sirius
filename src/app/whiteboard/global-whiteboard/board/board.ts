@@ -1,3 +1,4 @@
+import { LinealComponent } from './../../drawing/tools/lineal/lineal.component';
 import { Whiteboard as WhiteboardExport, Page as PageExport } from './../interfaces/whiteboard';
 import { EmptyCanvasElement } from './../canvasElements/emptyCanvasElement';
 import { Select } from './../canvasElements/select';
@@ -145,6 +146,14 @@ export class Board {
       y: res1.clientY - rect.top
     };
   }
+
+  public correctPoint(p: Point): Point {
+    // transform the point so that it fits with the opened tools
+    if (this.linealOpen && this.lineal) {
+      return this.lineal.correctPoint(p);
+    }
+    return p;
+  }
   //#endregion
 
   constructor() {
@@ -169,6 +178,17 @@ export class Board {
   public fill: Color = new Color(0, 0, 0, 0);
   public canvas: CanvasComponent | undefined;
   public selector: SelectorComponent | undefined;
+
+  public lineal: LinealComponent | undefined;
+  private _linealOpen: boolean = false;
+  public get linealOpen(): boolean {
+    return this._linealOpen;
+  }
+  public set linealOpen(value: boolean) {
+    this._linealOpen = value;
+    this.onLinealToggled.emit();
+    this.onToolToggled.emit();
+  }
 
   private _mode: BoardModes = BoardModes.Draw;
   public get mode(): BoardModes {
@@ -270,6 +290,8 @@ export class Board {
   public readonly onBack: Event = new Event();
   public readonly onForward: Event = new Event();
   public readonly onBoardDetectPointer: Event = new Event();
+  public readonly onLinealToggled: Event = new Event();
+  public readonly onToolToggled: Event = new Event();
 
   //#region pages
   public pages: Page[] = [ new Page(this) ]
@@ -601,7 +623,7 @@ export class Board {
           };
 
         }
-        else {
+        else if (file.type.startsWith('image')) {
           var reader = new FileReader();
           reader.readAsDataURL(file);
           
@@ -799,12 +821,7 @@ export class Board {
         }
       })
 
-      console.log(rects);
-
       let boundingRect = getBoundingRect(rects);
-
-      console.log(boundingRect);
-      console.log(this.pages[this.pages.length - 1].getSizeRect());
 
       let doc = new jsPDF(boundingRect.width > boundingRect.height ? 'l' : 'p', 'mm', [ boundingRect.width, boundingRect.height]);
       

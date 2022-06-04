@@ -123,23 +123,22 @@ export class Path extends CanvasItem {
     }
 
     public touchStart(p: Point): void {
-        let realPoint = this.board.getActualPoint(p);
+        let realPoint = this.board.correctPoint(this.board.getActualPoint(p));
         this.addPoint(realPoint);
     }
 
     public touchMove(from: Point, to: Point): void {
-        let realCurr = this.board.getActualPoint(to);
+        let realCurr = this.board.correctPoint(this.board.getActualPoint(to));
 
         // add points in between so that there is not a great distance
         let realFrom = this.board.getActualPoint(from);
         let distance = getDistance(realCurr, realFrom);
         let iterations = Math.round(distance / maxPointDistance) - 1;
         for (let i = 1; i <= iterations; i++) {
-            this.addPoint({
+            this.addPoint(this.board.correctPoint({
                 x: realFrom.x + i / (iterations + 1) * (realCurr.x - realFrom.x),
                 y: realFrom.y + i / (iterations + 1) * (realCurr.y - realFrom.y)
-            })
-            console.log('point added', iterations, i);
+            }))
         }
 
 
@@ -147,7 +146,7 @@ export class Path extends CanvasItem {
     }
 
     public touchEnd(p: Point): void {
-        let realPoint = this.board.getActualPoint(p);
+        let realPoint = this.board.correctPoint(this.board.getActualPoint(p));
         this.addPoint(realPoint);
         this.finalize();
     }
