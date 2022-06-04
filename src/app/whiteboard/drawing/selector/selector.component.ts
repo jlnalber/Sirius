@@ -281,14 +281,7 @@ export class SelectorComponent implements AfterViewInit {
       p = this.board.getActualPoint(p);
       this.turnByAngleAndPoint(angle, p);
       this.board.onInput.emit();
-    }), this.wrapperEl as HTMLDivElement, this.board.canvas?.svgElement, document); 
-
-    /*this.captureEvent(this.wrapperEl as HTMLDivElement, (p: Point) => {
-    }, (orig: Point, prev: Point, curr: Point) => {
-      this.svgElements.translateXBy(curr.x - prev.x);
-      this.svgElements.translateYBy(curr.y - prev.y);
-    }, (orig: Point, p: Point) => {
-    });*/
+    }), this.wrapperEl as HTMLDivElement, this.board.canvas?.svgElement, document);
 
     new TouchController(getTouchControllerEventsAllSame((p: Point) => {
       start();
@@ -303,8 +296,6 @@ export class SelectorComponent implements AfterViewInit {
       return;
     }), this.turnEl as HTMLDivElement, this.board.canvas?.svgElement, document)
     
-    // this.captureEvent(this.turnEl as HTMLDivElement, )
-
     new TouchController(getTouchControllerEventsAllSame((p: Point) => {
       p = this.board.getActualPoint(p);
       this.resize(Resize.Left, p);
@@ -321,17 +312,6 @@ export class SelectorComponent implements AfterViewInit {
       this.resize(Resize.Top, p);
       end();
     }), this.ltrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
-
-    /*this.captureEvent(this.ltrEl as HTMLDivElement, (p: Point) => {
-      this.resize(Resize.Left, p);
-      this.resize(Resize.Top, p);
-    }, (orig: Point, prev: Point, curr: Point) => {
-      this.resize(Resize.Left, curr);
-      this.resize(Resize.Top, curr);
-    }, (orig: Point, p: Point) => {
-      this.resize(Resize.Left, p);
-      this.resize(Resize.Top, p);
-    })*/
 
     new TouchController(getTouchControllerEventsAllSame((p: Point) => {
       p = this.board.getActualPoint(p);
@@ -350,17 +330,6 @@ export class SelectorComponent implements AfterViewInit {
       end();
     }), this.lbrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
 
-    /*this.captureEvent(this.lbrEl as HTMLDivElement, (p: Point) => {
-      this.resize(Resize.Left, p);
-      this.resize(Resize.Bottom, p);
-    }, (orig: Point, prev: Point, curr: Point) => {
-      this.resize(Resize.Left, curr);
-      this.resize(Resize.Bottom, curr);
-    }, (orig: Point, p: Point) => {
-      this.resize(Resize.Left, p);
-      this.resize(Resize.Bottom, p);
-    })*/
-
     new TouchController(getTouchControllerEventsAllSame((p: Point) => {
       p = this.board.getActualPoint(p);
       this.resize(Resize.Right, p);
@@ -377,17 +346,6 @@ export class SelectorComponent implements AfterViewInit {
       this.resize(Resize.Top, p);
       end();
     }), this.rtrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
-
-    /*this.captureEvent(this.rtrEl as HTMLDivElement, (p: Point) => {
-      this.resize(Resize.Right, p);
-      this.resize(Resize.Top, p);
-    }, (orig: Point, prev: Point, curr: Point) => {
-      this.resize(Resize.Right, curr);
-      this.resize(Resize.Top, curr);
-    }, (orig: Point, p: Point) => {
-      this.resize(Resize.Right, p);
-      this.resize(Resize.Top, p);
-    })*/
 
     new TouchController(getTouchControllerEventsAllSame((p: Point) => {
       p = this.board.getActualPoint(p);
@@ -406,176 +364,6 @@ export class SelectorComponent implements AfterViewInit {
       end();
     }), this.rbrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
 
-    /*this.captureEvent(this.rbrEl as HTMLDivElement, (p: Point) => {
-      this.resize(Resize.Right, p);
-      this.resize(Resize.Bottom, p);
-    }, (orig: Point, prev: Point, curr: Point) => {
-      this.resize(Resize.Right, curr);
-      this.resize(Resize.Bottom, curr);
-    }, (orig: Point, p: Point) => {
-      this.resize(Resize.Right, p);
-      this.resize(Resize.Bottom, p);
-    })*/
   }
-
-  /*captureEvent(el: HTMLElement, start: (p: Point) => void, move: (orig: Point, prev: Point, curr: Point) => void, end: (orig: Point, p: Point) => void) {
-    let origPos: Point = {
-      x: 0,
-      y: 0
-    }
-    let activeTouch: boolean = false;
-
-    let getPosFromMouseEvent = (e: MouseEvent): Point => {
-      const rect = this.board.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
-
-      return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      };
-    }
-
-    let getPosFromTouchEvent = (e: any): Point => {
-      let res1: any = e.changedTouches[0];
-
-      const rect = this.board.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
-      
-      return {
-        x: res1.clientX - rect.left,
-        y: res1.clientY - rect.top
-      };
-    }
-
-    let endMouse = (e: MouseEvent) => {
-      if (activeTouch) {
-        activeTouch = false;
-        end(origPos, this.board.getActualPoint(getPosFromMouseEvent(e)));
-
-        this.board.onMouseEnd.emit();
-        this.board.onInput.emit();
-      }
-    };
-
-    let endTouch = (e: any) => {
-      if (activeTouch) {
-        activeTouch = false;
-        end(origPos, this.board.getActualPoint(getPosFromTouchEvent(e)));
-
-        this.board.onMouseEnd.emit();
-        this.board.onInput.emit();
-      }
-    }
-
-    document.addEventListener('mouseup', endMouse);
-    document.addEventListener('mouseleave', endMouse);
-    document.addEventListener('touchcancel', endTouch);
-    document.addEventListener('touchend', endTouch);
-
-    // this will capture all mousedown events from the canvas element
-    fromEvent(el, 'mousedown')
-      .pipe(
-        switchMap((e: any) => {
-          let m = e as MouseEvent;
-          m.preventDefault();
-          let origPos = this.board.getActualPoint(getPosFromMouseEvent(m));
-          if (!activeTouch) {
-            this.board.onMouse.emit();
-            start(origPos);
-            activeTouch = true;
-            this.board.onMouseStart.emit();
-          }
-
-          // after a mouse down, we'll record all mouse moves
-          return fromEvent(document, 'mousemove')
-            .pipe(
-              // we'll stop (and unsubscribe) once the user releases the mouse
-              // this will trigger a 'mouseup' event    
-              takeUntil(fromEvent(document, 'mouseup')),
-              // we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
-              takeUntil(fromEvent(document, 'mouseleave')),
-              // pairwise lets us get the previous value to draw a line from
-              // the previous point to the current point    
-              pairwise()
-            )
-        })
-      )
-      .subscribe(async (res: any) => {
-        if (activeTouch) {
-          res[0].preventDefault();
-          res[1].preventDefault();
-          
-          const rect = this.board.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
-    
-          // previous and current position with the offset
-          const prevPos = {
-            x: res[0].clientX - rect.left,
-            y: res[0].clientY - rect.top
-          };
-    
-          const currentPos = {
-            x: res[1].clientX - rect.left,
-            y: res[1].clientY - rect.top
-          };
-    
-          await move(origPos, this.board.getActualPoint(prevPos), this.board.getActualPoint(currentPos));
-
-          this.board.onMouseMove.emit();
-        }
-      });
-
-    // this will capture all touchdown events from the canvas element
-    fromEvent(el, 'touchstart')
-      .pipe(
-        switchMap((e: any) => {
-          e.preventDefault();
-          let origPos = this.board.getActualPoint(getPosFromTouchEvent(e));
-          if (!activeTouch) {
-            this.board.onMouse.emit();
-            start(origPos);
-            activeTouch = true;
-            this.board.onMouseStart.emit();
-          }
-
-          // after a touch start, we'll record all touch moves
-          return fromEvent(document, 'touchmove')
-            .pipe(
-              // we'll stop (and unsubscribe) once the user releases the touch
-              // this will trigger a 'touchend' event    
-              takeUntil(fromEvent(document, 'touchend')),
-              // we'll also stop (and unsubscribe) once the touch is cancelled (touchcancel event)
-              takeUntil(fromEvent(document, 'touchcancel')),
-              // pairwise lets us get the previous value to draw a line from
-              // the previous point to the current point 
-              pairwise()
-            )
-        })
-      )
-      .subscribe(async (res: any) => {
-        if (activeTouch) {
-          res[0].preventDefault();
-          res[1].preventDefault();
-          let res1: any = res[0].changedTouches[0];
-          let res2: any = res[1].changedTouches[0];
-          
-          const rect = this.board.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
-    
-          // previous and current position with the offset
-          const prevPos = {
-            x: res1.clientX - rect.left,
-            y: res1.clientY - rect.top
-          };
-    
-          const currentPos = {
-            x: res2.clientX - rect.left,
-            y: res2.clientY - rect.top
-          };
-    
-          await move(origPos, this.board.getActualPoint(prevPos), this.board.getActualPoint(currentPos));
-
-          this.board.onMouseMove.emit();
-        }
-      });
-  }*/
-
-
 
 }
