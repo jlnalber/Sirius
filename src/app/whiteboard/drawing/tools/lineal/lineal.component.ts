@@ -84,17 +84,17 @@ export class LinealComponent implements OnInit, AfterViewInit {
   }
 
   get totalWidth(): number {
-    console.log('Hello!')
+    //console.log('Hello!')
     return Math.cos(this.angle) * this.length + Math.sin(this.angle) * this.thickness;
   }
 
   get totalHeight(): number {
-    console.log('Blubbber')
+    //console.log('Blubbber')
     return Math.sin(this.angle) * this.length + Math.cos(this.angle) * this.thickness;
   }
 
   public get angleInDeg(): number {
-    console.log('Hey!')
+    //console.log('Hey!')
     return this.angle / Math.PI * 180;
   }
 

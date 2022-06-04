@@ -1,8 +1,10 @@
+import { TouchController } from 'dist/whiteboard/lib/global-whiteboard/essentials/touchController';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Color as IColor } from '../interfaces/whiteboard';
 import { Vector, Point } from './../interfaces/point';
 import { Rect } from './../interfaces/rect';
 import { Color } from './color';
+import { TouchControllerEvents } from './touchController';
 
 export function max<T>(coll: T[], func: (t: T) => number): number | undefined {
     if (coll.length != 0) {
@@ -205,4 +207,18 @@ export function getAngle(p1: Point, p2: Point): number {
     let finalAngle = firstAngle + (deltaX < 0 ? Math.PI : 0); // now with flip
 
     return finalAngle;
+}
+
+export function getTouchControllerEventsAllSame(start: (p: Point) => void, move: (from: Point, to: Point) => void, end: (p: Point) => void): TouchControllerEvents {
+    return {
+        touchStart: start,
+        stylusStart: start,
+        mouseStart: start,
+        touchMove: move,
+        stylusMove: move,
+        mouseMove: move,
+        touchEnd: end,
+        stylusEnd: end,
+        mouseEnd: end
+    }
 }

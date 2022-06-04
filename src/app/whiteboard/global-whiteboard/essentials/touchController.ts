@@ -1,7 +1,7 @@
 import { Point } from './../interfaces/point';
 import { getAngle, getDistance, inRange } from './utils';
 
-interface TouchControllerEvents {
+export interface TouchControllerEvents {
     touchStart: (point: Point) => void,
     touchMove: (from: Point, to: Point) => void,
     touchEnd: (point: Point) => void,
@@ -23,7 +23,7 @@ interface TouchControllerEvents {
 
 // this class is able to catch events fired in HTML or SVG elements and can distinguish between touch, mouse and stylus
 export class TouchController {
-    constructor (public touchControllerEvents: TouchControllerEvents, public readonly element: HTMLElement | SVGElement, public readonly captureOnDocument: boolean = false) {
+    constructor (public touchControllerEvents: TouchControllerEvents, public readonly element: HTMLElement | SVGElement, public readonly relativeTo?: HTMLElement | SVGElement, public readonly anotherElement?: HTMLElement | SVGElement | Document) {
         this.captureEvents();
 
         if (this.touchControllerEvents.pinchZoom || this.touchControllerEvents.pinchTurn) {
@@ -37,7 +37,7 @@ export class TouchController {
     private captureEvents() {
         
         let getPosFromPointerEvent = (e: PointerEvent): Point => {
-            const rect = this.element.getBoundingClientRect() as DOMRect;
+            const rect = this.getBoundingRect();
 
             return {
                 x: e.clientX - rect.left,
@@ -157,25 +157,29 @@ export class TouchController {
             }
         }
 
-        let moveEndEl = this.captureOnDocument ? document : this.element;
+        let endEl = this.anotherElement ? this.anotherElement : this.element;
 
         this.element.addEventListener('pointerdown', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             start(ev);
         })
-        moveEndEl.addEventListener('pointermove', (ev: PointerEvent | Event) => {
+        this.element.addEventListener('pointermove', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             move(ev);
         })
-        moveEndEl.addEventListener('pointerup', (ev: PointerEvent | Event) => {
+        endEl.addEventListener('pointerup', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             end(ev);
         })
-        moveEndEl.addEventListener('pointerleave', (ev: PointerEvent | Event) => {
+        this.element.addEventListener('pointerup', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             end(ev);
         })
-        moveEndEl.addEventListener('pointercancel', (ev: PointerEvent | Event) => {
+        endEl.addEventListener('pointerleave', (ev: PointerEvent | Event) => {
+            ev.preventDefault();
+            end(ev);
+        })
+        endEl.addEventListener('pointercancel', (ev: PointerEvent | Event) => {
             ev.preventDefault();
             end(ev);
         })
@@ -195,6 +199,13 @@ export class TouchController {
         this.element.addEventListener('contextmenu', (ev: Event) => {
             ev.preventDefault();
         })
+
+        if (this.anotherElement) {
+            this.anotherElement.addEventListener('pointermove', (ev: PointerEvent | Event) => {
+                ev.preventDefault();
+                move(ev);
+            })
+        }
     }
     
     private capturePinchEvents() {
@@ -250,7 +261,7 @@ export class TouchController {
 
                     let curAngle = getAngle(p0, p1);
 
-                    const rect = this.element.getBoundingClientRect() as DOMRect;
+                    const rect = this.getBoundingRect();
                     let averageP = {
                         x: (p0.x + p1.x) / 2 - rect.left,
                         y: (p0.y + p1.y) / 2 - rect.top
@@ -318,6 +329,13 @@ export class TouchController {
         this.element.addEventListener('pointercancel', (ev: Event | PointerEvent) => pointerup_handler(ev));
         this.element.addEventListener('pointerout', (ev: Event | PointerEvent) => pointerup_handler(ev));
         this.element.addEventListener('pointerleave', (ev: Event | PointerEvent) => pointerup_handler(ev));
+    }
+
+    private getBoundingRect(): DOMRect {
+        if (this.relativeTo) {
+            return this.relativeTo.getBoundingClientRect() as DOMRect;
+        }
+        return this.element.getBoundingClientRect() as DOMRect;
     }
 
 }

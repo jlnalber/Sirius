@@ -1,9 +1,11 @@
+import { TouchController } from './../../global-whiteboard/essentials/touchController';
 import { SVGElementWrapper, SVGElementWrapperCollection } from './SVGElementWrapper';
-import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 import { Board } from '../../global-whiteboard/board/board';
 import { Point } from '../../global-whiteboard/interfaces/point';
 import { Rect } from '../../global-whiteboard/interfaces/rect';
+import { getTouchControllerEventsAllSame } from '../../global-whiteboard/essentials/utils';
 
 enum Resize {
   Top,
@@ -214,12 +216,23 @@ export class SelectorComponent implements AfterViewInit {
     })
 
     // capture the events
-    this.captureEvent(this.wrapperEl as HTMLDivElement, (p: Point) => {
+    let startWrapper = (p: Point) => {};
+    let moveWrapper = (prev: Point, curr: Point) => {
+      curr = this.board.getActualPoint(curr);
+      prev = this.board.getActualPoint(prev);
+      this.svgElements.translateXBy(curr.x - prev.x);
+      this.svgElements.translateYBy(curr.y - prev.y);
+    }
+    let endWrapper = (p: Point) => {};
+
+    new TouchController(getTouchControllerEventsAllSame(startWrapper, moveWrapper, endWrapper), this.wrapperEl as HTMLDivElement, this.board.canvas?.svgElement, document); 
+
+    /*this.captureEvent(this.wrapperEl as HTMLDivElement, (p: Point) => {
     }, (orig: Point, prev: Point, curr: Point) => {
       this.svgElements.translateXBy(curr.x - prev.x);
       this.svgElements.translateYBy(curr.y - prev.y);
     }, (orig: Point, p: Point) => {
-    });
+    });*/
 
     this.captureEvent(this.turnEl as HTMLDivElement, (p: Point) => {
       return;

@@ -1,6 +1,6 @@
 <div class="svgWrapper">
-    <whiteboard-selector [board]="this.board"></whiteboard-selector>
-    <whiteboard-lineal [board]="this.board"></whiteboard-lineal>
+    <whiteboard-selector [board]="this.board" *ngIf="this.initialized"></whiteboard-selector>
+    <!--<whiteboard-lineal [board]="this.board"></whiteboard-lineal>-->
     <svg #canvas [ngStyle]="{'background-color': this.board.backgroundColor.toString()}">
         <pattern #bgImgPattern id="bg-pattern" x="0" y="0" width="75" height="75" patternUnits="userSpaceOnUse">
             <image #bgImg width="75" height="75"></image>

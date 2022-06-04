@@ -1,5 +1,5 @@
 import { TouchController } from './../../global-whiteboard/essentials/touchController';
-import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild, OnInit } from '@angular/core';
 
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise } from 'rxjs';
@@ -13,6 +13,8 @@ import { getImageDimensions } from '../../global-whiteboard/essentials/utils';
   styleUrls: ['./canvas.component.scss']
 })
 export class CanvasComponent implements AfterViewInit {
+
+  public initialized = false;
 
   @HostListener('touchmove', ['$event'])
   onTouchMove(evt: any) {
@@ -126,6 +128,10 @@ export class CanvasComponent implements AfterViewInit {
     this.patternRectElement = this.patternRect.nativeElement as SVGRectElement;
     //this.captureEvents();
     //this.capturePinchZoomEvents();
+
+    setTimeout(() => {
+      this.initialized = true;
+    }, 0);
 
     // touch controller which keeps track of what happens to the board
     new TouchController({
