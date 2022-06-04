@@ -5,7 +5,7 @@ import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 import { Board } from '../../global-whiteboard/board/board';
 import { Point } from '../../global-whiteboard/interfaces/point';
 import { Rect } from '../../global-whiteboard/interfaces/rect';
-import { getTouchControllerEventsAllSame } from '../../global-whiteboard/essentials/utils';
+import { getAngle, getTouchControllerEventsAllSame } from '../../global-whiteboard/essentials/utils';
 
 enum Resize {
   Top,
@@ -142,17 +142,29 @@ export class SelectorComponent implements AfterViewInit {
     }
   }
 
+  private zoom(factor: number, p: Point): void {
+    // calculate where the point is (relative)
+    let svgElRect = this.getSVGElPos();
+    let percentX = (p.x - svgElRect.x) / svgElRect.width;
+    let percentY = (p.y - svgElRect.y) / svgElRect.height;
+
+    // do the transformation
+    this.svgElements.scaleXBy(factor);
+    this.svgElements.scaleYBy(factor);
+
+    // calculate where the new point is
+    let newSvgElRect = this.getSVGElPos();
+    let newPAfterTransformation: Point = {
+      x: newSvgElRect.x + newSvgElRect.width * percentX,
+      y: newSvgElRect.y + newSvgElRect.height * percentY
+    };
+
+    // move the elements so that it fits again
+    this.svgElements.translateXBy(p.x - newPAfterTransformation.x);
+    this.svgElements.translateYBy(p.y - newPAfterTransformation.y);
+  }
+
   private turnByPoints(prev: Point, curr: Point): void {
-
-    // function, that calculates the angle of a vector between two points --> with respecting the flip at pi
-    let getAngleByTwoPoints = (p1: Point, p2: Point): number => {
-      let deltaY = p1.y - p2.y;
-      let deltaX = p1.x - p2.x;
-      let firstAngle = Math.atan(deltaY / deltaX); // first angle, that is only calculated by atan (no flip yet)
-      let finalAngle = firstAngle + (deltaX < 0 ? Math.PI : 0); // now with flip
-
-      return finalAngle;
-    }
 
     // function that returns the center point of the svgEl
     let getSVGElCenter = (): Point => {
@@ -173,8 +185,8 @@ export class SelectorComponent implements AfterViewInit {
       // firstly, rotate the svgEl
       let center = getSVGElCenter();
 
-      let anglePrev = getAngleByTwoPoints(prev, center);
-      let angleCurr = getAngleByTwoPoints(curr, center);
+      let anglePrev = getAngle(prev, center);
+      let angleCurr = getAngle(curr, center);
 
       let angleDiff = (angleCurr - anglePrev) /** Math.sign(this.scaleX * this.scaleY)*/;
       let angleDeg = angleDiff * 180 / Math.PI;
@@ -186,6 +198,27 @@ export class SelectorComponent implements AfterViewInit {
       this.svgElements.translateXBy(center.x - newCenter.x);
       this.svgElements.translateYBy(center.y - newCenter.y);
     }
+  }
+
+  private turnByAngleAndPoint(angle: number, p: Point): void {
+    // calculate where the point is (relative)
+    let svgElRect = this.getSVGElPos();
+    let percentX = (p.x - svgElRect.x) / svgElRect.width;
+    let percentY = (p.y - svgElRect.y) / svgElRect.height;
+
+    // do the transformation
+    this.svgElements.rotateBy(angle * 180 / Math.PI);
+
+    // calculate where the new point is
+    let newSvgElRect = this.getSVGElPos();
+    let newPAfterTransformation: Point = {
+      x: newSvgElRect.x + newSvgElRect.width * percentX,
+      y: newSvgElRect.y + newSvgElRect.height * percentY
+    };
+
+    // move the elements so that it fits again
+    this.svgElements.translateXBy(p.x - newPAfterTransformation.x);
+    this.svgElements.translateYBy(p.y - newPAfterTransformation.y);
   }
 
   constructor() { }
@@ -238,6 +271,16 @@ export class SelectorComponent implements AfterViewInit {
       move();
     }, (p: Point) => {
       end();
+    }, (factor: number, p: Point) => {
+      // Logik für zoomen
+      p = this.board.getActualPoint(p);
+      this.zoom(factor, p);
+      this.board.onInput.emit();
+    }, (angle: number, p: Point) => {
+      // Logik für drehen
+      p = this.board.getActualPoint(p);
+      this.turnByAngleAndPoint(angle, p);
+      this.board.onInput.emit();
     }), this.wrapperEl as HTMLDivElement, this.board.canvas?.svgElement, document); 
 
     /*this.captureEvent(this.wrapperEl as HTMLDivElement, (p: Point) => {

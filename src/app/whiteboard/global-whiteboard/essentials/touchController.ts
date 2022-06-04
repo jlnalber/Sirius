@@ -281,7 +281,7 @@ export class TouchController {
 
                     if (prevAngle != undefined && curAngle != prevAngle && this.touchControllerEvents.pinchTurn) {
                         // turn around
-                        this.touchControllerEvents.pinchTurn(prevAngle - curAngle, averageP);
+                        this.touchControllerEvents.pinchTurn(curAngle - prevAngle, averageP);
                     }
 
                     // Cache the distance for the next move event 
@@ -302,7 +302,10 @@ export class TouchController {
                 remove_event(ev);
                 
                 // If the number of pointers down is less than two then reset diff tracker
-                if (this.evCache.length < 2) prevDiff = -1;
+                if (this.evCache.length < 2) {
+                    prevDiff = -1;
+                    prevAngle = undefined; 
+                }
 
                 if (this.mainTouchEventId == ev.pointerId) {
                   this.mainTouchEventId = undefined;

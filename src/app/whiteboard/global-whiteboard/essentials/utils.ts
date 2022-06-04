@@ -201,6 +201,7 @@ export function sameColorAs(c1: Color | IColor, c2: Color | IColor): boolean {
 }
 
 export function getAngle(p1: Point, p2: Point): number {
+    // function, that calculates the angle of a vector between two points --> with respecting the flip at pi
     let deltaY = p1.y - p2.y;
     let deltaX = p1.x - p2.x;
     let firstAngle = Math.atan(deltaY / deltaX); // first angle, that is only calculated by atan (no flip yet)
@@ -209,7 +210,12 @@ export function getAngle(p1: Point, p2: Point): number {
     return finalAngle;
 }
 
-export function getTouchControllerEventsAllSame(start: (p: Point) => void, move: (from: Point, to: Point) => void, end: (p: Point) => void): TouchControllerEvents {
+export function getTouchControllerEventsAllSame(
+    start: (p: Point) => void, 
+    move: (from: Point, to: Point) => void, 
+    end: (p: Point) => void,
+    pinchZoom?: (factor: number, p: Point) => void,
+    pinchTurn?: (angle: number, p: Point) => void): TouchControllerEvents {
     return {
         touchStart: start,
         stylusStart: start,
@@ -219,6 +225,8 @@ export function getTouchControllerEventsAllSame(start: (p: Point) => void, move:
         mouseMove: move,
         touchEnd: end,
         stylusEnd: end,
-        mouseEnd: end
+        mouseEnd: end,
+        pinchZoom: pinchZoom,
+        pinchTurn: pinchTurn
     }
 }
