@@ -13,7 +13,7 @@ type Part = [() => void, () => boolean, string];
 export class ToolsControlComponent extends BottomControl implements AfterViewInit {
 
   public isActive: () => boolean = () => {
-    return this.board.linealOpen || this.board.geodreieckOpen;
+    return this.board.linealOpen || this.board.geodreieckOpen || this.board.halbkreisOpen;
   };
   protected secondClick: () => void = () => {
     this.board.linealOpen = true;
@@ -47,24 +47,39 @@ export class ToolsControlComponent extends BottomControl implements AfterViewIni
   selected?: Part;
 
   parts: Part[] = [
+
     [() => {
       this.board.linealOpen = false;
       this.board.geodreieckOpen = false;
+      this.board.halbkreisOpen = false;
     }, () => {
-      return !this.board.linealOpen && !this.board.geodreieckOpen;
+      return !this.board.linealOpen && !this.board.geodreieckOpen && !this.board.halbkreisOpen;
     }, 'Keine'],
+
     [() => {
       this.board.linealOpen = true;
       this.board.geodreieckOpen = false;
+      this.board.halbkreisOpen = false;
     }, () => {
       return this.board.linealOpen;
     }, 'Lineal'],
+
     [() => {
       this.board.geodreieckOpen = true;
       this.board.linealOpen = false;
+      this.board.halbkreisOpen = false;
     }, () => {
       return this.board.geodreieckOpen;
-    }, 'Geodreieck']
+    }, 'Geodreieck'],
+
+    [() => {
+      this.board.halbkreisOpen = true;
+      this.board.linealOpen = false;
+      this.board.geodreieckOpen = false;
+    }, () => {
+      return this.board.halbkreisOpen;
+    }, 'Halbkreis']
+
   ];
 
 }

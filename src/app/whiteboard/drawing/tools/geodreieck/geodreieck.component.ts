@@ -1,15 +1,17 @@
 import { Point, Vector } from './../../../global-whiteboard/interfaces/point';
 import { Board, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Component, OnInit, AfterViewInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { PolygonTool } from '../polygonTool';
-import { Interval, Line } from '../line';
+import { Tool } from '../tool';
+import { Line } from '../line';
+import { Interval } from '../interval';
+import { Geometry } from '../geometry';
 
 @Component({
   selector: 'whiteboard-geodreieck',
   templateUrl: './geodreieck.component.html',
   styleUrls: ['./geodreieck.component.scss']
 })
-export class GeodreieckComponent extends PolygonTool implements OnInit, AfterViewInit {
+export class GeodreieckComponent extends Tool implements OnInit, AfterViewInit {
 
   @Input() board!: Board;
 
@@ -46,6 +48,11 @@ export class GeodreieckComponent extends PolygonTool implements OnInit, AfterVie
 
   constructor() { 
     super(Math.PI / 4, { x: 100, y: 100 });
+
+    this.defaultPosition = {
+      x: 100 + this.length / Math.SQRT2,
+      y: 100
+    };
   }
 
   ngAfterViewInit(): void {
@@ -67,7 +74,7 @@ export class GeodreieckComponent extends PolygonTool implements OnInit, AfterVie
     })
   }
 
-  protected getLines(): Line[] {
+  protected getGeometryElements(): Geometry[] {
     // Gebe die Strecken zurück, die durch das Geodreieck modelliert werden
     let ps = this.getPoints();
     let p1: Point = ps[0];
@@ -117,10 +124,11 @@ export class GeodreieckComponent extends PolygonTool implements OnInit, AfterVie
 
     const amount = 12;
     const dist = 50;
-    const smallDist = 10;
+    const smallDist = 5;
     const offsetD = (this.length * Math.SQRT2 - amount * dist) / Math.SQRT2 / 2;
     const lineLengthD = 20;
-    const smallLineLengthD = 5;
+    const smallLineLengthD = 7;
+
     // get the marks on the bottom
     let index = 0;
     for (let i = offsetD; i <= this.length - offsetD; i += smallDist / Math.SQRT2, index++) {
@@ -135,7 +143,7 @@ export class GeodreieckComponent extends PolygonTool implements OnInit, AfterVie
         this.gElement?.appendChild(text);
       }
       else {
-        this.addLine(i, this.length - i, i - smallLineLengthD / Math.SQRT2, this.length - i - smallLineLengthD / Math.SQRT2);
+        this.addLine(i, this.length - i, i - smallLineLengthD / Math.SQRT2, this.length - i - smallLineLengthD / Math.SQRT2, 0.5);
       }
     }
 

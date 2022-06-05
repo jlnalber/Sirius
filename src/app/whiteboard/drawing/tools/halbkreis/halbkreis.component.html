@@ -1,0 +1,8 @@
+<div class="wrapper" *ngIf="this.isActive">
+    <svg>
+        <g #g [style]="'transform: translate(' + this.position.x + 'px, ' + this.position.y + 'px) rotate(' + this.angleInDeg + 'deg);'">
+            <path #path fill="#55555599" stroke="none">
+            </path>
+        </g>
+    </svg>
+</div>

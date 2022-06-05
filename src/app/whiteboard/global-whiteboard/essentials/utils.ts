@@ -127,6 +127,38 @@ export function getDistance(from?: Point, to?: Point): number {
     return Math.sqrt((from.x - to.x) ** 2 + (from.y - to.y) ** 2);
 }
 
+export function getLength(vector: Vector): number {
+    return getDistance({
+        x: 0,
+        y: 0
+    }, vector);
+}
+
+export function scale(vector: Vector, factor: number): Vector {
+    return {
+        x: vector.x * factor,
+        y: vector.y * factor
+    };
+}
+
+export function scaleToLength(vector: Vector, length: number): Vector {
+    return scale(vector, length / getLength(vector));
+}
+
+export function add(v1: Vector, v2: Vector): Vector {
+    return {
+        x: v1.x + v2.x,
+        y: v1.y + v2.y
+    };
+}
+
+export function getAngleVector(vector: Vector): number {
+    return getAngle({
+        x: 0,
+        y: 0
+    }, vector);
+}
+
 export function inRange(num: number, from: number, to: number): boolean {
     return num >= from && num <= to;
 }
@@ -235,4 +267,11 @@ export function getTouchControllerEventsAllSame(
         pinchZoom: pinchZoom,
         pinchTurn: pinchTurn
     }
+}
+
+export function mod(a: number, modul: number): number {
+    if (a < 0) {
+        return modul + a % modul;
+    }
+    return a % modul;
 }

@@ -1,10 +1,12 @@
 import { getDistance } from "../../global-whiteboard/essentials/utils";
 import { Point } from "../../global-whiteboard/interfaces/point";
+import { Geometry } from "./geometry";
+import { Interval } from "./interval";
 
 
 // Eine Gerade der allgemeinen Geradenform 'ax + by = c'
 
-export class Line {
+export class Line extends Geometry {
 
     public get slope(): number {
         return - this.a / this.b;
@@ -15,6 +17,7 @@ export class Line {
     }
 
     constructor(public a: number, public b: number, public c: number, public interval?: Interval, public intervalY?: Interval) {
+        super();
         if (this.a == 0 && this.b == 0) throw "Invalid line";
     }
 
@@ -95,7 +98,7 @@ export class Line {
         }
     }
 
-    public getClosestPointOnLineTo(p: Point): Point {
+    public getClosestPointTo(p: Point): Point {
         // Berechne den nächsten Punkt
         let closestP = this.getInterceptionPoint(this.getOrthogonal(p));
 
@@ -125,11 +128,6 @@ export class Line {
         return closestP ?? { x: Number.MAX_VALUE, y: Number.MAX_VALUE };
     }
 
-    public getDistance(p: Point): number {
-        // Gebe die Distanz zurück
-        return getDistance(p, this.getClosestPointOnLineTo(p));
-    }
-
     public static fromPoint(a: number, b: number, p: Point, interval?: Interval, intervalY?: Interval): Line {
         return new Line(a, b, a * p.x + b * p.y, interval, intervalY);
     }
@@ -150,21 +148,5 @@ export class Line {
         else {
             return Line.fromPointAndSlope((p1.y - p2.y) / (p1.x - p2.x), p1, interval, intervalY);
         }
-    }
-}
-
-export class Interval {
-    
-    constructor (public start: number, public end: number, public startOpen: boolean = false, public endOpen: boolean = false) { 
-        if (this.start > this.end) {
-            let temp = this.start;
-            this.start = this.end;
-            this.end = temp;
-        }
-    }
-
-    public isIn(num: number): boolean {
-        return (this.startOpen ? (num > this.start) : (num >= this.start))
-            && (this.endOpen   ? (num < this.end)   : (num <= this.end));
     }
 }

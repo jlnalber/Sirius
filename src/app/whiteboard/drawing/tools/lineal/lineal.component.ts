@@ -1,16 +1,17 @@
-import { Interval } from './../line';
+import { Interval } from './../interval';
 import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Board, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Point, Vector } from 'src/app/whiteboard/global-whiteboard/interfaces/point';
 import { Line } from '../line';
-import { PolygonTool } from '../polygonTool';
+import { Tool } from '../tool';
+import { Geometry } from '../geometry';
 
 @Component({
   selector: 'whiteboard-lineal',
   templateUrl: './lineal.component.html',
   styleUrls: ['./lineal.component.scss']
 })
-export class LinealComponent extends PolygonTool implements OnInit, AfterViewInit {
+export class LinealComponent extends Tool implements OnInit, AfterViewInit {
 
   @Input() board!: Board;
 
@@ -62,7 +63,7 @@ export class LinealComponent extends PolygonTool implements OnInit, AfterViewIni
     this.intialize();
   }
 
-  protected getLines(): Line[] {
+  protected getGeometryElements(): Geometry[] {
     // Gebe die Strecke zurück, die durch das Lineal modelliert wird
     let ps = this.getTwoPoints();
     let p1: Point = ps[0];
@@ -99,16 +100,24 @@ export class LinealComponent extends PolygonTool implements OnInit, AfterViewIni
   private drawLines(): void {
     const offset = 25;
     const dist = 50;
+    const smallDist = 5;
+    const lineLength = 30;
+    const smallLineLength = 10;
 
-    for (let i = offset; i <= this.length - offset; i += dist) {
-      this.addLine(i, 0, i, 30);
+    let index = 0;
+    for (let i = offset; i <= this.length - offset; i += smallDist, index++) {
+      if (index % (dist / smallDist) == 0) {
+        this.addLine(i, 0, i, lineLength);
 
-      let text = document.createElementNS(svgns, 'text');
-      text.textContent = ((i - offset) / 50).toString();
-      text.setAttributeNS(null, 'x', (i - 7).toString());
-      text.setAttributeNS(null, 'y', '50');
-      this.gElement?.appendChild(text);
-
+        let text = document.createElementNS(svgns, 'text');
+        text.textContent = ((i - offset) / 50).toString();
+        text.setAttributeNS(null, 'x', (i - 7).toString());
+        text.setAttributeNS(null, 'y', '50');
+        this.gElement?.appendChild(text);
+      }
+      else {
+        this.addLine(i, 0, i, smallLineLength, 0.5);
+      }
     }
   }
 

@@ -54,6 +54,7 @@ import { CloseControlComponent } from './drawing/selector/task-bar/close-control
 import { ToolsControlComponent } from './drawing/controls/tools-control/tools-control.component';
 import { GeodreieckComponent } from './drawing/tools/geodreieck/geodreieck.component';
 import { FullscreenControlComponent } from './drawing/controls/menu-control/fullscreen-control/fullscreen-control.component';
+import { HalbkreisComponent } from './drawing/tools/halbkreis/halbkreis.component';
 
 
 
@@ -102,7 +103,8 @@ import { FullscreenControlComponent } from './drawing/controls/menu-control/full
     CloseControlComponent,
     ToolsControlComponent,
     GeodreieckComponent,
-    FullscreenControlComponent
+    FullscreenControlComponent,
+    HalbkreisComponent
   ],
   imports: [
     CommonModule,

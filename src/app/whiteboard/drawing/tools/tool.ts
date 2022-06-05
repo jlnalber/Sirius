@@ -1,13 +1,11 @@
 import { ElementRef } from '@angular/core';
 import { Board, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { TouchController } from "../../global-whiteboard/essentials/touchController";
-import { getTouchControllerEventsAllSame } from "../../global-whiteboard/essentials/utils";
+import { getDistance, getTouchControllerEventsAllSame, mod } from "../../global-whiteboard/essentials/utils";
 import { Point, Vector } from "../../global-whiteboard/interfaces/point";
+import { Geometry } from './geometry';
 
 export abstract class Tool {
-
-    public abstract correctPoint(p: Point): Point;
-    protected abstract clearCache: () => void;
 
     public abstract position: Vector;
     public abstract g: ElementRef;
@@ -16,12 +14,60 @@ export abstract class Tool {
     public abstract get isActive(): boolean;
     protected abstract additionalInitialization?: () => void;
     protected abstract angleSet?: () => void;
+
+    // #region managing the correction of the points
+    protected abstract getGeometryElements(): Geometry[];
+
+    private _geometryElementsCache?: Geometry[];
+    private getGeometryElementsFromCache(): Geometry[] {
+        // manage the cache of the lines
+        if (!this._geometryElementsCache) {
+            this._geometryElementsCache = this.getGeometryElements();
+        }
+        return this._geometryElementsCache;
+    }
+    protected clearCache = () => {
+        this._geometryElementsCache = undefined;
+    }
+
+    public correctPoint(p: Point): Point {
+        if (this.isActive) {
+            // get all the closestPs to the lines
+            let closestPs = this.getGeometryElementsFromCache().map(l => l.getClosestPointTo(p));
+            const maxDistance = 40 / this.board.zoom;
+
+            //console.log(closestPs);
+            //console.log(this.getLinesFromCache())
+
+            // now look for the closest one to the Point p and return it when it's smaller than the maxDistance
+            if (closestPs.length >= 1) {
+                let closestP = closestPs[0];
+                let minDistance = getDistance(p, closestP);
+
+                for (let i = 1; i < closestPs.length; i++) {
+                    const distance = getDistance(p, closestPs[i]);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestP = closestPs[i];
+                    }
+                }
+
+                if (minDistance <= maxDistance) {
+                    return closestP;
+                }
+            }
+        }
+
+        // otherwise return the original Point
+        return p;
+    }
+    // #endregion
     
 
     // managing the angle
     private _angle: number = 0;
     public set angle(value: number) {
-      this._angle = (value + 2 * Math.PI) % (Math.PI * 2);
+      this._angle = mod(value, Math.PI * 2);
       this.clearCache();
 
       if (this.angleSet) {
@@ -67,16 +113,17 @@ export abstract class Tool {
         catch { }
     }
 
-    protected addLine(x1: number, y1: number, x2: number, y2: number, stroke: string = 'black'): void {
+    protected addLine(x1: number, y1: number, x2: number, y2: number, strokeWidth: number = 1, stroke: string = 'black'): void {
         let line = document.createElementNS(svgns, 'line');
         line.setAttributeNS(null, 'x1', x1.toString());
         line.setAttributeNS(null, 'x2', x2.toString());
         line.setAttributeNS(null, 'y1', y1.toString());
         line.setAttributeNS(null, 'y2', y2.toString());
         line.setAttributeNS(null, 'stroke', stroke);
+        line.setAttributeNS(null, 'stroke-width', strokeWidth.toString());
   
         this.gElement?.appendChild(line);
     }
 
-    constructor(private readonly defaultAngle: number = 0, private readonly defaultPosition: Vector = { x: 0, y: 0 }) { }
+    constructor(protected defaultAngle: number = 0, protected defaultPosition: Vector = { x: 0, y: 0 }) { }
 }

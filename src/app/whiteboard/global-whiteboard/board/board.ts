@@ -1,3 +1,4 @@
+import { HalbkreisComponent } from './../../drawing/tools/halbkreis/halbkreis.component';
 import { LinealComponent } from './../../drawing/tools/lineal/lineal.component';
 import { Whiteboard as WhiteboardExport, Page as PageExport } from './../interfaces/whiteboard';
 import { EmptyCanvasElement } from './../canvasElements/emptyCanvasElement';
@@ -14,14 +15,12 @@ import { Line } from "../canvasElements/line";
 import { Rectangle } from "../canvasElements/rectangle";
 import { Page } from "./page";
 import { jsPDF } from "jspdf";
-//import 'svg2pdf.js';
 import { Rect } from '../interfaces/rect';
 import { Point } from '../interfaces/point';
 import { Color } from '../essentials/color';
 import { SelectorComponent } from '../../drawing/selector/selector.component';
 import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
-import { Canvg, presets, RenderingContext2D } from 'canvg';
 import { getBoundingRect, getImageDimensions } from '../essentials/utils';
 import { GeodreieckComponent } from '../../drawing/tools/geodreieck/geodreieck.component';
 
@@ -156,6 +155,9 @@ export class Board {
     else if (this.geodreieckOpen && this.geodreieck) {
       return this.geodreieck.correctPoint(p);
     }
+    else if (this.halbkreisOpen && this.halbkreis) {
+      return this.halbkreis.correctPoint(p);
+    }
     return p;
   }
   //#endregion
@@ -183,6 +185,7 @@ export class Board {
   public canvas: CanvasComponent | undefined;
   public selector: SelectorComponent | undefined;
 
+  // #region the tools
   public lineal: LinealComponent | undefined;
   private _linealOpen: boolean = false;
   public get linealOpen(): boolean {
@@ -204,6 +207,18 @@ export class Board {
     this.onGeodreieckToggled.emit();
     this.onToolToggled.emit();
   }
+
+  public halbkreis: HalbkreisComponent | undefined;
+  private _halbkreisOpen: boolean = false;
+  public get halbkreisOpen(): boolean {
+    return this._halbkreisOpen;
+  }
+  public set halbkreisOpen(value: boolean) {
+    this._halbkreisOpen = value;
+    this.onHalbkreisToggled.emit();
+    this.onToolToggled.emit();
+  }
+  // #endregion
 
   private _mode: BoardModes = BoardModes.Draw;
   public get mode(): BoardModes {
@@ -307,6 +322,7 @@ export class Board {
   public readonly onBoardDetectPointer: Event = new Event();
   public readonly onLinealToggled: Event = new Event();
   public readonly onGeodreieckToggled: Event = new Event();
+  public readonly onHalbkreisToggled: Event = new Event();
   public readonly onToolToggled: Event = new Event();
 
   //#region pages
