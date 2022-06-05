@@ -53,6 +53,7 @@ import { LinealComponent } from './drawing/tools/lineal/lineal.component';
 import { CloseControlComponent } from './drawing/selector/task-bar/close-control/close-control.component';
 import { ToolsControlComponent } from './drawing/controls/tools-control/tools-control.component';
 import { GeodreieckComponent } from './drawing/tools/geodreieck/geodreieck.component';
+import { FullscreenControlComponent } from './drawing/controls/menu-control/fullscreen-control/fullscreen-control.component';
 
 
 
@@ -100,7 +101,8 @@ import { GeodreieckComponent } from './drawing/tools/geodreieck/geodreieck.compo
     LinealComponent,
     CloseControlComponent,
     ToolsControlComponent,
-    GeodreieckComponent
+    GeodreieckComponent,
+    FullscreenControlComponent
   ],
   imports: [
     CommonModule,

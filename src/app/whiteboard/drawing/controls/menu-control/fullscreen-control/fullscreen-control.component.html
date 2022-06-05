@@ -1,0 +1,4 @@
+<div [title]="this.fullscreen ? 'Vollbild schließen' : 'Vollbild öffnen'" class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
+    <mat-icon *ngIf="this.fullscreen">fullscreen_exit</mat-icon>
+    <mat-icon *ngIf="!this.fullscreen">fullscreen</mat-icon>
+</div>
