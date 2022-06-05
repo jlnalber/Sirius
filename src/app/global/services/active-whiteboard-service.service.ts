@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -5,8 +6,15 @@ import { Injectable } from '@angular/core';
 })
 export class ActiveService {
 
-  public isWhiteboardActive = false;
+  private _isWhiteboardActive = false;
+  public get isWhiteboardActive(): boolean {
+    return this._isWhiteboardActive || this.router.url == '/whiteboard';
+  }
+  public set isWhiteboardActive(value: boolean) {
+    this._isWhiteboardActive = value;
+  }
+  
   public isSearchActive = false;
 
-  constructor() { }
+  constructor(private readonly router: Router) { }
 }
