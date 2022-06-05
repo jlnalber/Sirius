@@ -23,6 +23,7 @@ import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import { Canvg, presets, RenderingContext2D } from 'canvg';
 import { getBoundingRect, getImageDimensions } from '../essentials/utils';
+import { GeodreieckComponent } from '../../drawing/tools/geodreieck/geodreieck.component';
 
 declare var require: any
 
@@ -152,6 +153,9 @@ export class Board {
     if (this.linealOpen && this.lineal) {
       return this.lineal.correctPoint(p);
     }
+    else if (this.geodreieckOpen && this.geodreieck) {
+      return this.geodreieck.correctPoint(p);
+    }
     return p;
   }
   //#endregion
@@ -187,6 +191,17 @@ export class Board {
   public set linealOpen(value: boolean) {
     this._linealOpen = value;
     this.onLinealToggled.emit();
+    this.onToolToggled.emit();
+  }
+
+  public geodreieck: GeodreieckComponent | undefined;
+  private _geodreieckOpen: boolean = false;
+  public get geodreieckOpen(): boolean {
+    return this._geodreieckOpen;
+  }
+  public set geodreieckOpen(value: boolean) {
+    this._geodreieckOpen = value;
+    this.onGeodreieckToggled.emit();
     this.onToolToggled.emit();
   }
 
@@ -291,6 +306,7 @@ export class Board {
   public readonly onForward: Event = new Event();
   public readonly onBoardDetectPointer: Event = new Event();
   public readonly onLinealToggled: Event = new Event();
+  public readonly onGeodreieckToggled: Event = new Event();
   public readonly onToolToggled: Event = new Event();
 
   //#region pages

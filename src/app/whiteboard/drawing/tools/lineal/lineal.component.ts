@@ -35,12 +35,12 @@ export class LinealComponent extends PolygonTool implements OnInit, AfterViewIni
     this.drawAngle();
   }
 
-  protected get isActive(): boolean {
+  public get isActive(): boolean {
     return this.board.linealOpen;
   }
 
   constructor() { 
-    super();
+    super(undefined, { x: 100, y: 100 });
   }
 
   ngOnInit(): void {
@@ -101,19 +101,12 @@ export class LinealComponent extends PolygonTool implements OnInit, AfterViewIni
     const dist = 50;
 
     for (let i = offset; i <= this.length - offset; i += dist) {
-      let line = document.createElementNS(svgns, 'line');
-      line.setAttributeNS(null, 'x1', i.toString());
-      line.setAttributeNS(null, 'x2', i.toString());
-      line.setAttributeNS(null, 'y1', '0');
-      line.setAttributeNS(null, 'y2', '30');
-      line.setAttributeNS(null, 'stroke', 'black');
+      this.addLine(i, 0, i, 30);
 
       let text = document.createElementNS(svgns, 'text');
       text.textContent = ((i - offset) / 50).toString();
       text.setAttributeNS(null, 'x', (i - 7).toString());
       text.setAttributeNS(null, 'y', '50');
-
-      this.gElement?.appendChild(line);
       this.gElement?.appendChild(text);
 
     }

@@ -1,5 +1,5 @@
 import { ElementRef } from '@angular/core';
-import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
+import { Board, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { TouchController } from "../../global-whiteboard/essentials/touchController";
 import { getTouchControllerEventsAllSame } from "../../global-whiteboard/essentials/utils";
 import { Point, Vector } from "../../global-whiteboard/interfaces/point";
@@ -13,7 +13,7 @@ export abstract class Tool {
     public abstract g: ElementRef;
     public abstract gElement?: SVGGElement;
     public abstract board: Board;
-    protected abstract get isActive(): boolean;
+    public abstract get isActive(): boolean;
     protected abstract additionalInitialization?: () => void;
     protected abstract angleSet?: () => void;
     
@@ -46,8 +46,8 @@ export abstract class Tool {
             this.gElement = this.g.nativeElement;
     
             // set position
-            this.position = { x: 0, y: 0 }
-            this.angle = 0;
+            this.position = this.defaultPosition;
+            this.angle = this.defaultAngle;
             this.clearCache();
     
             // make additional intialization
@@ -66,4 +66,17 @@ export abstract class Tool {
         }
         catch { }
     }
+
+    protected addLine(x1: number, y1: number, x2: number, y2: number, stroke: string = 'black'): void {
+        let line = document.createElementNS(svgns, 'line');
+        line.setAttributeNS(null, 'x1', x1.toString());
+        line.setAttributeNS(null, 'x2', x2.toString());
+        line.setAttributeNS(null, 'y1', y1.toString());
+        line.setAttributeNS(null, 'y2', y2.toString());
+        line.setAttributeNS(null, 'stroke', stroke);
+  
+        this.gElement?.appendChild(line);
+    }
+
+    constructor(private readonly defaultAngle: number = 0, private readonly defaultPosition: Vector = { x: 0, y: 0 }) { }
 }

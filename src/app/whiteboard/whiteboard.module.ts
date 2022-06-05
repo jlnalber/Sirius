@@ -37,6 +37,7 @@ import { SelectControlComponent } from './drawing/controls/select-control/select
 import { BackgroundDialogComponent } from './drawing/controls/menu-control/background-control/background-dialog/background-dialog.component';
 import { ShapeControlComponent } from './drawing/controls/shape-control/shape-control.component';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { SaveAsPictureControlComponent } from './drawing/controls/menu-control/save-as-picture-control/save-as-picture-control.component';
 import { StickyNotesControlComponent } from './drawing/controls/sticky-notes-control/sticky-notes-control.component';
 import { StickyNotesDialogComponent } from './drawing/controls/sticky-notes-control/sticky-notes-dialog/sticky-notes-dialog.component';
@@ -51,6 +52,7 @@ import { ExportAsSvgControlComponent } from './drawing/controls/menu-control/exp
 import { LinealComponent } from './drawing/tools/lineal/lineal.component';
 import { CloseControlComponent } from './drawing/selector/task-bar/close-control/close-control.component';
 import { ToolsControlComponent } from './drawing/controls/tools-control/tools-control.component';
+import { GeodreieckComponent } from './drawing/tools/geodreieck/geodreieck.component';
 
 
 
@@ -97,7 +99,8 @@ import { ToolsControlComponent } from './drawing/controls/tools-control/tools-co
     ExportAsSvgControlComponent,
     LinealComponent,
     CloseControlComponent,
-    ToolsControlComponent
+    ToolsControlComponent,
+    GeodreieckComponent
   ],
   imports: [
     CommonModule,
@@ -107,7 +110,8 @@ import { ToolsControlComponent } from './drawing/controls/tools-control/tools-co
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatRadioModule
   ],
   exports: [
     WhiteboardComponent,

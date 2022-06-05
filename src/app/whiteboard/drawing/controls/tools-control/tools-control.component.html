@@ -1,3 +1,10 @@
-<div title="Notiz hinzufügen" class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
+<div title="Werkzeuge öffnen" class="control" [ngClass]="this.getNgClasses()" (click)="this.click()">
     <mat-icon>straighten</mat-icon>
+</div>
+<div *ngIf="this.cardOpen && this.isActive()" class="card">
+    <mat-radio-group (change)="this.onChange()" [(ngModel)]="this.selected" class="radioGroup" color="primary">
+        <mat-radio-button *ngFor="let part of this.parts" [value]="part" class="radioButton">
+            {{ part[2] }}
+        </mat-radio-button>
+    </mat-radio-group>
 </div>

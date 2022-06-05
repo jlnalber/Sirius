@@ -101,7 +101,6 @@ export class Line {
 
         // für den Fall, dass der Punkt außerhalb des Intervalls (für x) liegt
         if (this.interval && closestP && !this.interval.isIn(closestP.x)) {
-            console.log('Hallöchen!')
             let startP = this.getPointToX(this.interval.start);
             let startDist = getDistance(p, startP);
 
@@ -113,7 +112,6 @@ export class Line {
 
         // für den Fall, dass der Punkt außerhalb des Intervalls (für y) liegt
         if (this.intervalY && closestP && !this.intervalY.isIn(closestP.y)) {
-            console.log('Und jetzt?')
             let startP = this.getPointToY(this.intervalY.start);
             let startDist = getDistance(p, startP);
 

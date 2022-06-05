@@ -1,1 +1,21 @@
 @import "../../../global-whiteboard/styles/control";
+
+.card {
+    $width: 150px;
+    $height: 120px;
+    $cardhoverabovecontrols: 15px;
+    width: $width;
+    height: $height;
+    transform: translateY(calc(-1 * $height - $controlheight - $cardhoverabovecontrols)) translateX(calc(calc($width - $controlheight) / -2));
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 15px;
+  align-items: flex-start;
+}
+
+.radioButton {
+    margin: 5px;
+}

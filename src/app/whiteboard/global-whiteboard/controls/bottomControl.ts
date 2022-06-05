@@ -37,6 +37,9 @@ export abstract class BottomControl extends BasicControl {
             this.board.onTouch.addListener(() => {
                 this.cardOpen = false;
             })
+            this.board.onBoardAnyModeChange.addListener(() => {
+                this.cardOpen = false;
+            })
         })
     }
 }
