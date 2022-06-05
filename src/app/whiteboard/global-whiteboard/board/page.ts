@@ -261,6 +261,12 @@ export class Page {
 
             // load the background color into an image, the background into a pattern
             let rectBGImg = await getImageDimensions(this.board.backgroundImage);
+            rectBGImg = {
+                x: rectBGImg.x * this.board.backgroundScale,
+                y: rectBGImg.y * this.board.backgroundScale,
+                width: rectBGImg.width * this.board.backgroundScale,
+                height: rectBGImg.height * this.board.backgroundScale
+            }
 
             let properties = `x="${-(this.translateX + Math.floor(translateXBack / rectBGImg.width + 1) * rectBGImg.width) / this.zoom}" y="${-(this.translateY + Math.floor(translateYBack / rectBGImg.height + 1) * rectBGImg.height) / this.zoom}" width="${Math.abs((rect.width + rectBGImg.width) / Math.min(this.zoom, 1))}" height="${Math.abs((rect.height + rectBGImg.height) / Math.min(this.zoom, 1))}" transform="translate(${this.translateX} ${this.translateY}) scale(${this.zoom})"`;
 
@@ -334,8 +340,6 @@ export class Page {
     }
 
     public async getPageAsPicture(): Promise<string> {
-        const scale = 0.5;
-
         // this method returns the data url of the png image of this page
 
         let svg = await this.getSVG();

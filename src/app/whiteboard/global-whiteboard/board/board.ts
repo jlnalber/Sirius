@@ -269,6 +269,15 @@ export class Board {
     return this._backgroundColor;
   }
 
+  private _backgroundScale: number = 1;
+  public set backgroundScale(value: number) {
+    this._backgroundScale = value;
+    this.onBackgroundChange.emit();
+  }
+  public get backgroundScale(): number {
+    return this._backgroundScale;
+  }
+
   private _backgroundImage: string = '';
   public set backgroundImage(value: string) {
     this._backgroundImage = value;
@@ -900,6 +909,7 @@ export class Board {
     // Lade das Whiteboard aus einer Datei
     try {
       this.backgroundImage = whiteboard.backgroundImage;
+      this.backgroundScale = whiteboard.backgroundScale ?? 1;
       this.backgroundColor.from(whiteboard.backgroundColor);
 
       this.pages.splice(0);
@@ -933,6 +943,7 @@ export class Board {
     }
     return {
       backgroundImage: this.backgroundImage,
+      backgroundScale: this.backgroundScale,
       backgroundColor: this.backgroundColor.export(),
       pageIndex: this.currentPageIndex,
       pages: pages

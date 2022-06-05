@@ -180,6 +180,12 @@ export class CanvasComponent implements AfterViewInit {
 
       // set the width and height of the background image
       let rect = await getImageDimensions(this.board.backgroundImage);
+      rect = {
+        x: rect.x * this.board.backgroundScale,
+        y: rect.y * this.board.backgroundScale,
+        width: rect.width * this.board.backgroundScale,
+        height: rect.height * this.board.backgroundScale
+      };
       this.bgImgElement?.setAttributeNS(null, "width", rect.width.toString());
       this.bgImgElement?.setAttributeNS(null, "height", rect.height.toString());
       this.bgImgPatternElement?.setAttributeNS(null, "width", rect.width.toString());

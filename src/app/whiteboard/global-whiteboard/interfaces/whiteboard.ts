@@ -1,6 +1,7 @@
 export interface Whiteboard {
     backgroundColor: Color,
     backgroundImage: string,
+    backgroundScale?: number,
     pages: Page[],
     pageIndex: number
 }

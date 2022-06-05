@@ -1,3 +1,4 @@
+import { MatSliderChange } from '@angular/material/slider';
 import { Component, Inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
@@ -30,6 +31,18 @@ export class BackgroundDialogComponent {
 
   currentColor = () => {
     return this.data.board.backgroundColor;
+  }
+
+  get backgroundScale(): number {
+    return 1 / this.data.board.backgroundScale;
+  }
+  set backgroundScale(value: number) {
+    this.data.board.backgroundScale = 1 / value;
+  }
+  triggerBackgroundScale(event: MatSliderChange) {
+    if (event.value != null) {
+      this.backgroundScale = event.value;
+    }
   }
 
   @Input()
