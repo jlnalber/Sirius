@@ -65,20 +65,33 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
 
   protected getGeometryElements(): Geometry[] {
     // Gebe die Strecke zurück, die durch das Lineal modelliert wird
-    let ps = this.getTwoPoints();
+    let ps = this.getPoints();
     let p1: Point = ps[0];
     let p2: Point = ps[1];
-    let line = Line.fromPoints(p1, p2, new Interval(p1.x, p2.x), new Interval(p1.y, p2.y));
-    return [ line ];
+    let p3: Point = ps[2];
+    let p4: Point = ps[3];
+    let line12 = Line.fromPointsWithIntervals(p1, p2);
+    let line23 = Line.fromPointsWithIntervals(p2, p3);
+    let line34 = Line.fromPointsWithIntervals(p3, p4);
+    let line41 = Line.fromPointsWithIntervals(p4, p1);
+    return [ line12, line23, line34, line41 ];
   }
 
-  private getTwoPoints(): [Point, Point] {
+  private getPoints(): [Point, Point, Point, Point] {
     return [
-      this.board.getActualPoint(this.position),
+      this.board.getActualPoint({
+        x: this.position.x - Math.sin(this.angle) * this.thickness,
+        y: this.position.y + Math.cos(this.angle) * this.thickness
+      }),
+      this.board.getActualPoint({
+        x: this.position.x - Math.sin(this.angle) * this.thickness + Math.cos(this.angle) * this.length,
+        y: this.position.y + Math.cos(this.angle) * this.thickness + Math.sin(this.angle) * this.length
+      }),
       this.board.getActualPoint({
         x: this.position.x + Math.cos(this.angle) * this.length,
         y: this.position.y + Math.sin(this.angle) * this.length
-      })
+      }),
+      this.board.getActualPoint(this.position)
     ]
   }
 

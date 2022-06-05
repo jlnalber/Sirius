@@ -149,4 +149,8 @@ export class Line extends Geometry {
             return Line.fromPointAndSlope((p1.y - p2.y) / (p1.x - p2.x), p1, interval, intervalY);
         }
     }
+
+    public static fromPointsWithIntervals(p1: Point, p2: Point): Line {
+        return Line.fromPoints(p1, p2, new Interval(p1.x, p2.x), new Interval(p1.y, p2.y));
+    }
 }

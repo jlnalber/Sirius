@@ -80,9 +80,9 @@ export class GeodreieckComponent extends Tool implements OnInit, AfterViewInit {
     let p1: Point = ps[0];
     let p2: Point = ps[1];
     let p3: Point = ps[2];
-    let line12 = Line.fromPoints(p1, p2, new Interval(p1.x, p2.x), new Interval(p1.y, p2.y));
-    let line23 = Line.fromPoints(p2, p3, new Interval(p2.x, p3.x), new Interval(p2.y, p3.y));
-    let line31 = Line.fromPoints(p3, p1, new Interval(p3.x, p1.x), new Interval(p3.y, p1.y));
+    let line12 = Line.fromPointsWithIntervals(p1, p2);
+    let line23 = Line.fromPointsWithIntervals(p2, p3);
+    let line31 = Line.fromPointsWithIntervals(p3, p1);
     return [ line12, line23, line31 ];
   }
 
@@ -180,13 +180,15 @@ export class GeodreieckComponent extends Tool implements OnInit, AfterViewInit {
         const angle = a / 180 * Math.PI + Math.PI * 3 / 4;
         let iRad = smallInnerRad;
         let oRad = smallOuterRad;
+        let strokeWidth = 0.7;
 
         if (index % (angleDist / smallAngleDist) == 0) {
           iRad = innerRad;
           oRad = outerRad;
+          strokeWidth = 1;
         }
 
-        this.addLine(center.x + Math.cos(angle) * iRad, center.y + Math.sin(angle) * iRad, center.x + Math.cos(angle) * oRad, center.y + Math.sin(angle) * oRad)
+        this.addLine(center.x + Math.cos(angle) * iRad, center.y + Math.sin(angle) * iRad, center.x + Math.cos(angle) * oRad, center.y + Math.sin(angle) * oRad, strokeWidth);
       }
     }
 

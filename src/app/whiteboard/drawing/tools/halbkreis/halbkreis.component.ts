@@ -75,7 +75,7 @@ export class HalbkreisComponent extends Tool implements OnInit, AfterViewInit {
     let ps = this.getTwoPoints();
     let p1: Point = ps[0];
     let p2: Point = ps[1];
-    let line = Line.fromPoints(p1, p2, new Interval(p1.x, p2.x), new Interval(p1.y, p2.y));
+    let line = Line.fromPointsWithIntervals(p1, p2);
     
     // Berechne den Halbkreis
     let halbkreis = new CircleSegment(this.board.getActualPoint({
