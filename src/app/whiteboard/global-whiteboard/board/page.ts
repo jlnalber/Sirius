@@ -154,60 +154,45 @@ export class Page {
     }
 
     public getSizeRect(): Rect {
-        // get a rect that limits the view: left-most, right-most, top-most and bottom-most elements in the svg
-        let rect = {
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100
-        };
 
-        /*let max = (a: number, b: number) => {
-            return a > b ? a : b;
+        if (this.board.format) {
+            return this.board.format;
         }
-        let min = (a: number, b: number) => {
-            return a < b ? a : b;
-        }
-        if (this.canvas && this.canvas.gElement) {
-            for (let i in this.canvas.gElement.children) {
-                let el = this.canvas.gElement.children[i];
-                if (el) {
-                    try {
-                        let r = (this.canvas.gElement.children[i] as SVGElement).getBoundingClientRect();
-                        rect.x = min(r.left, rect.x);
-                        rect.y = min(r.top, rect.y);
-                        rect.width = max(rect.width, r.width + r.left);
-                        rect.height = max(rect.height, r.height + r.top);
-                    }
-                    catch { }
-                }
+        else {
+
+            // get a rect that limits the view: left-most, right-most, top-most and bottom-most elements in the svg
+            let rect = {
+                x: 0,
+                y: 0,
+                width: 100,
+                height: 100
+            };
+
+            let currentPageIndex = this.board.currentPageIndex;
+            let myPageIndex = this.board.pages.indexOf(this);
+            let switchPage = myPageIndex >= 0 && myPageIndex != currentPageIndex;
+
+            if (switchPage) {
+                this.board.currentPageIndex = myPageIndex;
             }
-        }*/
 
-        let currentPageIndex = this.board.currentPageIndex;
-        let myPageIndex = this.board.pages.indexOf(this);
-        let switchPage = myPageIndex >= 0 && myPageIndex != currentPageIndex;
+            if (this.canvas && this.canvas.gElement) {
+                rect = getBoundingRect(this.canvas.gElement.children, this.board);
+            }
 
-        if (switchPage) {
-            this.board.currentPageIndex = myPageIndex;
+            if (switchPage) {
+                this.board.currentPageIndex = currentPageIndex;
+            }
+
+            rect.width += 2 * offsetSizeRect /*+ rect.x > 0 ? rect.x : 0*/;
+            rect.height += 2 * offsetSizeRect /*+ rect.y > 0 ? rect.y : 0*/;
+            rect.x -= offsetSizeRect;
+            rect.y -= offsetSizeRect;
+            //rect.x = rect.x < 0 ? rect.x : 0;
+            //rect.y = rect.y < 0 ? rect.y : 0;
+
+            return rect;
         }
-
-        if (this.canvas && this.canvas.gElement) {
-            rect = getBoundingRect(this.canvas.gElement.children, this.board);
-        }
-
-        if (switchPage) {
-            this.board.currentPageIndex = currentPageIndex;
-        }
-
-        rect.width += 2 * offsetSizeRect /*+ rect.x > 0 ? rect.x : 0*/;
-        rect.height += 2 * offsetSizeRect /*+ rect.y > 0 ? rect.y : 0*/;
-        rect.x -= offsetSizeRect;
-        rect.y -= offsetSizeRect;
-        //rect.x = rect.x < 0 ? rect.x : 0;
-        //rect.y = rect.y < 0 ? rect.y : 0;
-
-        return rect;
     }
 
     public clear() {
@@ -240,7 +225,12 @@ export class Page {
         if (this.canvas && this.canvas.svgElement && this.canvas.gElement) {
             let content = this.canvas.gElement.outerHTML;
             if (this.board.currentPage != this) {
-              content = `<g transform="translate(${this.translateX} ${this.translateY}) scale(${this.zoom})">${this.currentContent}</g>`;
+                if (this.board.format) {
+                    content = `<g>${this.currentContent}</g>`;
+                }
+                else {
+                    content = `<g transform="translate(${this.translateX} ${this.translateY}) scale(${this.zoom})">${this.currentContent}</g>`;
+                }
             }
 
             let sizeRect = this.getSizeRect();
@@ -281,9 +271,17 @@ export class Page {
         </defs>`;
             
             if (this.board.backgroundImage != '') {
-                
                 rectStr += `
                 <rect ${properties} fill="url(#pat1)"/>`;
+            }
+
+            if (this.board.format) {
+                rectStr = '';
+                def += `<rect fill="${this.board.backgroundColor.toString()}" x="0" y="0" width="${rect.width}" height="${rect.height}" />
+                        <rect fill="url(#pat1)" x="0" y="0" width="${rect.width}" height="${rect.height}"  />`;
+                translateXBack = 0;
+                translateYBack = 0;
+                scaleBack = 1;
             }
   
             let str = `<?xml version="1.0" encoding="UTF-8"?>

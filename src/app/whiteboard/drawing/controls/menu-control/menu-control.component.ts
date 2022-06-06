@@ -33,8 +33,14 @@ export class MenuControlComponent extends BottomControl implements AfterViewInit
 
   ngAfterViewInit(): void {
     this.afterViewInit.emit();
-    this.board.onMouseStart.addListener(() => {
+    this.board.onMouse.addListener(() => {
       this.openPanel = false;
+    })
+    this.board.onTouch.addListener(() => {
+        this.openPanel = false;
+    })
+    this.board.onBoardAnyModeChange.addListener(() => {
+        this.openPanel = false;
     })
   }
 

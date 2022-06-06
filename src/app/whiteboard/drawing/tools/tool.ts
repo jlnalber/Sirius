@@ -92,7 +92,10 @@ export abstract class Tool {
             this.gElement = this.g.nativeElement;
     
             // set position
-            this.position = this.defaultPosition;
+            this.position = {
+                x: this.defaultPosition.x,
+                y: this.defaultPosition.y
+            };
             this.angle = this.defaultAngle;
             this.clearCache();
     
