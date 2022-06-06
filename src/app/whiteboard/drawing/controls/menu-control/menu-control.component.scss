@@ -1,7 +1,7 @@
 @import "../../../global-whiteboard/styles/control";
 
 .card {
-    $numberOfElements: 6;
+    $numberOfElements: 7;
 
     $width: 50px;
     $height: calc(50px * $numberOfElements);

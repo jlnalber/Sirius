@@ -1,0 +1,29 @@
+<h1 mat-dialog-title class="fill">Format</h1>
+<div mat-dialog-content class="fill">
+    <mat-form-field class="selector" appearance="outline">
+        <mat-label>Format</mat-label>
+        <mat-select [(value)]="this.currentChosenFormat">
+            <mat-option *ngFor="let p of this.presets" [value]="p">{{ p[0] }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div class="format fill" *ngIf="!isUnlimited()">
+        <div class="fill">
+            <mat-form-field class="formatWidth fill" appearance="outline"> 
+                <mat-label>Breite</mat-label>
+                <input type="number" min="100" matInput [(ngModel)]="this.customFormat.width" class="fill" *ngIf="this.currentChosenFormat[2]">
+                <input type="number" matInput [value]="this.currentChosenFormat[1]?.width" class="fill" disabled *ngIf="!this.currentChosenFormat[2]">
+            </mat-form-field>
+        </div>
+        <div class="fill">
+            <mat-form-field class="formatHeight fill" appearance="outline"> 
+                <mat-label>Höhe</mat-label>
+                <input type="number" min="100" matInput [(ngModel)]="this.customFormat.height" class="fill" *ngIf="this.currentChosenFormat[2]">
+                <input type="number" matInput [value]="this.currentChosenFormat[1]?.height" class="fill" disabled *ngIf="!this.currentChosenFormat[2]">
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions align="end" class="fill">
+  <button mat-button (click)="onNoClick()" color="accent">Abbrechen</button>
+  <button cdkFocusInitial mat-button [disabled]="!acceptCustomFormat()" (click)="onAcceptClick()">Bestätigen</button>
+</div>

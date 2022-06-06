@@ -234,9 +234,6 @@ export class Page {
             }
 
             let sizeRect = this.getSizeRect();
-            //let rect = this.getSizeRect();
-
-            console.log(sizeRect);
 
             let scaleBack = 1 / this.zoom;
             let translateXBack = -this.translateX - sizeRect.x * this.zoom;

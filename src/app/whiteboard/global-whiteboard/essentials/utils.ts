@@ -301,3 +301,7 @@ export function getIntersectionRects(rect1: Rect | DOMRect, rect2: Rect | DOMRec
         height: minY - y
     };
 }
+
+export function sameRect(rect1: Rect | undefined, rect2: Rect | undefined): boolean {
+    return rect1 != undefined && rect2 != undefined && rect1.x == rect2.x && rect1.y == rect2.y && rect1.width == rect2.width && rect1.height == rect2.height;
+}

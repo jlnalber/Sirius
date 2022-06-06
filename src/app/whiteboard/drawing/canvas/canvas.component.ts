@@ -174,6 +174,7 @@ export class CanvasComponent implements AfterViewInit {
     })
     this.board.onFormatChanged.addListener(() => {
       this.startTouchController();
+      this.justify();
     })
   }
 

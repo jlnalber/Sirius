@@ -34,7 +34,7 @@ export abstract class Tool {
         if (this.isActive) {
             // get all the closestPs to the lines
             let closestPs = this.getGeometryElementsFromCache().map(l => l.getClosestPointTo(p));
-            const maxDistance = 40 / this.board.zoom;
+            const maxDistance = 30 / this.board.zoom;
 
             //console.log(closestPs);
             //console.log(this.getLinesFromCache())

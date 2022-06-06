@@ -273,12 +273,7 @@ export class Board {
     return this._backgroundImage;
   }
 
-  private _format?: Rect = {
-    x: 0,
-    y: 0,
-    width: 1200,
-    height: 900
-  };
+  private _format?: Rect;
   public set format(value: Rect | undefined) {
     this._format = value;
     this.onFormatChanged.emit();

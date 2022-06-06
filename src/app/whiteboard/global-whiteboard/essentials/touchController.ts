@@ -56,7 +56,7 @@ export class TouchController {
     }
 
     private lastPoint: Point | undefined;
-
+    private currentPointerID?: number;
     private ongoingTouch: boolean = false;
 
     private checkWhetherPointIsValid = (p: Point): boolean => {
@@ -92,6 +92,7 @@ export class TouchController {
                 this.lastPoint = point;
             }
             this.ongoingTouch = true;
+            this.currentPointerID = e.pointerId;
         }
     }
 
@@ -123,8 +124,12 @@ export class TouchController {
                     this.lastPoint = point;
                 }
 
-                if (e.pointerType == 'touch' && this.mainTouchEventId == undefined) {
+                if (e instanceof PointerEvent && e.pointerType == 'touch' && this.mainTouchEventId == undefined) {
                     this.mainTouchEventId = e.pointerId;
+                }
+
+                if (this.currentPointerID == undefined) {
+                    this.currentPointerID = e.pointerId;
                 }
             }
         }
@@ -152,13 +157,16 @@ export class TouchController {
                     case 'touch': if (this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) this.touchControllerEvents.touchEnd(point); break;
                 }
 
-                if (e.pointerType != 'touch' || this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId) {
+                if (e instanceof PointerEvent && (e.pointerType != 'touch' || this.mainTouchEventId == undefined || this.mainTouchEventId == e.pointerId)) {
                     this.lastPoint = undefined;
                     if (this.evCache.length < 1) {
                         this.ongoingTouch = false;
                     }
                 }
             }
+
+            console.log(this.evCache)
+            this.currentPointerID = undefined;
         }
     }
 

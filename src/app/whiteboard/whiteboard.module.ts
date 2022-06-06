@@ -38,6 +38,7 @@ import { BackgroundDialogComponent } from './drawing/controls/menu-control/backg
 import { ShapeControlComponent } from './drawing/controls/shape-control/shape-control.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { SaveAsPictureControlComponent } from './drawing/controls/menu-control/save-as-picture-control/save-as-picture-control.component';
 import { StickyNotesControlComponent } from './drawing/controls/sticky-notes-control/sticky-notes-control.component';
 import { StickyNotesDialogComponent } from './drawing/controls/sticky-notes-control/sticky-notes-dialog/sticky-notes-dialog.component';
@@ -55,6 +56,8 @@ import { ToolsControlComponent } from './drawing/controls/tools-control/tools-co
 import { GeodreieckComponent } from './drawing/tools/geodreieck/geodreieck.component';
 import { FullscreenControlComponent } from './drawing/controls/menu-control/fullscreen-control/fullscreen-control.component';
 import { HalbkreisComponent } from './drawing/tools/halbkreis/halbkreis.component';
+import { FormatControlComponent } from './drawing/controls/menu-control/format-control/format-control.component';
+import { FormatDialogComponent } from './drawing/controls/menu-control/format-control/format-dialog/format-dialog.component';
 
 
 
@@ -104,7 +107,9 @@ import { HalbkreisComponent } from './drawing/tools/halbkreis/halbkreis.componen
     ToolsControlComponent,
     GeodreieckComponent,
     FullscreenControlComponent,
-    HalbkreisComponent
+    HalbkreisComponent,
+    FormatControlComponent,
+    FormatDialogComponent
   ],
   imports: [
     CommonModule,
@@ -115,7 +120,8 @@ import { HalbkreisComponent } from './drawing/tools/halbkreis/halbkreis.componen
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSelectModule
   ],
   exports: [
     WhiteboardComponent,
