@@ -3,19 +3,18 @@
 }
 
 svg {
-    width: 100%;
-    height: 100%;
     margin: 0px;
     overflow: hidden;
     display: flex;
     flex-grow: 1;
-    transition: all 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out;
     touch-action: none;
 }
 
 .svgWrapper {
     width: 100%;
     height: 100%;
+    background-color: #fafafa;
 }
 
 .overlay {

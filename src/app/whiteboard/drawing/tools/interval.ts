@@ -43,7 +43,6 @@ export class ModulInterval extends Interval {
         if (modStart >= modEnd) {
             let value = this.startOpen ? (num > modStart) : (num >= modStart)
                         || this.endOpen ? (num < modEnd) : (num <= modEnd);
-            console.log(value);
             return value;
         }
         else {

@@ -249,37 +249,7 @@ export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> 
     }
 
     public getBoundingClientRect(): Rect {
-        return getBoundingRect(this.svgElementWrappers.map(s => DOMRectToRect(s.getBoundingClientRect())))
-
-        /*let minX: number | undefined = undefined;
-        let maxX: number | undefined = undefined;
-        let minY: number | undefined = undefined;
-        let maxY: number | undefined = undefined;
-
-        for (let svgElWrapper of this.svgElementWrappers) {
-            let rect = svgElWrapper.getBoundingClientRect();
-            if (rect) {
-                if (!minX || minX > rect.left) {
-                    minX = rect.left;
-                }
-                if (!minY || minY > rect.top) {
-                    minY = rect.top;
-                }
-                if (!maxX || maxX < rect.left + rect.width) {
-                    maxX = rect.left + rect.width;
-                }
-                if (!maxY || maxY < rect.top + rect.height) {
-                    maxY = rect.top + rect.height;
-                }
-            }
-        }
-
-        return {
-            x: minX ?? 0,
-            y: minY ?? 0,
-            width: (maxX ?? 0) - (minX ?? 0),
-            height: (maxY ?? 0) - (minY ?? 0)
-        }*/
+        return getBoundingRect(this.svgElementWrappers.map(s => DOMRectToRect(s.getBoundingClientRect())));
     }
 
     public scaleXBy(factor: number) {

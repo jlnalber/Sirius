@@ -275,3 +275,22 @@ export function mod(a: number, modul: number): number {
     }
     return a % modul;
 }
+
+export function getIntersectionRects(rect1: Rect | DOMRect, rect2: Rect | DOMRect) {
+    
+    if ((rect1 as DOMRect).left) rect1 = DOMRectToRect(rect1 as DOMRect);
+    if ((rect2 as DOMRect).left) rect2 = DOMRectToRect(rect2 as DOMRect);
+
+    let x = Math.max(rect1.x, rect2.x);
+    let y = Math.max(rect1.y, rect2.y);
+
+    let minX = Math.min(rect1.x + rect1.width, rect2.x + rect2.width);
+    let minY = Math.min(rect1.y + rect1.height, rect2.y + rect2.height);
+
+    return {
+        x: x,
+        y: y,
+        width: minX - x,
+        height: minY - y
+    };
+}

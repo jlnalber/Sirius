@@ -52,6 +52,8 @@ export class Select extends Shape {
                 }
             }
 
+            console.log(res);
+
             return res;
         }
 

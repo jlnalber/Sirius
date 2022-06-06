@@ -108,7 +108,7 @@ export abstract class Tool {
                 this.clearCache();
             }, (p: Point) => { }, undefined, (angle: number, p: Point) => {
                 this.angle += angle;
-            }), this.gElement as SVGGElement, this.board.canvas?.svgElement, document);
+            }), this.gElement as SVGGElement, this.board.canvas?.svgWrapperElement, document);
         }
         catch { }
     }

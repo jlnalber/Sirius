@@ -1,3 +1,4 @@
+import { Vector } from './../interfaces/point';
 import { HalbkreisComponent } from './../../drawing/tools/halbkreis/halbkreis.component';
 import { LinealComponent } from './../../drawing/tools/lineal/lineal.component';
 import { Whiteboard as WhiteboardExport, Page as PageExport } from './../interfaces/whiteboard';
@@ -21,7 +22,7 @@ import { Color } from '../essentials/color';
 import { SelectorComponent } from '../../drawing/selector/selector.component';
 import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
-import { getBoundingRect, getImageDimensions } from '../essentials/utils';
+import { add, defaultPoint, getBoundingRect, getImageDimensions, getIntersectionRects, scale } from '../essentials/utils';
 import { GeodreieckComponent } from '../../drawing/tools/geodreieck/geodreieck.component';
 
 declare var require: any
@@ -49,28 +50,25 @@ export class Board {
   public getActualPoint(p: Point): Point {
     // berechne die Position eines Punktes im canvas
     if (this.canvas) {
-      let x = (p.x - this.translateX) / this.zoom;
-      let y = (p.y - this.translateY) / this.zoom;
-      return { x: x, y: y };
+      if (this.format) {
+        // Wenn ein Format eingestellt ist, muss der Punkt anders berechnet werden, da die scale-Property bei HTML-Elementen nicht vom Ursprung sondern vom Zentrum scalet
+        let center: Vector = {
+          x: this.format.width / 2 + this.translateX,
+          y: this.format.height / 2 + this.translateY
+        }
+        let cToP = add(p, scale(center, -1));
+        let newCToP = scale(cToP, 1 / this.zoom);
+        let x = this.format.width / 2 + newCToP.x;
+        let y = this.format.height / 2 + newCToP.y;
+        return { x: x, y: y };
+      }
+      else {
+        let x = (p.x - this.translateX) / this.zoom;
+        let y = (p.y - this.translateY) / this.zoom;
+        return { x: x, y: y };
+      }
     }
     return { x: 0, y: 0 };
-  }
-
-  public getPointRealPosInCanvas(point: Point): Point {
-    // calculate the position of a rect in the canvas (if svg deposition is respected)
-    if (this.canvas && this.canvas.svgElement) {
-      
-      let svgRect = this.canvas.svgElement.getBoundingClientRect() as DOMRect;
-      return {
-        x: point.x - svgRect.left,
-        y: point.y - svgRect.top
-      };
-    }
-    return point;
-  }
-
-  public getPointFromAbsolutePoint(point: Point): Point {
-    return this.getActualPoint(this.getPointRealPosInCanvas(point));
   }
 
   public getActualRect(rect: Rect): Rect {
@@ -94,9 +92,15 @@ export class Board {
 
   public getRectRealPosInCanvas(rect: Rect): Rect {
     // calculate the position of a rect in the canvas (if svg deposition is respected)
-    if (this.canvas && this.canvas.svgElement) {
-      
+    if (this.canvas && this.canvas.svgElement && this.canvas.svgWrapperElement) {
+
       let svgRect = this.canvas.svgElement.getBoundingClientRect() as DOMRect;
+      
+      // in the format mode, the rect is from the svgWrapper
+      if (this.format) {
+        svgRect = this.canvas.svgWrapperElement.getBoundingClientRect() as DOMRect;
+      }
+
       return {
         x: rect.x - svgRect.left,
         y: rect.y - svgRect.top,
@@ -125,26 +129,6 @@ export class Board {
       width: 0,
       height: 0
     }));
-  }
-
-  public getPosFromMouseEvent(e: MouseEvent): Point {
-    const rect = this.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
-
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
-  }
-
-  public getPosFromTouchEvent(e: any): Point {
-    let res1: any = e.changedTouches[0];
-
-    const rect = this.canvas?.svgElement?.getBoundingClientRect() as DOMRect;
-    
-    return {
-      x: res1.clientX - rect.left,
-      y: res1.clientY - rect.top
-    };
   }
 
   public correctPoint(p: Point): Point {
@@ -220,6 +204,7 @@ export class Board {
   }
   // #endregion
 
+  // #region the modes
   private _mode: BoardModes = BoardModes.Draw;
   public get mode(): BoardModes {
     return this._mode;
@@ -259,6 +244,7 @@ export class Board {
     this.onBoardEraseModeChange.emit();
     this.onBoardAnyModeChange.emit();
   }
+  // #endregion
 
   private _backgroundColor: Color = new Color(255, 255, 255);
   public set backgroundColor(value: Color) {
@@ -287,6 +273,20 @@ export class Board {
     return this._backgroundImage;
   }
 
+  private _format?: Rect = {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 900
+  };
+  public set format(value: Rect | undefined) {
+    this._format = value;
+    this.onFormatChanged.emit();
+  }
+  public get format(): Rect | undefined {
+    return this._format;
+  }
+
   public shapeMode: Shapes = Shapes.Line;
   private currentCanvasItem: CanvasItem | undefined;
   private currentTouchCanvasItem: CanvasItem | undefined;
@@ -301,6 +301,7 @@ export class Board {
   public readonly onBoardBarrelModeChange: Event = new Event();
   public readonly onBoardEraseModeChange: Event = new Event();
   public readonly onBoardAnyModeChange: Event = new Event();
+
   public readonly onMouse: Event = new Event();
   public readonly onMouseStart: Event = new Event();
   public readonly onMouseMove: Event = new Event();
@@ -318,6 +319,7 @@ export class Board {
   public readonly onEraseMove: Event = new Event();
   public readonly onEraseEnd: Event = new Event();
   public readonly onInput: Event = new Event();
+
   public readonly onPageSwitched: Event = new Event();
   public readonly onPageRemoved: Event = new Event();
   public readonly beforePageSwitched: Event = new Event();
@@ -329,6 +331,8 @@ export class Board {
   public readonly onBack: Event = new Event();
   public readonly onForward: Event = new Event();
   public readonly onBoardDetectPointer: Event = new Event();
+  public readonly onFormatChanged: Event = new Event();
+
   public readonly onLinealToggled: Event = new Event();
   public readonly onGeodreieckToggled: Event = new Event();
   public readonly onHalbkreisToggled: Event = new Event();
@@ -595,6 +599,7 @@ export class Board {
             for (let i = 1; i < pages.size + 1; i++) {
               let p = pages.get(i);
               if (p) {
+                // add the image to the page
                 this.addPage();
                 let img = this.createElement('image');
                 img.setAttributeNS(null, 'href', p[1]);
@@ -683,11 +688,21 @@ export class Board {
           })
 
           reader.onload = async () => {
+            // add the image to the board
             let dim: any = await imageDimensions(file);
             let img = this.createElement('image');
             if (reader.result) img.setAttributeNS(null, 'href', reader.result.toString());
             img.setAttributeNS(null, 'width', dim.width);
             img.setAttributeNS(null, 'height', dim.height);
+
+            // center the image
+            let rectG = this.getActualRect(img.getBoundingClientRect());
+            let centerG: Point = {
+              x: rectG.x + rectG.width / 2,
+              y: rectG.y + rectG.height / 2
+            }
+            let centerSVG: Point = this.getScreenCenterSVG();
+            img.setAttributeNS(null, 'transform', `translate(${centerSVG.x - centerG.x} ${centerSVG.y - centerG.y})`);
             
             this.markChange();
           };
@@ -701,7 +716,7 @@ export class Board {
   }
 
   public addStickyNote(text: string, color: Color, textColor: Color) {
-    // helper-function for teh text-wrapper
+    // helper-function for the text-wrapper
     let splitStringAll = (text: string, length: number): string[] => {
       let texts = [];
       while (text.length >= length) {
@@ -805,20 +820,35 @@ export class Board {
 
     // center the sticky note in the middle of the screen
     let rectG = this.getActualRect(g.getBoundingClientRect());
-    let rectSVG = this.getActualRect(this.canvas?.svgElement?.getBoundingClientRect() ?? {x: 0, y: 0, width: 0, height: 0});
-    if (rectSVG) {
-      let centerG: Point = {
-        x: rectG.x + rectG.width / 2,
-        y: rectG.y + rectG.height / 2
-      }
-      let centerSVG: Point = {
-        x: rectSVG.x + rectSVG.width / 2,
-        y: rectSVG.y + rectSVG.height / 2
-      }
-      g.setAttributeNS(null, 'transform', `translate(${centerSVG.x - centerG.x} ${centerSVG.y - centerG.y})`);
+    let centerG: Point = {
+      x: rectG.x + rectG.width / 2,
+      y: rectG.y + rectG.height / 2
     }
+    let centerSVG: Point = this.getScreenCenterSVG();
+    g.setAttributeNS(null, 'transform', `translate(${centerSVG.x - centerG.x} ${centerSVG.y - centerG.y})`);
 
     this.markChange();
+  }
+
+  public getScreenCenterSVG(): Point {
+    // this method returns the center of the visible part of the page
+    if (this.canvas && this.canvas.svgElement && this.canvas.svgWrapperElement) {
+      let rect: Rect;
+
+      if (this.format) {
+        rect = this.getActualRect(getIntersectionRects(this.canvas.svgElement.getBoundingClientRect(), this.canvas.svgWrapperElement.getBoundingClientRect()));
+      }
+      else {
+        rect = this.getActualRect(this.canvas.svgElement.getBoundingClientRect());
+      }
+
+      return {
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2
+      };
+    }
+
+    return defaultPoint;
   }
 
   public removeElement(el: SVGElement): boolean {
