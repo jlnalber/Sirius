@@ -1,7 +1,7 @@
 import { ElementRef } from '@angular/core';
 import { Board, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { TouchController } from "../../global-whiteboard/essentials/touchController";
-import { getDistance, getTouchControllerEventsAllSame, mod } from "../../global-whiteboard/essentials/utils";
+import { getDistance, getTouchControllerEventsAllSame, mod, turnVectorByAngle } from "../../global-whiteboard/essentials/utils";
 import { Point, Vector } from "../../global-whiteboard/interfaces/point";
 import { Geometry } from './geometry';
 
@@ -107,7 +107,14 @@ export abstract class Tool {
                 this.position.y += to.y - from.y;
                 this.clearCache();
             }, (p: Point) => { }, undefined, (angle: number, p: Point) => {
+                p = {
+                    x: p.x - this.position.x,
+                    y: p.y - this.position.y
+                }
+                let turnedP = turnVectorByAngle(p, angle);
                 this.angle += angle;
+                this.position.x += p.x - turnedP.x;
+                this.position.y += p.y - turnedP.y;
             }), this.gElement as SVGGElement, this.board.canvas?.svgWrapperElement, document);
         }
         catch { }

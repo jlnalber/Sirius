@@ -11,9 +11,12 @@ svg {
     touch-action: none;
 }
 
-.svgWrapper {
+.svgWrapper, .wrapper {
     width: 100%;
     height: 100%;
+}
+
+.svgWrapper {
     background-color: #fafafa;
 }
 

@@ -159,6 +159,13 @@ export function getAngleVector(vector: Vector): number {
     }, vector);
 }
 
+export function turnVectorByAngle(vector: Vector, angle: number): Vector {
+    return {
+        x: Math.cos(angle) * vector.x - Math.sin(angle) * vector.y,
+        y: Math.sin(angle) * vector.x + Math.cos(angle) * vector.y
+    };
+}
+
 export function inRange(num: number, from: number, to: number): boolean {
     return num >= from && num <= to;
 }

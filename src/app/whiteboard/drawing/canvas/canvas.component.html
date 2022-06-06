@@ -1,14 +1,15 @@
-<div class="svgWrapper" #svgWrapper>
-    
-    <svg #canvas [ngStyle]="{'background-color': this.board.backgroundColor.toString(), 'width': this.svgWidth, 'height': this.svgHeight}">
-        <pattern #bgImgPattern id="bg-pattern" x="0" y="0" width="75" height="75" patternUnits="userSpaceOnUse">
-            <image #bgImg width="75" height="75"></image>
-        </pattern>
-        <rect #patternRect x="0" y="0" width="100%" height="100%" fill="url(#bg-pattern)"></rect>
-        <g #g>
+<div class="wrapper">
+    <div class="svgWrapper" #svgWrapper>
+        <svg #canvas [ngStyle]="{'background-color': this.board.backgroundColor.toString(), 'width': this.svgWidth, 'height': this.svgHeight}">
+            <pattern #bgImgPattern id="bg-pattern" x="0" y="0" width="75" height="75" patternUnits="userSpaceOnUse">
+                <image #bgImg width="75" height="75"></image>
+            </pattern>
+            <rect #patternRect x="0" y="0" width="100%" height="100%" fill="url(#bg-pattern)"></rect>
+            <g #g>
 
-        </g>
-    </svg>
+            </g>
+        </svg>
+    </div>
     
     <whiteboard-selector [board]="this.board" *ngIf="this.initialized"></whiteboard-selector>
 
