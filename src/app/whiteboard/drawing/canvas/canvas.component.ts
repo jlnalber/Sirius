@@ -211,6 +211,11 @@ export class CanvasComponent implements AfterViewInit {
       else {
         this.touchController = new TouchController(touchControllerEvents, this.svgElement)
       }
+
+      // reset zoom and translate
+      for (let page of this.board.pages) {
+        page.resetZoomAndTranslate();
+      }
     }
 
   }
@@ -222,6 +227,13 @@ export class CanvasComponent implements AfterViewInit {
     if (this.board.format) {
       this.svgElement?.setAttribute('transform', transform);
       this.gElement?.setAttribute('transform', '');
+
+      // reset the properties for the pattern (background)
+      this.patternRectElement?.setAttributeNS(null, 'transform', '');
+      this.patternRectElement?.setAttributeNS(null, 'x', '0');
+      this.patternRectElement?.setAttributeNS(null, 'y', '0');
+      this.patternRectElement?.setAttributeNS(null, 'width', '100%');
+      this.patternRectElement?.setAttributeNS(null, 'height', '100%');
     }
     else {
       this.gElement?.setAttribute('transform', transform);

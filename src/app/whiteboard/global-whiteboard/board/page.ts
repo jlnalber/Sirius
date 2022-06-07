@@ -5,7 +5,7 @@ import { Board, svgns } from "./board";
 import { Page as PageExport } from "../interfaces/whiteboard";
 import { Point } from "../interfaces/point";
 import { Canvg, presets, RenderingContext2D } from "canvg";
-import { defaultRect, getBoundingRect, getImageDimensions, resizeRect } from "../essentials/utils";
+import { defaultRect, DOMRectToRect, getBoundingRect, getImageDimensions, resizeRect } from "../essentials/utils";
 
 const maxStepsBack = 30;
 const offsetSizeRect = 40;
@@ -91,6 +91,19 @@ export class Page {
         }
         else {
             this._zoom = value;
+        }
+    }
+
+    public resetZoomAndTranslate(): void {
+        this.zoom = 1;
+        if (this.board.format && this.board.canvas && this.board.canvas.svgWrapperElement) {
+            this.translateY = 40;
+            let rect = DOMRectToRect(this.board.canvas.svgWrapperElement.getBoundingClientRect());
+            this.translateX = (rect.width - this.board.format.width) / 2;
+        }
+        else {
+            this.translateX = 0;
+            this.translateY = 0;
         }
     }
 

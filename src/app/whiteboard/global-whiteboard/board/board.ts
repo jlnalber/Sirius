@@ -22,7 +22,7 @@ import { Color } from '../essentials/color';
 import { SelectorComponent } from '../../drawing/selector/selector.component';
 import { Event } from '../essentials/event';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
-import { add, defaultPoint, getBoundingRect, getImageDimensions, getIntersectionRects, scale } from '../essentials/utils';
+import { add, defaultPoint, getBoundingRect, getImageDimensions, getIntersectionRects, sameRect, scale } from '../essentials/utils';
 import { GeodreieckComponent } from '../../drawing/tools/geodreieck/geodreieck.component';
 
 declare var require: any
@@ -275,8 +275,10 @@ export class Board {
 
   private _format?: Rect;
   public set format(value: Rect | undefined) {
-    this._format = value;
-    this.onFormatChanged.emit();
+    if (!sameRect(this._format, value)) {
+      this._format = value;
+      this.onFormatChanged.emit();
+    }
   }
   public get format(): Rect | undefined {
     return this._format;
@@ -1005,6 +1007,7 @@ export class Board {
   public addPage() {
     this.pages.push(new Page(this));
     this.currentPageIndex = this.pages.length - 1;
+    this.currentPage.resetZoomAndTranslate();
   }
   //#endregion
   
