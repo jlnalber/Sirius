@@ -165,7 +165,7 @@ export class TouchController {
                 }
             }
 
-            console.log(this.evCache)
+            //console.log(this.evCache)
             this.currentPointerID = undefined;
         }
     }

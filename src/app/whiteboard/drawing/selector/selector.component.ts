@@ -14,6 +14,7 @@ enum Resize {
   Right
 }
 
+
 const offset = 5;
 
 @Component({
@@ -47,7 +48,7 @@ export class SelectorComponent implements AfterViewInit {
   public outerWrapper!: ElementRef;
   public outerWrapperEl: HTMLDivElement | undefined;
 
-  private _svgElements: SVGElementWrapperCollection = new SVGElementWrapperCollection();
+  private _svgElements: SVGElementWrapperCollection = new SVGElementWrapperCollection(() => { return this.board });
   public set svgEl(value: SVGElement | SVGElement[] | undefined) {
     this._svgElements.svgElementWrapper = value;
   }
@@ -110,60 +111,42 @@ export class SelectorComponent implements AfterViewInit {
       if (dir == Resize.Bottom) {
         let factor =  (p.y - rect.y) / (rect.height);
         if (factor > 0) {
-          this.svgElements.scaleYBy(factor);
-          let newRect = this.getSVGElPos();
-          this.svgElements.translateYBy(rect.y - newRect.y);
+          this.svgElements.scaleBy(1, factor, rect);
         }
       }
       else if (dir == Resize.Top) {
         let factor =  (rect.y + rect.height - p.y) / (rect.height);
         if (factor > 0) {
-          this.svgElements.scaleYBy(factor);
-          let newRect = this.getSVGElPos();
-          this.svgElements.translateYBy((rect.y + rect.height) - (newRect.y + newRect.height));
+          this.svgElements.scaleBy(1, factor, {
+            x: rect.x,
+            y: rect.y + rect.height
+          });
         }
       }
       else if (dir == Resize.Left) {
         let factor =  (rect.x + rect.width - p.x) / (rect.width);
         if (factor > 0) {
-          this.svgElements.scaleXBy(factor);
-          let newRect = this.getSVGElPos();
-          this.svgElements.translateXBy((rect.x + rect.width) - (newRect.x + newRect.width));
+          this.svgElements.scaleBy(factor, 1, {
+            x: rect.x + rect.width,
+            y: rect.y
+          });
         }
       }
       else if (dir == Resize.Right) {
         let factor =  (p.x - rect.x) / (rect.width);
         if (factor > 0) {
-          this.svgElements.scaleXBy(factor);
-          let newRect = this.getSVGElPos();
-          this.svgElements.translateXBy(rect.x - newRect.x);
+          this.svgElements.scaleBy(factor, 1, rect);
         }
       }
     }
   }
 
   private zoom(factor: number, p: Point): void {
-    // calculate where the point is (relative)
-    let svgElRect = this.getSVGElPos();
-    let percentX = (p.x - svgElRect.x) / svgElRect.width;
-    let percentY = (p.y - svgElRect.y) / svgElRect.height;
-
     // do the transformation
-    this.svgElements.scaleXBy(factor);
-    this.svgElements.scaleYBy(factor);
-
-    // calculate where the new point is
-    let newSvgElRect = this.getSVGElPos();
-    let newPAfterTransformation: Point = {
-      x: newSvgElRect.x + newSvgElRect.width * percentX,
-      y: newSvgElRect.y + newSvgElRect.height * percentY
-    };
-
-    // move the elements so that it fits again
-    this.svgElements.translateXBy(p.x - newPAfterTransformation.x);
-    this.svgElements.translateYBy(p.y - newPAfterTransformation.y);
+    this.svgElements.scaleBy(factor, factor, p);
   }
 
+  private center?: Point;
   private turnByPoints(prev: Point, curr: Point): void {
 
     // function that returns the center point of the svgEl
@@ -183,42 +166,22 @@ export class SelectorComponent implements AfterViewInit {
 
     if (!this.svgElements.empty) {
       // firstly, rotate the svgEl
-      let center = getSVGElCenter();
+      if (!this.center) this.center = getSVGElCenter();
 
-      let anglePrev = getAngle(prev, center);
-      let angleCurr = getAngle(curr, center);
+      let anglePrev = getAngle(prev, this.center);
+      let angleCurr = getAngle(curr, this.center);
+      let angleDiff = (angleCurr - anglePrev);
 
-      let angleDiff = (angleCurr - anglePrev) /** Math.sign(this.scaleX * this.scaleY)*/;
-      let angleDeg = angleDiff * 180 / Math.PI;
+      console.log(this.center, this.getSVGElPos());
+      console.log(this.board.getActualPoint(this.center));
 
-      this.svgElements.rotateBy(angleDeg);
-
-      // secondly, move the svgEl so that it remains in its original position
-      let newCenter = getSVGElCenter();
-      this.svgElements.translateXBy(center.x - newCenter.x);
-      this.svgElements.translateYBy(center.y - newCenter.y);
+      this.svgElements.rotateBy(angleDiff, (this.center));
     }
   }
 
   private turnByAngleAndPoint(angle: number, p: Point): void {
-    // calculate where the point is (relative)
-    let svgElRect = this.getSVGElPos();
-    let percentX = (p.x - svgElRect.x) / svgElRect.width;
-    let percentY = (p.y - svgElRect.y) / svgElRect.height;
-
     // do the transformation
-    this.svgElements.rotateBy(angle * 180 / Math.PI);
-
-    // calculate where the new point is
-    let newSvgElRect = this.getSVGElPos();
-    let newPAfterTransformation: Point = {
-      x: newSvgElRect.x + newSvgElRect.width * percentX,
-      y: newSvgElRect.y + newSvgElRect.height * percentY
-    };
-
-    // move the elements so that it fits again
-    this.svgElements.translateXBy(p.x - newPAfterTransformation.x);
-    this.svgElements.translateYBy(p.y - newPAfterTransformation.y);
+    this.svgElements.rotateBy(angle, p);
   }
 
   constructor() { }
@@ -248,7 +211,24 @@ export class SelectorComponent implements AfterViewInit {
       e.preventDefault();
     })
 
-    // capture the events
+    this.startTouchControllers();
+
+    this.board.onFormatChanged.addListener(() => {
+      this.startTouchControllers();
+    })
+
+  }
+
+
+  private wrapperTouchController?: TouchController;
+  private turnTouchController?: TouchController;
+  private tlTouchController?: TouchController;
+  private trTouchController?: TouchController;
+  private blTouchController?: TouchController;
+  private brTouchController?: TouchController;
+
+  startTouchControllers(): void {
+    // capture the events and start the touchControllers
 
     let start = () => {
       this.board.onMouseStart.emit();
@@ -261,13 +241,15 @@ export class SelectorComponent implements AfterViewInit {
       this.board.onInput.emit();
     }
 
-    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+    // the wrapper
+    if (this.wrapperTouchController) this.wrapperTouchController.stop();
+
+    this.wrapperTouchController = this.getTouchController(getTouchControllerEventsAllSame((p: Point) => {
       start();
     }, (prev: Point, curr: Point) => {
       curr = this.board.getActualPoint(curr);
       prev = this.board.getActualPoint(prev);
-      this.svgElements.translateXBy(curr.x - prev.x);
-      this.svgElements.translateYBy(curr.y - prev.y);
+      this.svgElements.moveBy(curr.x - prev.x, curr.y - prev.y);
       move();
     }, (p: Point) => {
       end();
@@ -281,9 +263,13 @@ export class SelectorComponent implements AfterViewInit {
       p = this.board.getActualPoint(p);
       this.turnByAngleAndPoint(angle, p);
       this.board.onInput.emit();
-    }), this.wrapperEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+    }), this.wrapperEl as HTMLDivElement);
 
-    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+
+    // the turn control
+    if (this.turnTouchController) this.turnTouchController.stop();
+
+    this.turnTouchController = this.getTouchController(getTouchControllerEventsAllSame((p: Point) => {
       start();
       return;
     }, (prev: Point, curr: Point) => {
@@ -293,10 +279,15 @@ export class SelectorComponent implements AfterViewInit {
       move();
     }, (p: Point) => {
       end();
+      this.center = undefined;
       return;
-    }), this.turnEl as HTMLDivElement, this.board.canvas?.svgElement, document)
+    }), this.turnEl as HTMLDivElement)
     
-    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+
+    // the top left control
+    if (this.tlTouchController) this.tlTouchController.stop();
+
+    this.tlTouchController = this.getTouchController(getTouchControllerEventsAllSame((p: Point) => {
       p = this.board.getActualPoint(p);
       this.resize(Resize.Left, p);
       this.resize(Resize.Top, p);
@@ -311,9 +302,13 @@ export class SelectorComponent implements AfterViewInit {
       this.resize(Resize.Left, p);
       this.resize(Resize.Top, p);
       end();
-    }), this.ltrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+    }), this.ltrEl as HTMLDivElement);
 
-    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+
+    // the bottom left control
+    if (this.blTouchController) this.blTouchController.stop();
+
+    this.blTouchController = this.getTouchController(getTouchControllerEventsAllSame((p: Point) => {
       p = this.board.getActualPoint(p);
       this.resize(Resize.Left, p);
       this.resize(Resize.Bottom, p);
@@ -328,9 +323,13 @@ export class SelectorComponent implements AfterViewInit {
       this.resize(Resize.Left, p);
       this.resize(Resize.Bottom, p);
       end();
-    }), this.lbrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+    }), this.lbrEl as HTMLDivElement);
 
-    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+
+    // the top right control
+    if (this.trTouchController) this.trTouchController.stop();
+
+    this.trTouchController = this.getTouchController(getTouchControllerEventsAllSame((p: Point) => {
       p = this.board.getActualPoint(p);
       this.resize(Resize.Right, p);
       this.resize(Resize.Top, p);
@@ -345,9 +344,13 @@ export class SelectorComponent implements AfterViewInit {
       this.resize(Resize.Right, p);
       this.resize(Resize.Top, p);
       end();
-    }), this.rtrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+    }), this.rtrEl as HTMLDivElement);
 
-    new TouchController(getTouchControllerEventsAllSame((p: Point) => {
+
+    // the bottom right control
+    if (this.brTouchController) this.brTouchController.stop();
+
+    this.brTouchController = this.getTouchController(getTouchControllerEventsAllSame((p: Point) => {
       p = this.board.getActualPoint(p);
       this.resize(Resize.Right, p);
       this.resize(Resize.Bottom, p);
@@ -362,8 +365,16 @@ export class SelectorComponent implements AfterViewInit {
       this.resize(Resize.Right, p);
       this.resize(Resize.Bottom, p);
       end();
-    }), this.rbrEl as HTMLDivElement, this.board.canvas?.svgElement, document);
+    }), this.rbrEl as HTMLDivElement);
+  }
 
+  private getTouchController(events: TouchControllerEvents, el: HTMLDivElement): TouchController {
+    if (this.board.format) {
+      return new TouchController(events, el, this.board.canvas?.svgWrapperElement, document);
+    }
+    else {
+      return new TouchController(events, el, this.board.canvas?.svgElement, document);
+    }
   }
 
 }

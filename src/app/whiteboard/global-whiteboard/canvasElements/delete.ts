@@ -75,7 +75,7 @@ export class Delete extends CanvasItem {
             // the max distance that a path is allowed to be away from the recognized point
             const distance = distanceCalculator(path);
 
-            let pathEl: SVGElementWrapper = new SVGElementWrapper(path);
+            let pathEl: SVGElementWrapper = new SVGElementWrapper(this.board, path);
 
             let points = readPoints(path.getAttributeNS(null, 'd') ?? "");
 
@@ -84,7 +84,7 @@ export class Delete extends CanvasItem {
             // point is the point that would be displayed in the browser if it were a point of the d-property of the path
             let point = p;
 
-            let angle = (pathEl.rotate ?? 0) * Math.PI / 180;
+            let angle = pathEl.rotate ?? 0;
 
             point.x -= (pathEl.translateX ?? 0);
             point.y -= (pathEl.translateY ?? 0);

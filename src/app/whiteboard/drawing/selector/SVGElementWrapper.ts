@@ -1,6 +1,10 @@
+import { Vector } from 'src/app/whiteboard/global-whiteboard/interfaces/point';
+import { defaultPoint } from './../../global-whiteboard/essentials/utils';
 import { Rect } from './../../global-whiteboard/interfaces/rect';
 import { Event } from "../../global-whiteboard/essentials/event";
-import { DOMRectToRect, getBoundingRect } from '../../global-whiteboard/essentials/utils';
+import { add, DOMRectToRect, getBoundingRect, scale, turnVectorByAngle } from '../../global-whiteboard/essentials/utils';
+import { Point } from '../../global-whiteboard/interfaces/point';
+import { Board } from '../../global-whiteboard/board/board';
 
 export class SVGElementWrapper {
     public readonly onSVGElChange: Event = new Event();
@@ -16,57 +20,57 @@ export class SVGElementWrapper {
         return this._svgEl;
     }
 
-    private _translateX: number | undefined;
-    public get translateX(): number | undefined {
+    private _translateX: number = 0;
+    public get translateX(): number {
         return this._translateX;
     }
-    public set translateX(value: number | undefined) {
-        this._translateX = !value || value == Infinity ? 0.00001 : value;
+    public set translateX(value: number) {
+        this._translateX = value == Infinity ? 0 : value;
         this.reloadTransform();
         this.onPropertyChange.emit();
     }
   
-    private _translateY: number | undefined;
-    public get translateY(): number | undefined {
+    private _translateY: number = 0;
+    public get translateY(): number {
         return this._translateY;
     }
-    public set translateY(value: number | undefined) {
-        this._translateY = !value || value == Infinity ? 0.00001 : value;
+    public set translateY(value: number) {
+        this._translateY = value == Infinity ? 0 : value;
         this.reloadTransform();
         this.onPropertyChange.emit();
     }
   
-    private _scaleX: number | undefined;
-    public get scaleX(): number | undefined {
+    private _scaleX: number = 1;
+    public get scaleX(): number {
         return this._scaleX;
     }
-    public set scaleX(value: number | undefined) {
-        this._scaleX = !value || value == Infinity ? 0 : value;
+    public set scaleX(value: number) {
+        this._scaleX = value == Infinity ? 0 : value;
         this.reloadTransform();
         this.onPropertyChange.emit();
     }
   
-    private _scaleY: number | undefined;
-    public get scaleY(): number | undefined {
+    private _scaleY: number = 1;
+    public get scaleY(): number {
         return this._scaleY;
     }
-    public set scaleY(value: number | undefined) {
-        this._scaleY = !value || value == Infinity ? 0 : value;
+    public set scaleY(value: number) {
+        this._scaleY = value == Infinity ? 0 : value;
         this.reloadTransform();
         this.onPropertyChange.emit();
     }
   
-    private _rotate: number | undefined;
-    public get rotate(): number | undefined {
+    private _rotate: number = 0;
+    public get rotate(): number {
         return this._rotate;
     }
-    public set rotate(value: number | undefined) {
-        this._rotate = !value || value == Infinity ? 0 : value;
+    public set rotate(value: number) {
+        this._rotate = value;
         this.reloadTransform();
         this.onPropertyChange.emit();
     }
 
-    constructor(svgEl?: SVGElement) {
+    constructor(private readonly board: Board | undefined, svgEl?: SVGElement) {
         this.svgEl = svgEl;
     }
     
@@ -80,7 +84,7 @@ export class SVGElementWrapper {
                 transform += ` scale(${this.scaleX} ${this.scaleY})`
             }
             if (this.rotate != undefined) {
-                transform += ` rotate(${this.rotate})`;
+                transform += ` rotate(${this.rotate * 180 / Math.PI})`;
             }
             this.svgEl.setAttributeNS(null, 'transform', transform);
         }
@@ -145,7 +149,7 @@ export class SVGElementWrapper {
   
           // set the rotate propertie
           if (rotate && rotate.length == 1) {
-            this._rotate = Number.parseFloat(rotate[0]);
+            this._rotate = Number.parseFloat(rotate[0]) * Math.PI / 180;
           }
           else {
             this._rotate = 0;
@@ -164,6 +168,84 @@ export class SVGElementWrapper {
     public getBoundingClientRect(): DOMRect | undefined {
         return this.svgEl?.getBoundingClientRect();
     }
+
+    public moveBy(x: number, y: number): void {
+        // move the element
+        this._translateX += x;
+        this.translateY += y;
+    }
+
+    public scaleBy(factorX: number, factorY: number, p?: Point): void {
+        // this method scales the element relative to the Point p
+        p = p ?? defaultPoint;
+
+        // calculate the vector which is scaled
+        let translateToP = add(p, scale({
+            x: this.translateX,
+            y: this.translateY
+        }, -1));
+        let scaledTranslateToP = {
+            x: translateToP.x * factorX,
+            y: translateToP.y * factorY
+        };
+
+        // then move with this vector
+        this._translateX += translateToP.x - scaledTranslateToP.x;
+        this._translateY += translateToP.y - scaledTranslateToP.y;
+
+        // then do the transformation
+        this._scaleX *= factorX;
+        this.scaleY *= factorY;
+    }
+
+    public rotateBy(angle: number, p?: Point): void {
+        // this method scales the element relative to the Point p
+        p = p ?? defaultPoint;
+
+        // calculate the vector which is scaled
+        let translateToP = add(p, scale({
+            x: this.translateX,
+            y: this.translateY
+        }, -1)); // undo the translate
+
+        let translateToPWithoutScale = {
+            x: translateToP.x / Math.abs(this.scaleX),
+            y: translateToP.y / Math.abs(this.scaleY)
+        } // undo the scale
+        let rotatedTranslateToPWithoutScale = turnVectorByAngle({
+            x: translateToPWithoutScale.x,
+            y: translateToPWithoutScale.y
+        }, angle); // do the rotation
+
+        //let x = p.x;
+        //let y = p.y;
+        //let sx = this.scaleX;
+        //let sy = this.scaleY;
+
+        //let b = (sy * (x * Math.sin(angle) + y * Math.cos(angle)) - (sx - (sx * y * Math.sin(angle)) / x * Math.cos(angle)) * x * Math.sin(angle)) / (y * Math.sin(angle) * Math.sin(angle) / Math.cos(angle) + y * Math.cos(angle));
+        //let a = sx - (sx * y * Math.sin(angle)) / (x * Math.cos(angle)) + (b * y * Math.sin(angle)) / (x * Math.cos(angle));
+
+        let newScale: Vector = {
+            x: this.scaleX,
+            y: this.scaleY
+        };
+
+        let rotatedTranslateToP = {
+            x: rotatedTranslateToPWithoutScale.x * Math.abs(newScale.x),
+            y: rotatedTranslateToPWithoutScale.y * Math.abs(newScale.y)
+        } // do the scale again
+
+        // then move this vector ...
+        this._translateX += translateToP.x - rotatedTranslateToP.x;
+        this._translateY += translateToP.y - rotatedTranslateToP.y;
+
+        // ... and scale it
+        this._scaleX = newScale.x;
+        this._scaleY = newScale.y;
+        
+        // then do the transformation
+        this.rotate += angle * Math.sign(this.scaleX * this.scaleY);
+    }
 }
 
 export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> {
@@ -175,7 +257,7 @@ export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> 
 
     private svgElementWrappers: SVGElementWrapper[] = [];
 
-    constructor(svgElementWrappers?: SVGElementWrapper[]) {
+    constructor(private readonly getBoard: () => Board, svgElementWrappers?: SVGElementWrapper[]) {
         if (svgElementWrappers) {
             this.svgElementWrappers = svgElementWrappers;
         }
@@ -225,7 +307,7 @@ export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> 
                         this.push(i);
                     }
                     else if (i instanceof SVGElement) {
-                        this.push(new SVGElementWrapper(i));
+                        this.push(new SVGElementWrapper(this.getBoard(), i));
                     }
                 }
             }
@@ -235,7 +317,7 @@ export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> 
             }
             else if (value instanceof SVGElement) {
                 this.clear();
-                this.push(new SVGElementWrapper(value));
+                this.push(new SVGElementWrapper(this.getBoard(), value));
             }
         }
         else {
@@ -252,43 +334,22 @@ export class SVGElementWrapperCollection implements Iterable<SVGElementWrapper> 
         return getBoundingRect(this.svgElementWrappers.map(s => DOMRectToRect(s.getBoundingClientRect())));
     }
 
-    public scaleXBy(factor: number) {
+
+    public rotateBy(addition: number, p?: Point) {
         for (let svgEl of this.svgElementWrappers) {
-            if (svgEl.scaleX != undefined) {
-                svgEl.scaleX *= factor;
-            }
+            svgEl.rotateBy(addition, p);
         }
     }
 
-    public scaleYBy(factor: number) {
+    public moveBy(additionX: number, additionY: number) {
         for (let svgEl of this.svgElementWrappers) {
-            if (svgEl.scaleY != undefined) {
-                svgEl.scaleY *= factor;
-            }
+            svgEl.moveBy(additionX, additionY);
         }
     }
 
-    public translateXBy(addition: number) {
+    public scaleBy(factorX: number, factorY: number, p?: Point) {
         for (let svgEl of this.svgElementWrappers) {
-            if (svgEl.translateX != undefined) {
-                svgEl.translateX += addition;
-            }
-        }
-    }
-
-    public translateYBy(addition: number) {
-        for (let svgEl of this.svgElementWrappers) {
-            if (svgEl.translateY != undefined) {
-                svgEl.translateY += addition;
-            }
-        }
-    }
-
-    public rotateBy(addition: number) {
-        for (let svgEl of this.svgElementWrappers) {
-            if (svgEl.rotate != undefined) {
-                svgEl.rotate += addition/* * Math.sign(svgEl.scaleX ?? 1) * Math.sign(svgEl.scaleY ?? 1)*/; // TODO: take care of how the element is already flipped (has to turn the other way) + weird behaviour in multiselection
-            }
+            svgEl.scaleBy(factorX, factorY, p);
         }
     }
 }

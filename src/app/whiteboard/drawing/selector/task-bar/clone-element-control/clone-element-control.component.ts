@@ -27,7 +27,7 @@ export class CloneElementControlComponent extends BasicControl implements AfterV
 
           // move the elements by the offset
           const offset = 40;
-          let svg = new SVGElementWrapper(newEl);
+          let svg = new SVGElementWrapper(this.board, newEl);
           if (svg.translateX) {
             svg.translateX += offset;
           }

@@ -1001,6 +1001,7 @@ export class Board {
 
   public clear() {
     this.currentPage.clear();
+    if (this.selector) this.selector.svgEl = undefined;
     this.onWhiteboardViewChange.emit();
   }
 
