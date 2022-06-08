@@ -164,6 +164,7 @@ export class GeodreieckComponent extends Tool implements OnInit, AfterViewInit {
       const innerRad = this.length * 7 / 24;
       const smallOuterRad = this.length * 10 / 27;
       const smallInnerRad = this.length / 3;
+      const textRadius = this.length / 4;
       const center: Point = {
         x: this.length / 2,
         y: this.length / 2
@@ -178,9 +179,14 @@ export class GeodreieckComponent extends Tool implements OnInit, AfterViewInit {
 
           if (index % (angleDist / smallAngleDist) == 0) {
             iRad = innerRad;
-            let angle = a > 90 ? 135 - a : 45 - a;
-            oRad = Math.sqrt((center.x ** 2) + ((center.x * Math.tan(angle / 180 * Math.PI)) ** 2));
+            let newAngle = a > 90 ? 135 - a : 45 - a;
+            oRad = Math.sqrt((center.x ** 2) + ((center.x * Math.tan(newAngle / 180 * Math.PI)) ** 2));
             strokeWidth = 1;
+
+            if (index % 2 == 1) {
+              let text = this.addText(- Math.cos(a / 180 * Math.PI) * textRadius - 16, this.length / Math.SQRT2 - Math.sin(a / 180 * Math.PI) * textRadius - 4, a + '°');
+              text.setAttributeNS(null, 'transform', 'rotate(-45)');
+            }
           }
 
           this.addLine(center.x + Math.cos(angle) * iRad, center.y + Math.sin(angle) * iRad, center.x + Math.cos(angle) * oRad, center.y + Math.sin(angle) * oRad, strokeWidth);
