@@ -5,9 +5,11 @@ import { Board, svgns } from "./board";
 import { Page as PageExport } from "../interfaces/whiteboard";
 import { Point } from "../interfaces/point";
 import { Canvg, presets, RenderingContext2D } from "canvg";
-import { defaultRect, DOMRectToRect, getBoundingRect, getImageDimensions, resizeRect } from "../essentials/utils";
+import { DOMRectToRect, getBoundingRect, getImageDimensions } from "../essentials/utils";
 
-const maxStepsBack = 30;
+const maxStackSize = 10000000;
+const minStepsBack = 10;
+const sizeCalculator = (s: string) => s.length;
 const offsetSizeRect = 40;
 
 export class Page {
@@ -17,7 +19,7 @@ export class Page {
     }
 
     // lastContent: Stack, der die Rückgängig-Funktion bereitstellt
-    public lastContent: Stack<string> = new Stack(maxStepsBack);
+    public lastContent: Stack<string> = new Stack(maxStackSize, sizeCalculator, minStepsBack);
 
     // currentContent: hält den aktuellen Inhalt
     private _currentContent: string = "";
@@ -32,7 +34,7 @@ export class Page {
     }
 
     // nextContent: Stack, der die Vorwärts-Funktion bereitstellt
-    public nextContent: Stack<string> = new Stack(maxStepsBack);
+    public nextContent: Stack<string> = new Stack(maxStackSize, sizeCalculator, minStepsBack);
 
     private _translateX: number = 0;
     public get translateX(): number {

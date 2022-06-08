@@ -1,13 +1,18 @@
 export class Stack<T> {
     private storage: T[] = [];
   
-    constructor(private maxSize: number = Infinity) {}
+    private currentSize = 0;
+
+    constructor(private maxSize: number = Infinity, private readonly sizeCalculator: (t: T) => number = () => 1, private minSteps?: number) {}
   
     push(item: T): void {
       this.storage.push(item);
 
-      if (this.size() > this.maxSize) {
-        this.storage.splice(0, 1);
+      this.currentSize += this.sizeCalculator(item);
+
+      while ((this.size() > (this.minSteps ?? 0)) && (this.currentSize > this.maxSize)) {
+        let el = this.storage.splice(0, 1)[0];
+        this.currentSize -= this.sizeCalculator(el);
       }
     }
 
@@ -16,7 +21,13 @@ export class Stack<T> {
     }
   
     pop(): T | undefined {
-      return this.storage.pop();
+      let el = this.storage.pop();
+      
+      if (el != undefined) {
+        this.currentSize -= this.sizeCalculator(el);
+      }
+
+      return el;
     }
   
     peek(): T | undefined {

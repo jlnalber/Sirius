@@ -172,9 +172,6 @@ export class SelectorComponent implements AfterViewInit {
       let angleCurr = getAngle(curr, this.center);
       let angleDiff = (angleCurr - anglePrev);
 
-      console.log(this.center, this.getSVGElPos());
-      console.log(this.board.getActualPoint(this.center));
-
       this.svgElements.rotateBy(angleDiff, (this.center));
     }
   }
