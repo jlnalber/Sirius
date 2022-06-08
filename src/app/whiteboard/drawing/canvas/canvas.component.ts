@@ -76,20 +76,7 @@ export class CanvasComponent implements AfterViewInit {
     return this._zoom;
   }
   public set zoom(value: number) {
-
-    /*if (this.svgElement) {
-      let midY = this.svgElement?.clientHeight / 2;
-      let midX = this.svgElement?.clientWidth / 2;
-      let vectY = -this._translateY + midY;
-      let vectX = -this._translateX + midX;
-      let finalMidY = vectY * value / this._zoom;
-      let finalMidX = vectX * value / this._zoom;
-      let finalY = vectY - finalMidY;
-      let finalX = vectX - finalMidX;
-      this._translateX += finalX;
-      this._translateY += finalY;
-    }*/
-
+    this.board.onZoom.emit();
     this._zoom = value;
     this.justify();
   }
@@ -138,11 +125,6 @@ export class CanvasComponent implements AfterViewInit {
     }
 
     this.zoom = value;
-  }
-
-  public setZoomWithoutTranslate(value: number) {
-    this._zoom = value;
-    this.justify();
   }
 
   constructor() {

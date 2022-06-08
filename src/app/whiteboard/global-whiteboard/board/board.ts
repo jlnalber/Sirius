@@ -29,6 +29,8 @@ declare var require: any
 
 export const svgns = "http://www.w3.org/2000/svg";
 
+export const pixelsToMM = 4;
+
 export enum BoardModes {
   Draw,
   Move,
@@ -323,6 +325,7 @@ export class Board {
   public readonly onAddElement: Event = new Event();
   public readonly onRemoveElement: Event = new Event();
   public readonly onImport: Event = new Event();
+  public readonly onZoom: Event = new Event();
   public readonly onWhiteboardViewChange: Event = new Event();
   public readonly onBackgroundChange: Event = new Event();
   public readonly onBack: Event = new Event();

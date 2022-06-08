@@ -1,3 +1,4 @@
+import { pixelsToMM } from './../../../../../global-whiteboard/board/board';
 import { ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
@@ -8,7 +9,7 @@ export interface DialogData {
   board: Board
 }
 
-const scale = 4;
+const scale = pixelsToMM;
 const min = 20;
 
 type Presetting = [string, Rect | undefined, boolean];

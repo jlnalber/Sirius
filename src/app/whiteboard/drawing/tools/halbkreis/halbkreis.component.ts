@@ -1,6 +1,6 @@
 import { CircleSegment } from './../circleSegment';
 import { Point, Vector } from './../../../global-whiteboard/interfaces/point';
-import { Board, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
+import { Board, pixelsToMM, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Component, ElementRef, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Tool } from '../tool';
 import { Geometry } from '../geometry';
@@ -26,21 +26,18 @@ export class HalbkreisComponent extends Tool implements OnInit, AfterViewInit {
   @ViewChild('g') g!: ElementRef;
   gElement?: SVGGElement;
 
+  @ViewChild('gMarks') gMarks!: ElementRef;
+  gMarksElement?: SVGGElement;
+
   @ViewChild('path') path!: ElementRef;
   pathElement?: SVGPathElement;
 
   angleDisplayer?: SVGTextElement;
 
-  protected additionalInitialization = () => {
+  protected override additionalInitialization = () => {
     // draw the circle
     this.pathElement = this.path.nativeElement;
     this.pathElement?.setAttributeNS(null, 'd', `M 0 0 A ${this.radius} ${this.radius} 0 0 0 ${2 * this.radius} 0 z`)
-
-    this.drawLines();
-    this.drawAngle();
-  }
-  protected angleSet = () => {
-    this.drawAngle();
   }
 
   public get isActive(): boolean {
@@ -101,7 +98,7 @@ export class HalbkreisComponent extends Tool implements OnInit, AfterViewInit {
     ];
   }
 
-  private drawAngle(): void {
+  protected drawAngle(): void {
     if (!this.angleDisplayer) {
       this.angleDisplayer = document.createElementNS(svgns, 'text');
 
@@ -116,79 +113,76 @@ export class HalbkreisComponent extends Tool implements OnInit, AfterViewInit {
     this.angleDisplayer.textContent = (Math.round(this.angleInDeg * 100) / 100).toLocaleString() + '°';
   }
 
-  private drawLines(): void {
+  protected drawLines(): void {
 
-    const dist = 50;
-    const smallDist = 5;
-    const offset = 25;
+    this.removeMarks();
+
+    const jumps = this.getJumpsForMarks();
+    const smallDist = pixelsToMM * this.board.zoom;
+    const offset = 20;
     const lineLength = 20;
     const smallLineLength = 7;
 
     // get the marks on the top
     let index = 0;
     for (let i = offset; i <= 2 * this.radius - offset; i += smallDist, index++) {
-      if (index % (dist / smallDist) == 0) {
-        this.addLine(i, 0, i, lineLength)
-
-        let text = document.createElementNS(svgns, 'text');
-        text.textContent = (Math.round((i - offset) / 50 * 100) / 100).toString();
-        text.setAttributeNS(null, 'x', (i - 7).toString());
-        text.setAttributeNS(null, 'y', '40');
-        this.gElement?.appendChild(text);
+      if (index % (10 * jumps) == 0) {
+        this.addLineMarks(i, 0, i, lineLength)
+        this.addTextMarks(i - 7, 40, index / 10);
       }
-      else {
-        this.addLine(i, 0, i, smallLineLength, 0.5);
+      else if (index % jumps == 0) {
+        this.addLineMarks(i, 0, i, smallLineLength, 0.5);
       }
     }
 
-    // the marks on the circle
-    const angleOffset = 10;
-    const angleDist = 10;
-    const smallAngleDist = 1;
-    const outerRad = this.radius;
-    const innerRad = this.radius - 20;
-    const smallOuterRad = this.radius;
-    const smallInnerRad = this.radius - 7;
-    const textRad = this.radius - 30;
-    const center: Point = {
-      x: this.radius,
-      y: 0
-    }
-    index = 0;
-    for (let a = angleOffset; a <= 180 - angleOffset; a += smallAngleDist, index++) {
-      if (a != 90) {
-        const angle = a / 180 * Math.PI;
-        let iRad = smallInnerRad;
-        let oRad = smallOuterRad;
-        let strokeWidth = 0.5;
+    if (!this.alreadyDrawn) {
 
-        if (index % (angleDist / smallAngleDist) == 0) {
-          iRad = innerRad;
-          oRad = outerRad;
-          strokeWidth = 1;
+      // the marks on the circle
+      const angleOffset = 10;
+      const angleDist = 10;
+      const smallAngleDist = 1;
+      const outerRad = this.radius;
+      const innerRad = this.radius - 20;
+      const smallOuterRad = this.radius;
+      const smallInnerRad = this.radius - 7;
+      const textRad = this.radius - 30;
+      const center: Point = {
+        x: this.radius,
+        y: 0
+      }
+      index = 0;
+      for (let a = angleOffset; a <= 180 - angleOffset; a += smallAngleDist, index++) {
+        if (a != 90) {
+          const angle = a / 180 * Math.PI;
+          let iRad = smallInnerRad;
+          let oRad = smallOuterRad;
+          let strokeWidth = 0.5;
 
-          if (a != angleOffset && a != 180 - angleOffset) {
-            let text = document.createElementNS(svgns, 'text');
-            text.textContent = Math.round(a * 100) / 100 + '°';
-            text.setAttributeNS(null, 'x', (center.x + Math.cos(angle) * textRad - 7).toString());
-            text.setAttributeNS(null, 'y', (center.y + Math.sin(angle) * textRad).toString());
-            this.gElement?.appendChild(text);
+          if (index % (angleDist / smallAngleDist) == 0) {
+            iRad = innerRad;
+            oRad = outerRad;
+            strokeWidth = 1;
+
+            if (a != angleOffset && a != 180 - angleOffset) {
+              this.addText(center.x + Math.cos(angle) * textRad - 7, center.y + Math.sin(angle) * textRad, Math.round(a * 100) / 100 + '°');
+            }
           }
-        }
 
-        this.addLine(center.x + Math.cos(angle) * iRad, center.y + Math.sin(angle) * iRad, center.x + Math.cos(angle) * oRad, center.y + Math.sin(angle) * oRad, strokeWidth)
+          this.addLine(center.x + Math.cos(angle) * iRad, center.y + Math.sin(angle) * iRad, center.x + Math.cos(angle) * oRad, center.y + Math.sin(angle) * oRad, strokeWidth)
+        }
       }
+
+      // add special lines
+      const halfTextSpace = 50;
+      const distanceLineToText = 50;
+      this.addLine(this.radius, distanceLineToText, this.radius, this.radius / 2 - halfTextSpace);
+      this.addLine(this.radius, this.radius / 2 + halfTextSpace, this.radius, this.radius);
+
+      this.addLine(this.radius - distanceLineToText, distanceLineToText, this.radius - this.radius / Math.SQRT2, this.radius / Math.SQRT2);
+      this.addLine(this.radius + distanceLineToText, distanceLineToText, this.radius + this.radius / Math.SQRT2, this.radius / Math.SQRT2);
+      
     }
 
-    // add special lines
-    const halfTextSpace = 50;
-    this.addLine(this.radius, 0, this.radius, this.radius / 2 - halfTextSpace);
-    this.addLine(this.radius, this.radius / 2 + halfTextSpace, this.radius, this.radius);
-
-    const distanceLineToText = 50;
-    this.addLine(this.radius - distanceLineToText, distanceLineToText, this.radius - this.radius / Math.SQRT2, this.radius / Math.SQRT2);
-    this.addLine(this.radius + distanceLineToText, distanceLineToText, this.radius + this.radius / Math.SQRT2, this.radius / Math.SQRT2);
-    
   }
 
 }

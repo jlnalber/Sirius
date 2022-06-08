@@ -1,3 +1,4 @@
+import { pixelsToMM } from './../../../global-whiteboard/board/board';
 import { Interval } from './../interval';
 import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Board, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
@@ -26,15 +27,10 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
   @ViewChild('g') g!: ElementRef;
   gElement?: SVGGElement;
 
-  angleDisplayer?: SVGTextElement;
+  @ViewChild('gMarks') gMarks!: ElementRef;
+  gMarksElement?: SVGGElement;
 
-  protected additionalInitialization = () => {
-    this.drawLines();
-    this.drawAngle();
-  }
-  protected angleSet = () => {
-    this.drawAngle();
-  }
+  angleDisplayer?: SVGTextElement;
 
   public get isActive(): boolean {
     return this.board.linealOpen;
@@ -95,7 +91,7 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
     ]
   }
 
-  private drawAngle(): void {
+  protected drawAngle(): void {
     if (!this.angleDisplayer) {
       this.angleDisplayer = document.createElementNS(svgns, 'text');
 
@@ -110,26 +106,24 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
     this.angleDisplayer.textContent = (Math.round(this.angleInDeg * 100) / 100).toLocaleString() + '°';
   }
 
-  private drawLines(): void {
-    const offset = 25;
-    const dist = 50;
-    const smallDist = 5;
+  protected drawLines(): void {
+    this.removeMarks();
+
+    const jumps = this.getJumpsForMarks();
+    const offset = 20;
+    const dist = pixelsToMM * 10 * this.board.zoom;
+    const smallDist = pixelsToMM * this.board.zoom;
     const lineLength = 30;
     const smallLineLength = 10;
 
     let index = 0;
     for (let i = offset; i <= this.length - offset; i += smallDist, index++) {
-      if (index % (dist / smallDist) == 0) {
-        this.addLine(i, 0, i, lineLength);
-
-        let text = document.createElementNS(svgns, 'text');
-        text.textContent = ((i - offset) / 50).toString();
-        text.setAttributeNS(null, 'x', (i - 7).toString());
-        text.setAttributeNS(null, 'y', '50');
-        this.gElement?.appendChild(text);
+      if (index % (jumps * 10) == 0) {
+        this.addLineMarks(i, 0, i, lineLength);
+        this.addTextMarks(i - 7, 50, Math.round((i - offset) / dist * 100) / 100);
       }
-      else {
-        this.addLine(i, 0, i, smallLineLength, 0.5);
+      else if (index % jumps == 0) {
+        this.addLineMarks(i, 0, i, smallLineLength, 0.5);
       }
     }
   }

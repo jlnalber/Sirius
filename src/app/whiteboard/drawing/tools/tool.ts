@@ -10,10 +10,14 @@ export abstract class Tool {
     public abstract position: Vector;
     public abstract g: ElementRef;
     public abstract gElement?: SVGGElement;
+    public abstract gMarks: ElementRef;
+    public abstract gMarksElement?: SVGGElement;
     public abstract board: Board;
     public abstract get isActive(): boolean;
-    protected abstract additionalInitialization?: () => void;
-    protected abstract angleSet?: () => void;
+
+    protected alreadyDrawn: boolean = false;
+
+    protected additionalInitialization?: () => void;
 
     // #region managing the correction of the points
     protected abstract getGeometryElements(): Geometry[];
@@ -70,9 +74,7 @@ export abstract class Tool {
       this._angle = mod(value, Math.PI * 2);
       this.clearCache();
 
-      if (this.angleSet) {
-          this.angleSet();
-      }
+      this.drawAngle();
     }
     public get angle(): number {
       return this._angle;
@@ -82,14 +84,28 @@ export abstract class Tool {
       return this.angle / Math.PI * 180;
     }
 
+    private zoomListener = () => {
+        if (this.isActive) {
+            this.drawLines();
+            this.drawAngle();
+            this.alreadyDrawn = true;
+        }
+    }
+
     public intialize() {
         try {
+            this.alreadyDrawn = false;
+
             // add myself to the events on the board
             this.board.onWhiteboardViewChange.removeListener(this.clearCache);
             this.board.onWhiteboardViewChange.addListener(this.clearCache);
 
+            this.board.onZoom.removeListener(this.zoomListener);
+            this.board.onZoom.addListener(this.zoomListener);
+
             // get the g element
             this.gElement = this.g.nativeElement;
+            this.gMarksElement = this.gMarks.nativeElement;
     
             // set position
             this.position = {
@@ -103,6 +119,11 @@ export abstract class Tool {
             if (this.additionalInitialization) {
                 this.additionalInitialization();
             }
+
+            // draw lines and angle
+            this.drawLines();
+            this.drawAngle();
+            this.alreadyDrawn = true;
     
             // set up the touch controller
             new TouchController(getTouchControllerEventsAllSame((p: Point) => { }, (from: Point, to: Point) => {
@@ -123,7 +144,7 @@ export abstract class Tool {
         catch { }
     }
 
-    protected addLine(x1: number, y1: number, x2: number, y2: number, strokeWidth: number = 1, stroke: string = 'black'): void {
+    private getLine(x1: number, y1: number, x2: number, y2: number, strokeWidth: number = 1, stroke: string = 'black'): SVGLineElement {
         let line = document.createElementNS(svgns, 'line');
         line.setAttributeNS(null, 'x1', x1.toString());
         line.setAttributeNS(null, 'x2', x2.toString());
@@ -131,9 +152,47 @@ export abstract class Tool {
         line.setAttributeNS(null, 'y2', y2.toString());
         line.setAttributeNS(null, 'stroke', stroke);
         line.setAttributeNS(null, 'stroke-width', strokeWidth.toString());
-  
-        this.gElement?.appendChild(line);
+
+        return line;
     }
+
+    protected addLineMarks(x1: number, y1: number, x2: number, y2: number, strokeWidth: number = 1, stroke: string = 'black'): SVGLineElement {
+        return this.gMarksElement?.appendChild(this.getLine(x1, y1, x2, y2, strokeWidth, stroke)) as SVGLineElement;
+    }
+
+    protected addLine(x1: number, y1: number, x2: number, y2: number, strokeWidth: number = 1, stroke: string = 'black'): SVGLineElement {
+        return this.gElement?.appendChild(this.getLine(x1, y1, x2, y2, strokeWidth, stroke)) as SVGLineElement;
+    }
+
+    private getText(x: number, y: number, str: string | number): SVGTextElement {
+        let text = document.createElementNS(svgns, 'text');
+        text.textContent = str.toLocaleString();
+        text.setAttributeNS(null, 'x', x.toString());
+        text.setAttributeNS(null, 'y', y.toString());
+
+        return text;
+    }
+
+    protected addTextMarks(x: number, y: number, str: string | number): SVGTextElement {
+        return this.gMarksElement?.appendChild(this.getText(x, y, str)) as SVGTextElement;
+    }
+
+    protected addText(x: number, y: number, str: string | number): SVGTextElement {
+        return this.gElement?.appendChild(this.getText(x, y, str)) as SVGTextElement;
+    }
+
+    protected removeMarks(): void {
+        if (this.gMarksElement) {
+            this.gMarksElement.innerHTML = '';
+        }
+    }
+
+    protected getJumpsForMarks(): number {
+        return Math.max(1, Math.floor(1 / this.board.zoom));
+    }
+
+    protected abstract drawLines(): void;
+    protected abstract drawAngle(): void;
 
     constructor(protected defaultAngle: number = 0, protected defaultPosition: Vector = { x: 0, y: 0 }) { }
 }

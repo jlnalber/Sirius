@@ -221,7 +221,7 @@ export class Page {
             this.canvas.gElement.innerHTML = this.currentContent;
             this.canvas.translateX = this._translateX;
             this.canvas.translateY = this._translateY;
-            this.canvas.setZoomWithoutTranslate(this._zoom);
+            this.canvas.zoom = this._zoom;
         }
     }
 
