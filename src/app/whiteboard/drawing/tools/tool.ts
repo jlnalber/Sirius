@@ -131,17 +131,24 @@ export abstract class Tool {
                 this.position.y += to.y - from.y;
                 this.clearCache();
             }, (p: Point) => { }, undefined, (angle: number, p: Point) => {
-                p = {
-                    x: p.x - this.position.x,
-                    y: p.y - this.position.y
-                }
-                let turnedP = turnVectorByAngle(p, angle);
-                this.angle += angle;
-                this.position.x += p.x - turnedP.x;
-                this.position.y += p.y - turnedP.y;
+                this.turnAroundPoint(angle, p)
+            }, (by: number, p: Point) => {
+                let angle = by / 180 * Math.PI / 10;
+                this.turnAroundPoint(angle, p);
             }), this.gElement as SVGGElement, this.board.canvas?.svgWrapperElement, document);
         }
         catch { }
+    }
+
+    protected turnAroundPoint(angle: number, p: Point): void {
+        p = {
+            x: p.x - this.position.x,
+            y: p.y - this.position.y
+        }
+        let turnedP = turnVectorByAngle(p, angle);
+        this.angle += angle;
+        this.position.x += p.x - turnedP.x;
+        this.position.y += p.y - turnedP.y;
     }
 
     private getLine(x1: number, y1: number, x2: number, y2: number, strokeWidth: number = 1, stroke: string = 'black'): SVGLineElement {

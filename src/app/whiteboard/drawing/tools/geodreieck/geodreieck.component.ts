@@ -121,7 +121,6 @@ export class GeodreieckComponent extends Tool implements OnInit, AfterViewInit {
     this.removeMarks();
 
     const jumps = this.getJumpsForMarks();
-    const dist = 10 * pixelsToMM * this.board.zoom;
     const smallDist = pixelsToMM * this.board.zoom;
     const offsetD = 52;
     const lineLengthD = 20;

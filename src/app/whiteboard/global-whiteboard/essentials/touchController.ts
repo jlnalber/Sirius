@@ -23,7 +23,8 @@ export interface TouchControllerEvents {
     mouseMove: (from: Point, to: Point) => void,
     mouseEnd: (point: Point) => void,
     pinchZoom?: (factor: number, point: Point) => void,
-    pinchTurn?: (angle: number, point: Point) => void
+    pinchTurn?: (angle: number, point: Point) => void,
+    mouseWheel?: (by: number, point: Point) => void
 }
 
 // this class is able to catch events fired in HTML or SVG elements and can distinguish between touch, mouse and stylus
@@ -34,6 +35,10 @@ export class TouchController {
         if (this.touchControllerEvents.pinchZoom || this.touchControllerEvents.pinchTurn) {
             this.capturePinchEvents();
         }
+        
+        if (this.touchControllerEvents.mouseWheel) {
+            this.captureWheelEvents();
+        }
     }
 
     public stop() {
@@ -41,6 +46,10 @@ export class TouchController {
 
         if (this.touchControllerEvents.pinchZoom || this.touchControllerEvents.pinchTurn) {
             this.removePinchEvents();
+        }
+
+        if (this.touchControllerEvents.mouseWheel) {
+            this.removeWheelEvents();
         }
     }
 
@@ -247,6 +256,7 @@ export class TouchController {
     private prevAngle: number | undefined;
 
     private pointerdown_handler = (ev: PointerEvent | Event) => {
+        ev.preventDefault();
         if (ev instanceof PointerEvent && ev.pointerType == 'touch') {
             // The pointerdown event signals the start of a touch interaction.
             // This event is cached to support 2-finger gestures
@@ -259,6 +269,7 @@ export class TouchController {
     }
 
     private pointermove_handler = (ev: PointerEvent | Event) => {
+        ev.preventDefault();
         if (ev instanceof PointerEvent && ev.pointerType == 'touch') {
             // This function implements a 2-pointer horizontal pinch/zoom gesture. 
             //
@@ -327,6 +338,7 @@ export class TouchController {
     }
 
     private pointerup_handler = (ev: PointerEvent | Event) => {
+        ev.preventDefault();
         if (ev instanceof PointerEvent && ev.pointerType == 'touch') {
             // Remove this pointer from the cache and reset the target's
             // background and border
@@ -381,6 +393,36 @@ export class TouchController {
         this.element.removeEventListener('pointerout', this.pointerup_handler);
         this.element.removeEventListener('pointerleave', this.pointerup_handler);
     }
+
+
+    // #region the functions to be executed in the mouse wheel event
+    private getPosFromWheelEvent = (e: WheelEvent): Point => {
+        const rect = this.getBoundingRect();
+
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        }
+    }
+
+    private mouseWheelHandler = (ev: WheelEvent | Event) => {
+        if (this.touchControllerEvents.mouseWheel && ev instanceof WheelEvent) {
+            ev.preventDefault();
+            let p = this.getPosFromWheelEvent(ev);
+            let by = Math.sqrt(ev.deltaY ** 2 + ev.deltaX ** 2 + ev.deltaZ ** 2) * Math.sign((ev.deltaX ? ev.deltaX : 1) * (ev.deltaY ? ev.deltaY : 1) * (ev.deltaZ ? ev.deltaZ : 1));
+            this.touchControllerEvents.mouseWheel(by, p);
+        }
+    }
+    // #endregion
+
+    private captureWheelEvents(): void {
+        this.element.addEventListener('wheel', this.mouseWheelHandler);
+    }
+
+    private removeWheelEvents(): void {
+        this.element.removeEventListener('wheel', this.mouseWheelHandler);
+    }
+
 
     private getBoundingRect(): DOMRect {
         if (this.relativeTo) {
