@@ -183,7 +183,24 @@ export class CanvasComponent implements AfterViewInit {
         stylusEraseStart: (p: Point) => this.board.startErase(p),
         stylusEraseMove: (from: Point, to: Point) => this.board.moveErase(from, to),
         stylusEraseEnd: (p: Point) => this.board.endErase(p),
-        pinchZoom: (factor: number, point: Point) => this.board.zoomTo(this.board.zoom * factor, point)
+        pinchZoom: (factor: number, point: Point) => this.board.zoomTo(this.board.zoom * factor, point),
+        /*mouseWheel: (by: number, point: Point) => {
+          let factor;
+          const scroll = 100;
+          if (Math.abs(by) > 1) { 
+            by /= scroll;
+            by = Math.max(1, Math.abs(by)) * Math.sign(by);
+          }
+          if (by == 0) factor = scroll;
+          if (by < -1) factor = -by;
+          else if (by >= -1 && by < 0) factor = -1 / by;
+          else if (by > 0 && by <= 1) factor = by;
+          else factor = 1 / by;
+
+          //factor /= scroll;
+
+          this.board.zoomTo(this.board.zoom * factor, point);
+        }*/
       };
 
       // touch controller which keeps track of what happens to the board
