@@ -1,7 +1,7 @@
 import { MatSliderChange } from '@angular/material/slider';
 import { Component, Inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
+import { Board, pixelsToMM } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Color } from 'src/app/whiteboard/global-whiteboard/essentials/color';
 import { Color as IColor } from 'src/app/whiteboard/global-whiteboard/interfaces/whiteboard';
 import { cross, karo, line, none, music } from 'src/app/whiteboard/global-whiteboard/board/background/backgroundImage';
@@ -44,11 +44,22 @@ export class BackgroundDialogComponent {
       this.backgroundScale = event.value;
     }
   }
+  formatLabel(value: number): string {
+    let scale = 1 / value;
+
+    let res = Math.round(scale * 100) / 100;
+
+    return res.toLocaleString();
+  }
 
   @Input()
-  backgroundImages: string[] = [
-    none, line, karo, cross, music
-  ]
+  backgroundImages: [string, number][] = [
+    [none, 0],
+    [line, 75],
+    [karo, 20],
+    [cross, 40],
+    [music, 75]
+  ] // the numbers indicate the size (not used)
 
   colors: Color[] = [
     new Color(18, 52, 19),
@@ -69,4 +80,5 @@ export class BackgroundDialogComponent {
     new Color(45, 178, 178),
     new Color(178, 45, 178)
   ]
+
 }

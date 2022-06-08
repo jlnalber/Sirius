@@ -103,6 +103,9 @@ export abstract class Tool {
             this.board.onZoom.removeListener(this.zoomListener);
             this.board.onZoom.addListener(this.zoomListener);
 
+            this.board.onPageSwitched.removeListener(this.zoomListener);
+            this.board.onPageSwitched.addListener(this.zoomListener);
+
             // get the g element
             this.gElement = this.g.nativeElement;
             this.gMarksElement = this.gMarks.nativeElement;

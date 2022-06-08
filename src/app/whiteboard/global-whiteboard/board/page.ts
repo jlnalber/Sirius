@@ -79,7 +79,7 @@ export class Page {
     }
     public set zoom(value: number) {
         if (this.board.currentPage == this && this.canvas) {
-            this.canvas.zoom = value; // Attention: Zoom setter on canvas tries to center the svg again
+            this.canvas.zoom = value;
             this._zoom = this.canvas.zoom;
         }
         else {

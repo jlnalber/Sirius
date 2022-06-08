@@ -76,8 +76,8 @@ export class CanvasComponent implements AfterViewInit {
     return this._zoom;
   }
   public set zoom(value: number) {
-    this.board.onZoom.emit();
     this._zoom = value;
+    this.board.onZoom.emit();
     this.justify();
   }
 

@@ -1,10 +1,10 @@
 <h1 mat-dialog-title class="fill">Hintergrund</h1>
 <div mat-dialog-content class="fill">
   <div class="resizeContainer">
-    <mat-slider min="0.3" max="4" step="0.1" [(ngModel)]="this.backgroundScale" color="primary" class="fill" (input)="this.triggerBackgroundScale($event)"></mat-slider>
+    <mat-slider thumbLabel [displayWith]="this.formatLabel" min="0.3" max="4" step="0.1" [(ngModel)]="this.backgroundScale" color="primary" class="fill" (input)="this.triggerBackgroundScale($event)"></mat-slider>
   </div>
   <div class="pickerContainer">
-    <div *ngFor="let bgimg of this.backgroundImages" class="cardContainer" [ngStyle]="{'background-color': this.data.board.backgroundColor.toString(), 'background-image': 'url(\'' + bgimg + '\''}" [ngClass]="this.data.board.backgroundImage == bgimg ? 'active' : 'inactive'" (click)="this.data.board.backgroundImage = bgimg">
+    <div *ngFor="let bgimg of this.backgroundImages" class="cardContainer" [ngStyle]="{'background-color': this.data.board.backgroundColor.toString(), 'background-image': 'url(\'' + bgimg[0] + '\''}" [ngClass]="this.data.board.backgroundImage == bgimg[0] ? 'active' : 'inactive'" (click)="this.data.board.backgroundImage = bgimg[0]">
     </div>
   </div>
   <whiteboard-colorset class="colorset" [defaultColors]="this.colors" [listener]="this.listener" [currentColor]="this.currentColor"></whiteboard-colorset>
