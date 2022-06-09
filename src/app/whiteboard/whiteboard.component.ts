@@ -33,7 +33,16 @@ export class WhiteboardComponent implements AfterViewInit {
     enableShapeControl: true,
     enableStickyNotesControl: true,
     enablePagesControl: true,
-    enableToolsControl: true
+    enableToolsControl: true,
+    menuControls: {
+      fullscreenControl: true,
+      backgroundControl: true,
+      formatControl: true,
+      exportAsPDFControl: true,
+      exportAsBitmapControl: true,
+      exportAsSvgControl: true,
+      saveControl: true
+    }
   }
 
   @HostListener('dblclick', ['$event'])

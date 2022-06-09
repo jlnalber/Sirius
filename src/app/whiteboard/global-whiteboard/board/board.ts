@@ -940,6 +940,7 @@ export class Board {
     try {
       this.backgroundImage = whiteboard.backgroundImage;
       this.backgroundScale = whiteboard.backgroundScale ?? 1;
+      this.format = whiteboard.format;
       this.backgroundColor.from(whiteboard.backgroundColor);
 
       this.pages.splice(0);
@@ -953,7 +954,7 @@ export class Board {
       }
 
       let pageIndex = whiteboard.pageIndex >= this.pages.length ? 0 : whiteboard.pageIndex;
-      this.pages[pageIndex].reload();
+      this.pages[pageIndex].open();
       this._currentPageIndex = pageIndex;
 
       this.onImport.emit();
@@ -975,6 +976,7 @@ export class Board {
       backgroundImage: this.backgroundImage,
       backgroundScale: this.backgroundScale,
       backgroundColor: this.backgroundColor.export(),
+      format: this.format,
       pageIndex: this.currentPageIndex,
       pages: pages
     };

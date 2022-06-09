@@ -1,7 +1,10 @@
+import { Rect } from "./rect"
+
 export interface Whiteboard {
     backgroundColor: Color,
     backgroundImage: string,
     backgroundScale?: number,
+    format?: Rect,
     pages: Page[],
     pageIndex: number
 }

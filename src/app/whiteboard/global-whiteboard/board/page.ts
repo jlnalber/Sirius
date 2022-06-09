@@ -126,12 +126,6 @@ export class Page {
         }
     }
 
-    public reload(): void {
-        if (this.canvas && this.canvas.gElement) {
-            this.canvas.gElement.innerHTML = this._currentContent;
-        }
-    }
-
     public goBack(): void {
         if (this.canvas && this.canvas.gElement && this.lastContent.size() != 0) {
             let c = this.lastContent.pop();

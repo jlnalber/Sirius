@@ -1,6 +1,7 @@
 import { Component, Input, AfterViewInit } from '@angular/core';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { BottomControl } from 'src/app/whiteboard/global-whiteboard/controls/bottomControl';
+import { WhiteboardMenuControlsConfig } from 'src/app/whiteboard/global-whiteboard/interfaces/whiteboard.config';
 
 @Component({
   selector: 'whiteboard-menu-control',
@@ -12,6 +13,15 @@ export class MenuControlComponent extends BottomControl implements AfterViewInit
   @Input() board!: Board;
 
   @Input() enabled = true;
+  @Input() whiteboardMenuControlsConfig: WhiteboardMenuControlsConfig = {
+    fullscreenControl: true,
+    backgroundControl: true,
+    formatControl: true,
+    exportAsPDFControl: true,
+    exportAsBitmapControl: true, 
+    exportAsSvgControl: true,
+    saveControl: true
+  };
 
   public openPanel: boolean = false;
 

@@ -3,12 +3,12 @@
 </div>
 <div *ngIf="this.isActive()" class="card">
     <div class="controlWrapper">
-        <whiteboard-save-control [board]="this.board" class="control"></whiteboard-save-control>
-        <whiteboard-save-as-picture-control [board]="this.board" class="control"></whiteboard-save-as-picture-control>
-        <whiteboard-export-as-svg-control [board]="this.board" class="control"></whiteboard-export-as-svg-control>
-        <whiteboard-export-as-pdf-control [board]="this.board" class="control"></whiteboard-export-as-pdf-control>
-        <whiteboard-format-control [board]="this.board" class="control"></whiteboard-format-control>
-        <whiteboard-background-control [board]="this.board" class="control"></whiteboard-background-control>
-        <whiteboard-fullscreen-control [board]="this.board" class="control"></whiteboard-fullscreen-control>
+        <whiteboard-save-control [enabled]="this.whiteboardMenuControlsConfig.saveControl" [board]="this.board" class="control"></whiteboard-save-control>
+        <whiteboard-save-as-picture-control [enabled]="this.whiteboardMenuControlsConfig.exportAsBitmapControl" [board]="this.board" class="control"></whiteboard-save-as-picture-control>
+        <whiteboard-export-as-svg-control [enabled]="this.whiteboardMenuControlsConfig.exportAsSvgControl" [board]="this.board" class="control"></whiteboard-export-as-svg-control>
+        <whiteboard-export-as-pdf-control [enabled]="this.whiteboardMenuControlsConfig.exportAsPDFControl" [board]="this.board" class="control"></whiteboard-export-as-pdf-control>
+        <whiteboard-format-control [enabled]="this.whiteboardMenuControlsConfig.formatControl" [board]="this.board" class="control"></whiteboard-format-control>
+        <whiteboard-background-control [enabled]="this.whiteboardMenuControlsConfig.backgroundControl" [board]="this.board" class="control"></whiteboard-background-control>
+        <whiteboard-fullscreen-control [enabled]="this.whiteboardMenuControlsConfig.fullscreenControl" [board]="this.board" class="control"></whiteboard-fullscreen-control>
     </div>
 </div>
