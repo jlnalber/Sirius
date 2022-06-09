@@ -67,6 +67,7 @@ export class TouchController {
     private lastPoint: Point | undefined;
     private currentPointerID?: number;
     private ongoingTouch: boolean = false;
+    private ongoingStylusID?: number;
 
     private checkWhetherPointIsValid = (p: Point): boolean => {
         // this function checks whether the distance is valid
@@ -75,7 +76,13 @@ export class TouchController {
     }
 
     private start = (e: PointerEvent | Event) => {
+
+        this.ongoingStylusID = undefined;
+
         if (!this.ongoingTouch && e instanceof PointerEvent) {
+
+            this.ongoingStylusID = e.pointerType == 'pen' ? e.pointerId : undefined;
+
             let point = this.getPosFromPointerEvent(e);
             
             switch (e.pointerType) {
@@ -106,7 +113,8 @@ export class TouchController {
     }
 
     private move = (e: PointerEvent | Event) => {
-        if (this.ongoingTouch && e instanceof PointerEvent) {
+        if (this.ongoingTouch && e instanceof PointerEvent && (!this.ongoingStylusID && e.pointerType != 'pen' || e.pointerId == this.ongoingStylusID)) {
+
             let point = this.getPosFromPointerEvent(e);
             
             if (this.checkWhetherPointIsValid(point)) {
@@ -145,7 +153,7 @@ export class TouchController {
     }
 
     private end = (e: PointerEvent | Event) => {
-        if (this.ongoingTouch && e instanceof PointerEvent) {
+        if (this.ongoingTouch && e instanceof PointerEvent && (!this.ongoingStylusID && e.pointerType != 'pen' || e.pointerId == this.ongoingStylusID)) {
             let point = this.getPosFromPointerEvent(e);
             
             if (this.checkWhetherPointIsValid(point)) {
@@ -176,6 +184,7 @@ export class TouchController {
 
             //console.log(this.evCache)
             this.currentPointerID = undefined;
+            this.ongoingStylusID = undefined;
         }
     }
 
