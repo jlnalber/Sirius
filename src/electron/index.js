@@ -107,7 +107,19 @@ ipcMain.handle('get-config', (event, ...args) => {
 })
 
 ipcMain.handle('set-config', (event, ...args) => {
-  config = args[0];
+
+  let newConfig = args[0];
+  
+  try {
+    for (let dir of newConfig.directories) {
+      if (!config.directories.includes(dir)) {
+        copyFilesToDir(dir);
+      }
+    }
+  }
+  catch { }
+
+  config = newConfig;
   writeConfig();
 })
 
@@ -252,6 +264,65 @@ function joinPathsForFS(dir, relativePath) {
   }
   path += relativePath;
   return path;
+}
+
+function copyFilesToDir(dir) {
+  try {
+    let from = '';
+    if (config.directories.length != 0) {
+      from = config.directories[0];
+    }
+
+    let faecherDirFrom = joinPathsForFS(from, 'faecher').replaceAll('\\', '/');
+    let faecherDirDir = joinPathsForFS(dir, '').replaceAll('\\', '/');
+    let faecherFileFrom = joinPathsForFS(from, faecherFile).replaceAll('\\', '/');
+    let faecherFileDir = joinPathsForFS(dir, faecherFile).replaceAll('\\', '/');
+
+    copyFolderRecursiveSync(faecherDirFrom, faecherDirDir);
+    fs.copyFileSync(faecherFileFrom, faecherFileDir);
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
+
+function copyFolderRecursiveSync(source, target) {
+  let copyFileSync = ( source, target ) => {
+    let targetFile = target;
+    // If target is a directory, a new file with the same name will be created
+    if ( fs.existsSync( target ) ) {
+        if ( fs.lstatSync( target ).isDirectory() ) {
+            targetFile = path.join( target, path.basename( source ) );
+        }
+    }
+    fs.writeFileSync(targetFile, fs.readFileSync(source));
+  }
+
+  try {
+    let files = [];
+
+    // Check if folder needs to be created or integrated
+    let targetFolder = path.join( target, path.basename( source ) );
+    if (!fs.existsSync(targetFolder)) {
+        fs.mkdirSync(targetFolder);
+    }
+
+    // Copy
+    if (fs.lstatSync(source).isDirectory() ) {
+        files = fs.readdirSync( source );
+        files.forEach( function ( file ) {
+            let curSource = path.join( source, file );
+            if (fs.lstatSync(curSource).isDirectory()) {
+                copyFolderRecursiveSync(curSource, targetFolder);
+            } else {
+                copyFileSync(curSource, targetFolder);
+            }
+        } );
+    }
+  }
+  catch (e) { 
+    console.log(e);
+  }
 }
 
 function readConfig() {
