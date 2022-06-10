@@ -327,7 +327,10 @@ export class Page {
             curr = this.canvas.gElement.innerHTML;
         }
         let g = document.createElementNS(svgns, 'g');
-        g.setAttributeNS(null, 'transform', `translate(${this.translateX} ${this.translateY}) scale(${this.zoom})`);
+        
+        if (!this.board.format) {
+            g.setAttributeNS(null, 'transform', `translate(${this.translateX} ${this.translateY}) scale(${this.zoom})`);
+        }
         /*g.style.background = `url('${this.board.backgroundImage}')`;
         g.style.backgroundColor = this.board.backgroundColor.toString();*/
         g.innerHTML = curr;
@@ -335,8 +338,21 @@ export class Page {
         let gWrapper = document.createElementNS(svgns, 'g');
         gWrapper.appendChild(g);
 
+        /*// the background image
+        //let rect = await getImageDimensions(this.board.backgroundImage);
+
+
+        // elements for the background image
+        let pattern = document.createElementNS(svgns, 'pattern');
+        pattern.setAttributeNS(null, 'x', '0');
+        let img = document.createElementNS(svgns, 'image');
+        let patternRect = document.createElementNS(svgns, 'rect');
+        pattern.appendChild(img);*/
+
         let svg = document.createElementNS(svgns, 'svg');
         svg.appendChild(gWrapper);
+        //svg.appendChild(pattern);
+        //svg.appendChild(patternRect);
         svg.style.backgroundColor = this.board.backgroundColor.toString();
         svg.style.backgroundImage = 'url(\'' + this.board.backgroundImage + '\')';
 
