@@ -1,3 +1,4 @@
+import { add, getAngleVector, scale, turnVectorByAngle } from 'src/app/whiteboard/global-whiteboard/essentials/utils';
 import { CircleSegment } from './../circleSegment';
 import { Point, Vector } from './../../../global-whiteboard/interfaces/point';
 import { Board, pixelsToMM, svgns } from 'src/app/whiteboard/global-whiteboard/board/board';
@@ -98,7 +99,7 @@ export class HalbkreisComponent extends Tool implements OnInit, AfterViewInit {
     ];
   }
 
-  protected drawAngle(): void {
+  protected drawAngle(label: string, color: string): void {
     if (!this.angleDisplayer) {
       this.angleDisplayer = document.createElementNS(svgns, 'text');
 
@@ -109,8 +110,9 @@ export class HalbkreisComponent extends Tool implements OnInit, AfterViewInit {
       this.gElement?.appendChild(outerG);
     }
 
+    this.angleDisplayer.setAttributeNS(null, 'fill', color);
     this.angleDisplayer.setAttributeNS(null, 'transform', `rotate(-${this.angleInDeg})`)
-    this.angleDisplayer.textContent = (Math.round(this.angleInDeg * 100) / 100).toLocaleString() + '°';
+    this.angleDisplayer.textContent = label;
   }
 
   protected drawLines(): void {
@@ -183,6 +185,59 @@ export class HalbkreisComponent extends Tool implements OnInit, AfterViewInit {
       
     }
 
+  }
+
+  private lineIndicator1?: SVGLineElement;
+  private lineIndicator2?: SVGLineElement;
+  protected override drawPoints(start?: Point, end?: Point, index?: number): void {
+    if (index == undefined || (!start && !end)) {
+      try {
+        if (this.lineIndicator1) {
+          this.gElement?.removeChild(this.lineIndicator1);
+        }
+      } catch { }
+      try {
+        if (this.lineIndicator2) {
+          this.gElement?.removeChild(this.lineIndicator2);
+        }
+      } catch { }
+
+      this.lineIndicator1 = undefined;
+      this.lineIndicator2 = undefined;
+    }
+
+    if (index == undefined || (!start && !end) || index == 0) {
+      super.drawPoints(start, end, index);
+    }
+    else if (index == 1 && start && end) {
+      if (!this.lineIndicator1) {
+        this.lineIndicator1 = this.addLine(0, 0, 0, 0, 2, 'red');
+      }
+      if (!this.lineIndicator2) {
+        this.lineIndicator2 = this.addLine(0, 0, 0, 0, 2, 'red');
+      }
+
+      let center = {
+        x: this.radius,
+        y: 0
+      };
+
+      this.lineIndicator1.setAttributeNS(null, 'x1', center.x.toString());
+      this.lineIndicator1.setAttributeNS(null, 'y1', center.y.toString());
+      this.lineIndicator2.setAttributeNS(null, 'x1', center.x.toString());
+      this.lineIndicator2.setAttributeNS(null, 'y1', center.y.toString());
+      this.lineIndicator1.setAttributeNS(null, 'x2', start.x.toString());
+      this.lineIndicator1.setAttributeNS(null, 'y2', start.y.toString());
+      this.lineIndicator2.setAttributeNS(null, 'x2', end.x.toString());
+      this.lineIndicator2.setAttributeNS(null, 'y2', end.y.toString());
+
+
+      let angle1 = getAngleVector(add(start, scale(center, -1)));
+      let angle2 = getAngleVector(add(end, scale(center, -1)));
+      let angleDiff = Math.abs(angle1 - angle2);
+      angleDiff = angleDiff > Math.PI ? 2 * Math.PI - angleDiff : angleDiff;
+      this.drawAngle((Math.round(angleDiff / Math.PI * 180 * 100) / 100).toLocaleString() + '°', 'red');
+    }
   }
 
 }

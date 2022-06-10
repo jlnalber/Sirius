@@ -6,6 +6,7 @@ import { Point, Vector } from 'src/app/whiteboard/global-whiteboard/interfaces/p
 import { Line } from '../line';
 import { Tool } from '../tool';
 import { Geometry } from '../geometry';
+import { turnVectorByAngle } from 'src/app/whiteboard/global-whiteboard/essentials/utils';
 
 @Component({
   selector: 'whiteboard-lineal',
@@ -91,7 +92,7 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
     ]
   }
 
-  protected drawAngle(): void {
+  protected drawAngle(label: string, color: string): void {
     if (!this.angleDisplayer) {
       this.angleDisplayer = document.createElementNS(svgns, 'text');
 
@@ -102,8 +103,9 @@ export class LinealComponent extends Tool implements OnInit, AfterViewInit {
       this.gElement?.appendChild(outerG);
     }
 
+    this.angleDisplayer.setAttributeNS(null, 'fill', color);
     this.angleDisplayer.setAttributeNS(null, 'transform', `rotate(-${this.angleInDeg})`)
-    this.angleDisplayer.textContent = (Math.round(this.angleInDeg * 100) / 100).toLocaleString() + '°';
+    this.angleDisplayer.textContent = label;
   }
 
   protected drawLines(): void {

@@ -101,7 +101,7 @@ export class GeodreieckComponent extends Tool implements OnInit, AfterViewInit {
     ];
   }
 
-  protected drawAngle(): void {
+  protected drawAngle(label: string, color: string): void {
     // draw the angle
     if (!this.angleDisplayer) {
       this.angleDisplayer = document.createElementNS(svgns, 'text');
@@ -113,8 +113,9 @@ export class GeodreieckComponent extends Tool implements OnInit, AfterViewInit {
       this.gElement?.appendChild(outerG);
     }
 
+    this.angleDisplayer.setAttributeNS(null, 'fill', color);
     this.angleDisplayer.setAttributeNS(null, 'transform', `rotate(-${this.angleInDeg})`)
-    this.angleDisplayer.textContent = (Math.round(((this.angleInDeg + 315) % 360) * 100) / 100).toLocaleString() + '°';
+    this.angleDisplayer.textContent = label;
   }
 
   protected drawLines(): void {

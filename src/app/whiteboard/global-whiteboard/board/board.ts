@@ -53,7 +53,7 @@ export class Board {
     // berechne die Position eines Punktes im canvas
     if (this.canvas) {
       if (this.format) {
-        // Wenn ein Format eingestellt ist, muss der Punkt anders berechnet werden, da die scale-Property bei HTML-Elementen nicht vom Ursprung sondern vom Zentrum scalet
+        // Wenn ein Format eingestellt ist, muss der Punkt anders berechnet werden, da die scale-Property bei HTML-Elementen nicht vom Ursprung sondern vom Zentrum scalt
         let center: Vector = {
           x: this.format.width / 2 + this.translateX,
           y: this.format.height / 2 + this.translateY
@@ -71,6 +71,31 @@ export class Board {
       }
     }
     return { x: 0, y: 0 };
+  }
+
+  public getAbsolutePointToActualPoint(p: Point): Point {
+    // berechne die absolute Position eines Punktes im Canvas
+    if (this.canvas) {
+      if (this.format) {
+        let center: Vector = {
+          x: this.format.width / 2 + this.translateX,
+          y: this.format.height / 2 + this.translateY
+        };
+        let x = p.x - this.format.width / 2;
+        let y = p.y - this.format.height / 2;
+        x *= this.zoom;
+        y *= this.zoom;
+        x += center.x;
+        y += center.y;
+        return { x: x, y: y };
+      }
+      else {
+        let x = p.x * this.zoom + this.translateX;
+        let y = p.y * this.zoom + this.translateY;
+        return { x: x, y: y };
+      }
+    }
+    return { x: 0, y: 0}; 
   }
 
   public getActualRect(rect: Rect): Rect {
