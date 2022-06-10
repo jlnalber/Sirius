@@ -216,7 +216,7 @@ export abstract class Tool {
             }, (p: Point) => { }, undefined, (angle: number, p: Point) => {
                 this.turnAroundPoint(angle, p);
                 this.resetPoints();
-            }, (by: number, p: Point) => {
+            }, undefined, (by: number, p: Point) => {
                 let angle = by / 180 * Math.PI / 10;
                 this.turnAroundPoint(angle, p);
                 this.resetPoints();

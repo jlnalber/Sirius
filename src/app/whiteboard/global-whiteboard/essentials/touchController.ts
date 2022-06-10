@@ -24,6 +24,7 @@ export interface TouchControllerEvents {
     mouseEnd: (point: Point) => void,
     pinchZoom?: (factor: number, point: Point) => void,
     pinchTurn?: (angle: number, point: Point) => void,
+    endPinch?: () => void,
     mouseWheel?: (by: number, point: Point) => void
 }
 
@@ -77,9 +78,7 @@ export class TouchController {
 
     private start = (e: PointerEvent | Event) => {
 
-        this.ongoingStylusID = undefined;
-
-        if (!this.ongoingTouch && e instanceof PointerEvent) {
+        if (e instanceof PointerEvent && (!this.ongoingTouch || e.pointerType == 'pen')) {
 
             this.ongoingStylusID = e.pointerType == 'pen' ? e.pointerId : undefined;
 
@@ -356,7 +355,10 @@ export class TouchController {
             // If the number of pointers down is less than two then reset diff tracker
             if (this.evCache.length < 2) {
                 this.prevDiff = -1;
-                this.prevAngle = undefined; 
+                this.prevAngle = undefined;
+                if (this.touchControllerEvents.endPinch) {
+                    this.touchControllerEvents.endPinch();
+                }
             }
 
             if (this.mainTouchEventId == ev.pointerId) {

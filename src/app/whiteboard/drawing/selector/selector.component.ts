@@ -254,11 +254,11 @@ export class SelectorComponent implements AfterViewInit {
       // Logik für zoomen
       p = this.board.getActualPoint(p);
       this.zoom(factor, p);
-      this.board.onInput.emit();
     }, (angle: number, p: Point) => {
       // Logik für drehen
       p = this.board.getActualPoint(p);
       this.turnByAngleAndPoint(angle, p);
+    }, () => {
       this.board.onInput.emit();
     }), this.wrapperEl as HTMLDivElement);
 

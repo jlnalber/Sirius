@@ -261,6 +261,7 @@ export function getTouchControllerEventsAllSame(
     end: (p: Point) => void,
     pinchZoom?: (factor: number, p: Point) => void,
     pinchTurn?: (angle: number, p: Point) => void,
+    endPinch?: () => void,
     mouseWheel?: (by: number, p: Point) => void): TouchControllerEvents {
     return {
         touchStart: start,
@@ -274,6 +275,7 @@ export function getTouchControllerEventsAllSame(
         mouseEnd: end,
         pinchZoom: pinchZoom,
         pinchTurn: pinchTurn,
+        endPinch: endPinch,
         mouseWheel: mouseWheel
     }
 }
