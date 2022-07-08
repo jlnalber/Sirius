@@ -1,0 +1,17 @@
+<h1 mat-dialog-title class="fill">Dateien einfügen</h1>
+<div mat-dialog-content class="fill">
+    <mat-tab-group (selectedTabChange)="this.tabSelectionChanged()">
+        <mat-tab label="Dateien">
+            <button mat-button class="fileSelection fill">
+                Dateien auswählen
+                <input id="inp" type="file" (change)="this.openFile()" multiple accept="image/*,.pdf">
+            </button>
+        </mat-tab>
+        <mat-tab label="Kamera">
+            <whiteboard-camera [imageCaptured]="this.addPhoto" [reload]="this.reloadEvent" class="camera"></whiteboard-camera>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+<div mat-dialog-actions align="end" class="fill">
+  <button mat-button [mat-dialog-close]="data">Schließen</button>
+</div>

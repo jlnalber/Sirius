@@ -1,0 +1,11 @@
+<div class="wrapper">
+    <video playsinline autoplay disablePictureInPicture muted #video class="video"></video>
+    <div class="controls">
+        <button mat-fab color="primary" class="button fab" [disabled]="!(this.hasEnvironmentCamera || this.hasUserCamera)" (click)="this.capturePicture()">
+            <mat-icon>camera_alt</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" class="button miniFab switchCamera" (click)="this.userMode = !this.userMode" [disabled]="!(this.hasEnvironmentCamera && this.hasUserCamera)">
+            <mat-icon>cached</mat-icon>
+        </button>
+    </div>
+</div>

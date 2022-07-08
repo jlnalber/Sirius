@@ -611,6 +611,28 @@ export class Board {
     return element;
   }
 
+  public async addPhoto(photo: string): Promise<void> {
+    try {
+      let dim = await getImageDimensions(photo);
+      let img = this.createElement('image');
+      img.setAttributeNS(null, 'href', photo);
+      img.setAttributeNS(null, 'width', dim.width.toString());
+      img.setAttributeNS(null, 'height', dim.height.toString());
+
+      // center the image
+      let rectG = this.getActualRect(img.getBoundingClientRect());
+      let centerG: Point = {
+        x: rectG.x + rectG.width / 2,
+        y: rectG.y + rectG.height / 2
+      }
+      let centerSVG: Point = this.getScreenCenterSVG();
+      img.setAttributeNS(null, 'transform', `translate(${centerSVG.x - centerG.x} ${centerSVG.y - centerG.y})`);
+      
+      this.markChange();
+    }
+    catch { }
+  }
+
   public addFile(file: File | null | undefined): boolean {
     // Füge eine Datei zum Whiteboard hinzu
     try {
@@ -713,7 +735,10 @@ export class Board {
           })
 
           reader.onload = async () => {
-            // add the image to the board
+            if (reader.result) {
+              await this.addPhoto(reader.result.toString());
+            }
+            /*// add the image to the board
             let dim: any = await imageDimensions(file);
             let img = this.createElement('image');
             if (reader.result) img.setAttributeNS(null, 'href', reader.result.toString());
@@ -729,7 +754,7 @@ export class Board {
             let centerSVG: Point = this.getScreenCenterSVG();
             img.setAttributeNS(null, 'transform', `translate(${centerSVG.x - centerG.x} ${centerSVG.y - centerG.y})`);
             
-            this.markChange();
+            this.markChange();*/
           };
         }
 

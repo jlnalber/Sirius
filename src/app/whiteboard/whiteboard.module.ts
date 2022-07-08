@@ -12,6 +12,7 @@ import { SelectorComponent } from './drawing/selector/selector.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { CanvasComponent } from 'src/app/whiteboard/drawing/canvas/canvas.component';
@@ -58,6 +59,8 @@ import { FullscreenControlComponent } from './drawing/controls/menu-control/full
 import { HalbkreisComponent } from './drawing/tools/halbkreis/halbkreis.component';
 import { FormatControlComponent } from './drawing/controls/menu-control/format-control/format-control.component';
 import { FormatDialogComponent } from './drawing/controls/menu-control/format-control/format-dialog/format-dialog.component';
+import { CameraComponent } from './drawing/controls/file-control/camera/camera.component';
+import { ImportDialogComponent } from './drawing/controls/file-control/import-dialog/import-dialog.component';
 
 
 
@@ -109,7 +112,9 @@ import { FormatDialogComponent } from './drawing/controls/menu-control/format-co
     FullscreenControlComponent,
     HalbkreisComponent,
     FormatControlComponent,
-    FormatDialogComponent
+    FormatDialogComponent,
+    CameraComponent,
+    ImportDialogComponent
   ],
   imports: [
     CommonModule,
@@ -121,11 +126,13 @@ import { FormatDialogComponent } from './drawing/controls/menu-control/format-co
     MatFormFieldModule,
     MatInputModule,
     MatRadioModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTabsModule
   ],
   exports: [
     WhiteboardComponent,
-    ColorsetComponent
+    ColorsetComponent,
+    CameraComponent
   ],
   providers: [
     BoardService

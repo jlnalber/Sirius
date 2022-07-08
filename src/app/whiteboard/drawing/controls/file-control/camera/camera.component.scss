@@ -1,0 +1,35 @@
+$margin: 16px;
+$bigFabs: 1;
+$miniFabs: 1;
+
+.video {
+    height: 100%;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.controls {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 56px;
+    margin: auto 0;
+    right: 16px;
+    height: calc($bigFabs * 56px + $miniFabs * 40px + ($bigFabs + $miniFabs - 1) * $margin);
+}
+
+.button {
+    position: absolute;
+}
+
+.miniFab {
+    right: 8px;
+}
+
+.switchCamera {
+    top: calc(56px + $margin)
+}
+
+.wrapper {
+    overflow: hidden;
+}
