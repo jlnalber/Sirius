@@ -17,6 +17,7 @@ export interface Fach {
     description: string,
     files: File[],
     einheiten: Einheit[],
+    editors: Editor[],
     notes: string,
     tasks: Task[],
     whiteboards: Whiteboard[]
@@ -29,6 +30,7 @@ export interface Einheit {
     notes: string,
     tasks: Task[],
     files: File[],
+    editors: Editor[],
     whiteboards: Whiteboard[]
 }
 
@@ -46,5 +48,11 @@ export interface Whiteboard {
 export interface Task {
     description: string,
     closed: boolean,
+    categoryId?: string
+}
+
+export interface Editor {
+    id: string,
+    name: string,
     categoryId?: string
 }

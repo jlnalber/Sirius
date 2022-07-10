@@ -1,0 +1,21 @@
+<div *ngIf="this.editorContent == undefined" class="loadingDiv">
+    <img class="loading" src="../../../assets/iconAnimate.svg">
+</div>
+<div *ngIf="this.editorContent != undefined" class="wrapper">
+    <div class="topBar">
+        <button mat-icon-button routerLink="..">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <mat-form-field appearance="outline">
+            <mat-label>Titel</mat-label>
+            <input matInput [(ngModel)]="this.name">
+        </mat-form-field>
+        <button mat-icon-button (click)="this.fullscreenButtonClicked()">
+            <mat-icon *ngIf="this.fullscreen">fullscreen_exit</mat-icon>
+            <mat-icon *ngIf="!this.fullscreen">fullscreen</mat-icon>
+        </button>
+    </div>
+    <div class="wrapperForEditor">
+        <editor-editor [exposer]="this.editorExposer" [afterViewInit]="this.afterEditorViewInit"></editor-editor>
+    </div>
+</div>

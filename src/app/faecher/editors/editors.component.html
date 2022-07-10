@@ -1,0 +1,21 @@
+<mat-card *ngIf="this.electron.isElectronApp">
+    <mat-card-title>
+        <h3>Aufschriebe</h3>
+    </mat-card-title>
+    <mat-card-content>
+        <div class="editorContainer">
+            <div *ngFor="let editor of this.editors" class="editor" [ngStyle]="{ 'border-left': this.faecherManager.getBorderStyle(editor.categoryId)}">
+                <div class="text" [routerLink]="'editors/' + editor.id">
+                    {{ editor.name }}
+                </div>
+                <div align="right">
+                    <faecher-category-selector [(categoryId)]="editor.categoryId"></faecher-category-selector>
+                    <button class="remove" color="accent" mat-button (click)="this.removeEditor(editor)"><mat-icon>clear</mat-icon></button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+    <mat-card-actions *ngIf="this.isAbleToAddEditors" align="end">
+        <button (click)="this.newEditor()" mat-flat-button>Hinzufügen</button>
+    </mat-card-actions>
+</mat-card>

@@ -1,0 +1,13 @@
+<h1 mat-dialog-title class="fill">Aufschrieb hinzufügen</h1>
+<div mat-dialog-content class="fill">
+  <div>
+    <mat-form-field appearance="outline" class="fill">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="data.name" class="fill" required cdkFocusInitial>
+    </mat-form-field>
+  </div>
+</div>
+<div mat-dialog-actions align="end" class="fill">
+  <button color="accent" mat-button (click)="onNoClick()">Abbrechen</button>
+  <button [disabled]="data.name == ''" mat-button [mat-dialog-close]="data">Hinzufügen</button>
+</div>

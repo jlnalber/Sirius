@@ -2,5 +2,5 @@
     <img class="loading" src="../../../assets/iconAnimate.svg">
 </div>
 <div *ngIf="this.whiteboard != undefined" class="wrapper">
-    <whiteboard-whiteboard [export]="this.export" [afterViewInit]="this.afterWhiteboardViewInit"></whiteboard-whiteboard>
+    <whiteboard-whiteboard [exposer]="this.boardExposer" [afterViewInit]="this.afterWhiteboardViewInit"></whiteboard-whiteboard>
 </div>

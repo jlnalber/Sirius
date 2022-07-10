@@ -57,9 +57,9 @@ export class WhiteboardComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.export != undefined) {
-      this.export.handler = () => {
-        return this.board.export();
+    if (this.exposer != undefined) {
+      this.exposer.handler = () => {
+        return this.board;
       }
     }
 
@@ -69,7 +69,7 @@ export class WhiteboardComponent implements AfterViewInit {
     }, 0);
   }
 
-  @Input() export: Handler<Whiteboard> | undefined;
+  @Input() exposer: Handler<Board> | undefined;
 
   @HostListener('dragover', ['$event']) onDragOver(evt: DragEvent) {
     evt.preventDefault();

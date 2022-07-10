@@ -1,0 +1,73 @@
+$borderRadius: 16px;
+$padding: 7px;
+
+.wrapperEditor {
+    padding: $padding;
+    border: 1px solid #aaaaaa;
+    border-bottom-right-radius: $borderRadius;
+    border-bottom-left-radius: $borderRadius;
+    background-color: white;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: auto;
+    height: auto;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    position: absolute;
+    outline: none;
+    display: inline-block;
+}
+
+.wrapperEditor:focus {
+    border: 2px solid #0a2472;
+    margin: -1px;
+}
+
+
+$scrollbarWidth: 10px;
+$padScrollbar: $padding + 3px;
+.wrapperEditor::-webkit-scrollbar {
+    width: $scrollbarWidth + $padScrollbar;
+    cursor: pointer;
+}
+
+.wrapperEditor::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.4);
+    border-radius: $scrollbarWidth;
+    border: calc($scrollbarWidth - 1px) solid transparent;
+    background-clip: padding-box;
+    transition: 0.2s all ease-in-out;
+    cursor: pointer;
+}
+
+.wrapperEditor::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0,0,0,0.7);
+    border-radius: $scrollbarWidth;
+    border: calc($padScrollbar / 2) solid transparent;
+    background-clip: padding-box;
+}
+
+/*.wrapperEditor::-webkit-scrollbar-track-piece:start, .wrapperEditor::-webkit-scrollbar-track-piece:end {
+    background: transparent;
+}*/
+
+.outerWrapper {
+    border: none;
+    width: auto;
+    height: auto;
+    margin: 16px;
+    position: absolute;
+}
+
+.wrapperEditor div, p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    margin: 0 0 12px;
+    overflow: hidden;
+}

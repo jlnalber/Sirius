@@ -31,4 +31,10 @@
 
         </faecher-whiteboards>
     </div>
+
+    <div class="marginBottom">
+        <faecher-editors *ngIf="this.einheit" [editors]="this.einheit?.editors" [fach]="this.fach" [einheit]="this.einheit">
+
+        </faecher-editors>
+    </div>
 </div>

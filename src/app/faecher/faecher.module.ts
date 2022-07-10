@@ -1,3 +1,4 @@
+import { EditorModule } from './../editor/editor.module';
 import { MatIconModule } from '@angular/material/icon';
 import { EinheitenComponent, EinheitenDialogComponent } from './einheiten/einheiten.component';
 import { FachComponent } from './fach/fach.component';
@@ -25,6 +26,9 @@ import { WhiteboardsComponent } from './whiteboards/whiteboards.component';
 import { WhiteboardWrapperComponent } from './whiteboard-wrapper/whiteboard-wrapper.component';
 import { AddWhiteboardDialogComponent } from './whiteboards/add-whiteboard-dialog/add-whiteboard-dialog.component';
 import { CategorySelectorComponent } from './category-selector/category-selector.component';
+import { EditorsComponent } from './editors/editors.component';
+import { EditorWrapperComponent } from './editor-wrapper/editor-wrapper.component';
+import { AddEditorDialogComponent } from './editors/add-editor-dialog/add-editor-dialog.component';
 
 const routes: Route[] = [
   {
@@ -53,12 +57,30 @@ const routes: Route[] = [
     component: WhiteboardWrapperComponent
   },
   {
+    path: ':fachid/editors/:editorid',
+    component: EditorWrapperComponent
+  },
+  {
+    path: ':fachid/einheiten/:einheitid/editors/:editorid',
+    component: EditorWrapperComponent
+  },
+  {
     path: ':fachid/whiteboards',
     pathMatch: 'full',
     redirectTo: ':fachid'
   },
   {
     path: ':fachid/einheiten/:einheitid/whiteboards',
+    pathMatch: 'full',
+    redirectTo: ':fachid/einheiten/:einheitid'
+  },
+  {
+    path: ':fachid/editors',
+    pathMatch: 'full',
+    redirectTo: ':fachid'
+  },
+  {
+    path: ':fachid/einheiten/:einheitid/editors',
     pathMatch: 'full',
     redirectTo: ':fachid/einheiten/:einheitid'
   }
@@ -80,11 +102,15 @@ const routes: Route[] = [
     WhiteboardsComponent,
     WhiteboardWrapperComponent,
     AddWhiteboardDialogComponent,
-    CategorySelectorComponent
+    CategorySelectorComponent,
+    EditorsComponent,
+    EditorWrapperComponent,
+    AddEditorDialogComponent
   ],
   imports: [
     CommonModule,
     WhiteboardModule,
+    EditorModule,
     FormsModule,
     MatCardModule,
     MatButtonModule,

@@ -13,6 +13,14 @@ export class ActiveService {
   public set isWhiteboardActive(value: boolean) {
     this._isWhiteboardActive = value;
   }
+
+  private _isEditorActive = false;
+  public get isEditorActive(): boolean {
+    return this._isEditorActive;
+  }
+  public set isEditorActive(value: boolean) {
+    this._isEditorActive = value;
+  }
   
   public isSearchActive = false;
 

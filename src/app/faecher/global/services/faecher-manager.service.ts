@@ -1,10 +1,11 @@
-import { Category } from './../interfaces/fach';
+import { Category, Editor } from './../interfaces/fach';
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { Einheit, Fach, Faecher, File as FileFach, Whiteboard } from '../interfaces/fach';
 import { Exposer } from '../classes/exposer';
 import { colorToHex, getNewId } from '../utils';
 import { defaultWhiteboard, Whiteboard as WhiteboardContent } from '../../../whiteboard/global-whiteboard/interfaces/whiteboard';
+import { defaultEditor, EditorContent } from '../../../editor/global/interfaces/editorContent';
 
 const cacheVariable: string = 'faecherData';
 
@@ -22,6 +23,7 @@ export class FaecherManagerService {
   public closing = false;
 
   public readonly whiteboardSavers: Exposer<WhiteboardSaveConfig> = new Exposer<WhiteboardSaveConfig>();
+  public readonly editorSavers: Exposer<EditorSaveConfig> = new Exposer<EditorSaveConfig>();
 
   constructor(private readonly electron: ElectronService) {
     //load the sirius.config.json file
@@ -37,6 +39,10 @@ export class FaecherManagerService {
 
         this.whiteboardSavers.request(t => {
           this.writeWhiteboard(t);
+        })
+
+        this.editorSavers.request(r => {
+          this.writeEditor(r);
         })
 
         this.electron.ipcRenderer.sendSync('please_close');
@@ -61,7 +67,7 @@ export class FaecherManagerService {
     this.loadData();
   }
 
-  //#region handling files and whiteboards
+  //#region handling files, whiteboards and editors
   public openFile(fach: Fach | string, einheit: Einheit | string | undefined, file: FileFach | string) {
     // Öffne die gegebene Datei
     if (this.electron.isElectronApp) {
@@ -124,7 +130,7 @@ export class FaecherManagerService {
     }
 
     if (this.electron.isElectronApp) {
-      this.electron.ipcRenderer.invoke('write-whiteboard', this.getPathForWhiteboard(fach, einheit, res.id), JSON.stringify(defaultWhiteboard));
+      this.electron.ipcRenderer.invoke('write-json', this.getPathForWhiteboard(fach, einheit, res.id), JSON.stringify(defaultWhiteboard));
     }
 
     return res;
@@ -132,7 +138,7 @@ export class FaecherManagerService {
 
   public writeWhiteboard(config: WhiteboardSaveConfig) {
     if (this.electron.isElectronApp) {
-      this.electron.ipcRenderer.invoke('write-whiteboard', this.getPathForWhiteboard(config.fachId, config.einheitId, config.whiteboardId), JSON.stringify(config.content));
+      this.electron.ipcRenderer.invoke('write-json', this.getPathForWhiteboard(config.fachId, config.einheitId, config.whiteboardId), JSON.stringify(config.content));
     }
   }
 
@@ -171,6 +177,111 @@ export class FaecherManagerService {
   public deleteWhitebaord(fach: string | Fach | undefined, einheit: string | Einheit | undefined, whiteboard: string | Whiteboard | undefined): void {
     if (this.electron.isElectronApp) {
       this.electron.ipcRenderer.invoke('delete', this.getPathForWhiteboard(fach, einheit, whiteboard));
+    }
+  }
+  
+  
+  public addEditor(fach: string | Fach | undefined, einheit: string | Einheit | undefined, editor: string): Editor {
+    // find all of the ids of the whiteboard
+    let ids: string[] = [];
+    for (let fach of this.faecherData.faecher) {
+      for (let editor of fach.editors) {
+        ids.push(editor.id);
+      }
+
+      for (let einheit of fach.einheiten) {
+        for (let editor of einheit.editors) {
+          ids.push(editor.id);
+        }
+      }
+    }
+
+    let res: Editor = {
+      name: editor,
+      id: getNewId(ids)
+    }
+
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('write-json', this.getPathForEditor(fach, einheit, res.id), JSON.stringify(defaultEditor));
+    }
+
+    return res;
+  }
+
+  public writeEditor(config: EditorSaveConfig) {
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('write-json', this.getPathForEditor(config.fachId, config.einheitId, config.editorId), JSON.stringify(config.content));
+    }
+  }
+
+  public async getEditor(fach: string | Fach | undefined, einheit: string | Einheit | undefined, editor: string | Editor | undefined): Promise<EditorContent> {
+    return JSON.parse(await this.electron.ipcRenderer.invoke('request-editor', this.getPathForEditor(fach, einheit, editor))) as EditorContent;
+  }
+
+  public getEditorInterface(fachId: string, einheitId: string | undefined, editorId: string): Editor {
+    let fach: Fach | undefined;
+    for (let f of this.faecherData.faecher) {
+      if (f.id == fachId) {
+        fach = f;
+      }
+    }
+
+    if (fach) {
+      if (einheitId) {
+        let einheit: Einheit | undefined;
+        for (let e of fach.einheiten) {
+          if (e.id == einheitId) {
+            einheit = e;
+          }
+        }
+
+        if (einheit) {
+          for (let editor of einheit.editors) {
+            if (editor.id == editorId) return editor;
+          }
+        }
+      }
+      else {
+        for (let editor of fach.editors) {
+          if (editor.id == editorId) return editor;
+        }
+      }
+    }
+
+    throw 'Editor not found!';
+  }
+
+  public getPathForEditor(fach: string | Fach | undefined, einheit: string | Einheit | undefined, editor: string | Editor | undefined): string {
+    if (fach) {
+      let path = `faecher/${typeof fach == 'string' ? fach : fach.id}/`;
+      if (einheit) {
+        path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
+      }
+      if (editor) {
+        path += `editors/${typeof editor == 'string' ? editor : editor.id}.json`;
+        return path;
+      }
+    }
+    return '';
+  }
+
+  public getLinkToEditor(fach: string | Fach | undefined, einheit: string | Einheit | undefined, editor: string | Editor | undefined): string {
+    if (fach) {
+      let path = `/faecher/${typeof fach == 'string' ? fach : fach.id}/`;
+      if (einheit) {
+        path += `einheiten/${typeof einheit == 'string' ? einheit : einheit.id}/`;
+      }
+      if (editor) {
+        path += `editors/${typeof editor == 'string' ? editor : editor.id}/`;
+        return path;
+      }
+    }
+    return '';
+  }
+
+  public deleteEditor(fach: string | Fach | undefined, einheit: string | Einheit | undefined, editor: string | Editor | undefined): void {
+    if (this.electron.isElectronApp) {
+      this.electron.ipcRenderer.invoke('delete', this.getPathForEditor(fach, einheit, editor));
     }
   }
   //#endregion
@@ -215,7 +326,8 @@ export class FaecherManagerService {
       tasks: [],
       einheiten: [],
       files: [],
-      whiteboards: []
+      whiteboards: [],
+      editors: []
     })
   }
 
@@ -261,7 +373,8 @@ export class FaecherManagerService {
       tasks: [],
       notes: '',
       files: [],
-      whiteboards: []
+      whiteboards: [],
+      editors: []
     };
   }
 
@@ -325,4 +438,11 @@ export interface WhiteboardSaveConfig {
   fachId: string,
   einheitId?: string,
   whiteboardId: string
+}
+
+export interface EditorSaveConfig {
+  content: EditorContent,
+  fachId: string,
+  einheitId?: string,
+  editorId: string
 }

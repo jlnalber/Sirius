@@ -16,6 +16,8 @@ export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
 
   @Input()
   whiteboard: Whiteboard | undefined;
+
+  board?: Board;
   
   afterWhiteboardViewInit = (board: Board) => {
     if (this.whiteboard) {
@@ -23,7 +25,7 @@ export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  export: Handler<Whiteboard> = new Handler();
+  boardExposer: Handler<Board> = new Handler<Board>();
 
   private fachId: string = "";
   private einheitId?: string;
@@ -51,6 +53,13 @@ export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
     }
 
     this.faecherManager.whiteboardSavers.addProvider(this.whiteboardSaveConfigProvider)
+
+    // listen for getting the board
+    this.boardExposer.onHandlerChanged.addListener(() => {
+      if (this.boardExposer.handler) {
+        this.board = this.boardExposer.handler();
+      }
+    })
   }
 
   ngAfterViewInit(): void {
@@ -70,7 +79,7 @@ export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
       fachId: this.fachId,
       einheitId: this.einheitId,
       whiteboardId: this.whiteboardId,
-      content: this.export.handler ? this.export.handler() : defaultWhiteboard
+      content: this.board ? this.board.export() : defaultWhiteboard
     }
   }
 

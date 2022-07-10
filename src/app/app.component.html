@@ -1,5 +1,5 @@
 <div *ngIf="this.faecherManager.loaded && !this.faecherManager.closing" class="main">
-  <mat-toolbar *ngIf="!this.activeWhiteboardService.isWhiteboardActive" color="primary">
+  <mat-toolbar *ngIf="!this.activeWhiteboardService.isWhiteboardActive && !this.activeWhiteboardService.isEditorActive" color="primary">
     <button mat-icon-button class="icon" (click)="this.opened = !this.opened">
       <mat-icon>menu</mat-icon>
     </button>
@@ -20,10 +20,6 @@
         </mat-icon>
       </button>
     </div>
-
-    <button mat-icon-button class="icon" [routerLink]="'camera'">
-      <mat-icon>camera</mat-icon>
-    </button>
 
     <button mat-icon-button class="icon" [routerLink]="'settings'">
       <mat-icon>settings</mat-icon>

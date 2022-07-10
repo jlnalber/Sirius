@@ -1,6 +1,7 @@
 import { FaecherManagerService } from './faecher/global/services/faecher-manager.service';
 import { FaecherModule } from './faecher/faecher.module';
 import { WhiteboardModule } from './whiteboard/whiteboard.module';
+import { EditorModule } from './editor/editor.module';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -65,7 +66,8 @@ import { ConfigComponent } from './settings/config/config.component';
     DragDropModule,
     NgxElectronModule,
     WhiteboardModule,
-    FaecherModule
+    FaecherModule,
+    EditorModule
   ],
   providers: [FaecherManagerService],
   bootstrap: [AppComponent]

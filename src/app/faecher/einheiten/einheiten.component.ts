@@ -60,6 +60,7 @@ export class EinheitenComponent implements OnInit {
     let tasks = einheit.tasks.length;
     let files = einheit.files.length;
     let whiteboards = einheit.whiteboards.length;
+    let editors = einheit.editors.length;
 
     if (tasks == 0) {
       res += 'Keine Aufgaben, '
@@ -85,13 +86,22 @@ export class EinheitenComponent implements OnInit {
       res += `${files} Dateien, `;
     }
     if (whiteboards == 0) {
-      res += 'keine Whiteboards.'
+      res += 'keine Whiteboards und '
     }
     else if (whiteboards == 1) {
-      res += 'ein Whiteboard.'
+      res += 'ein Whiteboard und '
     }
     else {
-      res += `${whiteboards} Whiteboards.`
+      res += `${whiteboards} Whiteboards und `
+    }
+    if (editors == 0) {
+      res += 'keine Aufschriebe.'
+    }
+    else if (editors == 1) {
+      res += 'ein Aufschrieb.'
+    }
+    else {
+      res += `${editors} Aufschriebe.`
     }
 
     return res;

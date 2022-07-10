@@ -1,0 +1,29 @@
+.wrapper {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.topBar {
+    margin: 16px;
+    margin-bottom: -16px;
+    position: relative;
+    flex: 0 1 auto;
+    display: flex;
+}
+
+.topBar mat-form-field {
+    margin-left: 16px;
+    margin-right: 16px;
+    width: 20000px;
+}
+
+.topBar button {
+    margin-top: 10px;
+}
+
+.wrapperForEditor {
+    display: flex;
+    flex: 1 1 auto;
+    position: relative;
+}

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, ChangeDetectorRef } from '@angular/core';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { BasicControl } from 'src/app/whiteboard/global-whiteboard/controls/basicControl';
 
@@ -23,9 +23,10 @@ export class FullscreenControlComponent extends BasicControl implements AfterVie
     else {
       document.documentElement.requestFullscreen();
     }
+    setTimeout(() => this.ref.detectChanges(), 0);
   }
 
-  constructor() {
+  constructor(private readonly ref: ChangeDetectorRef) {
     super();
   }
 

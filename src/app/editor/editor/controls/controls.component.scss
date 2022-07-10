@@ -1,0 +1,59 @@
+$borderRadius: 16px;
+$margin: 5px;
+$size: 50px;
+$buttonSize: $size - 2 * $margin;
+$borderRadiusButtons: 8px;
+
+.controlWrapper {
+    border: 1px solid #aaaaaa;
+    border-top-right-radius: $borderRadius;
+    border-top-left-radius: $borderRadius;
+    background-color: #eee;
+    overflow: hidden;
+    width: auto;
+    height: $size;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    position: absolute;
+    outline: none;
+}
+
+.controlsGroup {
+    margin: $margin;
+    display: inline-block;
+}
+
+$border: 1px solid #aaa;
+button {
+    height: $buttonSize;
+    width: $buttonSize;
+    outline: none;
+    transition: 0.2s all ease-in-out;
+    border-top: $border;
+    border-right: $border;
+    border-bottom: $border;
+    border-left: none;
+    background: radial-gradient(#eee, #ddd);
+}
+
+button:hover, button:focus {
+    background: radial-gradient(#fff, #eee);
+}
+
+button:active {
+    background: radial-gradient(#ddd, #ccc);
+}
+
+button.first {
+    border-top-left-radius: $borderRadiusButtons;
+    border-bottom-left-radius: $borderRadiusButtons;
+    border-left: $border;
+}
+
+button.last {
+    border-top-right-radius: $borderRadiusButtons;
+    border-bottom-right-radius: $borderRadiusButtons;
+}

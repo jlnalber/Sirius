@@ -25,6 +25,7 @@ export class SearchService {
     // Suche in den jeweiligen Kategorien
     results.push(...this.getFaecher(input));
     results.push(...this.getEinheiten(input));
+    results.push(...this.getEditors(input));
     results.push(...this.getWhiteboards(input));
     results.push(...this.getFiles(input));
     results.push(...this.getTasks(input));
@@ -97,6 +98,58 @@ export class SearchService {
             routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
             type: 'einheit'
           })
+        }
+      }
+    }
+
+    return res;
+  }
+
+  private getEditors(s: string): SearchResult[] {
+    // suche nach geeigneten Whiteboards
+    let res: SearchResult[] = [];
+
+    for (let fach of this.faecherManager.faecherData.faecher) {
+
+      // durchsuche das Fach
+      for (let editor of fach.editors) {
+        if (editor.name.toLowerCase().includes(s)) {
+          res.push({
+            header: editor.name,
+            description: `Im Fach '${fach.name}'`,
+            routerLink: this.faecherManager.getLinkToEditor(fach, undefined, editor),
+            type: 'editor'
+          })
+        }
+        else if (editor.categoryId && this.faecherManager.getCategoryNameToId(editor.categoryId)?.toLowerCase().includes(s)) {
+          res.push({
+            header: editor.name,
+            description: `In '${this.faecherManager.getCategoryNameToId(editor.categoryId)}' im Fach '${fach.name}'`,
+            routerLink: this.faecherManager.getLinkToEditor(fach, undefined, editor),
+            type: 'editor'
+          })
+        }
+      }
+
+      // durchsuche die Einheiten
+      for (let einheit of fach.einheiten) {
+        for (let editor of einheit.editors) {
+          if (editor.name.toLowerCase().includes(s)) {
+            res.push({
+              header: editor.name,
+              description: `In der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              routerLink: this.faecherManager.getLinkToEditor(fach, einheit, editor),
+              type: 'editor'
+            })
+          }
+          else if (editor.categoryId && this.faecherManager.getCategoryNameToId(editor.categoryId)?.toLowerCase().includes(s)) {
+            res.push({
+              header: editor.name,
+              description: `In '${this.faecherManager.getCategoryNameToId(editor.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
+              routerLink: this.faecherManager.getLinkToEditor(fach, einheit, editor),
+              type: 'editor'
+            })
+          }
         }
       }
     }
@@ -348,7 +401,7 @@ export class SearchService {
 export interface SearchResult {
   header: string,
   description: string,
-  type: 'fach' | 'einheit' | 'file' | 'task' | 'taskOpen' | 'whiteboard' | 'setting' | 'place',
+  type: 'fach' | 'einheit' | 'file' | 'task' | 'taskOpen' | 'whiteboard' | 'setting' | 'place' | 'editor',
   routerLink: string,
   additionalClickAction?: () => void
 }

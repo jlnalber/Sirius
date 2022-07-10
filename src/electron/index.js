@@ -38,6 +38,13 @@ ipcMain.handle('request-whiteboard', (event, ...args) => {
   return file == '' ? defaultWhiteboard : file;
 })
 
+ipcMain.handle('request-editor', (event, ...args) => {
+  let path = args[0];
+  let file = readFileUTF8(path);
+  const defaultEditor = '{"content":""}';
+  return file == '' ? defaultEditor : file;
+})
+
 ipcMain.handle('write-file', (event, ...args) => {
   let path = args[0];
   let data = args[1];
@@ -50,7 +57,7 @@ ipcMain.handle('write-file', (event, ...args) => {
   return res;
 })
 
-ipcMain.handle('write-whiteboard', (event, ...args) => {
+ipcMain.handle('write-json', (event, ...args) => {
   let path = args[0];
   let data = args[1];
   let res = writeFileUTF8(path, data);

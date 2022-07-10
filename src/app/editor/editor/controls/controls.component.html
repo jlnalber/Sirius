@@ -1,0 +1,63 @@
+<div class="controlWrapper">
+    <div class="controlsGroup">
+        <button class="first" (click)="undo()" title="Rückgängig (Strg+Z)">
+            <mat-icon>undo</mat-icon>
+        </button>
+        <button class="last" (click)="redo()" title="Wiederholen (Strg+Y)">
+            <mat-icon>redo</mat-icon>
+        </button>
+    </div>
+    <div class="controlsGroup">
+        <button class="first" (click)="bold()" title="Fett (Strg+B)">
+            <mat-icon>format_bold</mat-icon>
+        </button>
+        <button (click)="italic()" title="Kursiv (Strg+I)">
+            <mat-icon>format_italic</mat-icon>
+        </button>
+        <button (click)="underline()" title="Unterstreichen (Strg+U)">
+            <mat-icon>format_underlined</mat-icon>
+        </button>
+        <button (click)="strikethrough()" title="Durchstreichen">
+            <mat-icon>format_strikethrough</mat-icon>
+        </button>
+        <button (click)="sup()" title="Hochstellen">
+            <mat-icon>keyboard_arrow_up</mat-icon>
+        </button>
+        <button (click)="sub()" title="Tiefstellen">
+            <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <button class="last" (click)="unformat()" title="Formatierungen entfernen">
+            <mat-icon>format_clear</mat-icon>
+        </button>
+    </div>
+    <div class="controlsGroup">
+        <button class="first" (click)="ul()" title="Ungeordnete Liste">
+            <mat-icon>format_list_bulleted</mat-icon>
+        </button>
+        <button class="last" (click)="ol()" title="Geordnete Liste">
+            <mat-icon>format_list_numbered</mat-icon>
+        </button>
+    </div>
+    <div class="controlsGroup">
+        <button class="first" (click)="alignLeft()" title="Linksbündig">
+            <mat-icon>format_align_left</mat-icon>
+        </button>
+        <button (click)="alignCenter()" title="Zentriert">
+            <mat-icon>format_align_center</mat-icon>
+        </button>
+        <button (click)="alignRight()" title="Rechtsbündig">
+            <mat-icon>format_align_right</mat-icon>
+        </button>
+        <button class="last" (click)="alignJustify()" title="Blocksatz">
+            <mat-icon>format_align_justify</mat-icon>
+        </button>
+    </div>
+    <div class="controlsGroup">
+        <button class="first" (click)="indent()" title="Einzug vergrößern">
+            <mat-icon>format_indent_increase</mat-icon>
+        </button>
+        <button class="last" (click)="outdent()" title="Einzug verkleinern">
+            <mat-icon>format_indent_decrease</mat-icon>
+        </button>
+    </div>
+</div>

@@ -6,7 +6,7 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-add-whiteboard-dialog',
+  selector: 'faecher-add-whiteboard-dialog',
   templateUrl: './add-whiteboard-dialog.component.html',
   styleUrls: ['./add-whiteboard-dialog.component.scss']
 })

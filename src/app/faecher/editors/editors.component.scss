@@ -1,0 +1,32 @@
+$height: 36px;
+
+.editorContainer {
+    padding-top: 10px;
+}
+
+.editor {
+    margin: 5px;
+    padding: 10px;
+    padding-left: 15px;
+    padding-bottom: 0px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 3px #00000066;
+    transition: all 0.2s ease-in-out;
+}
+
+.remove {
+    height: $height;
+    top: -7px;
+}
+
+.text {
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    height: $height;
+    margin-top: 9px;
+    cursor: pointer;
+}

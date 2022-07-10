@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { WhiteboardComponent } from './whiteboard/whiteboard.component';
 import { CameraComponent } from './whiteboard/drawing/controls/file-control/camera/camera.component';
+import { EditorComponent } from './editor/editor/editor.component';
 
 const routes: Routes = [
   {
@@ -29,8 +30,8 @@ const routes: Routes = [
     component: SearchComponent
   },
   {
-    path: 'camera',
-    component: CameraComponent
+    path: 'editor',
+    component: EditorComponent
   },
   {
     path: '**',

@@ -34,6 +34,12 @@
     </div>
 
     <div class="marginBottom">
+        <faecher-editors *ngIf="this.fach" [editors]="this.fach?.editors" [fach]="this.fach">
+
+        </faecher-editors>
+    </div>
+
+    <div class="marginBottom">
         <faecher-einheiten *ngIf="this.fach" [einheiten]="this.fach?.einheiten">
             
         </faecher-einheiten>
