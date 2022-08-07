@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ViewEncapsulation, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ViewEncapsulation, Input, ViewContainerRef } from '@angular/core';
 import { Editor } from '../../global/classes/editor';
 
 @Component({
@@ -10,7 +10,7 @@ import { Editor } from '../../global/classes/editor';
 export class RichTextBoxComponent implements OnInit, AfterViewInit {
 
   @Input() editor!: Editor;
-
+  
   @ViewChild('wrapper') wrapper!: ElementRef;
   wrapperEl?: HTMLDivElement;
 

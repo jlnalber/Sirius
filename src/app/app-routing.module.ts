@@ -29,10 +29,10 @@ const routes: Routes = [
     path: 'search',
     component: SearchComponent
   },
-  {
+  /*{
     path: 'editor',
     component: EditorComponent
-  },
+  },*/
   {
     path: '**',
     component: PageNotFoundComponent

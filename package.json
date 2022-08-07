@@ -10,7 +10,8 @@
     "build-electron": "ng build --base-href . && copy /Y src\\electron\\* dist\\",
     "electron": "npm run build-electron && .\\node_modules\\.bin\\electron dist\\",
     "execute-electron": ".\\node_modules\\.bin\\electron dist\\",
-    "electron-package": "ng build --prod && electron-packager . --no-prune --ignore=/node_modules --ignore=/e2e --ignore=/src --overwrite"
+    "watch-build-electron": "ng build --watch --base-href . && copy /Y src\\electron\\* dist\\ && npm run execute-electron",
+    "setup-electron": "copy /Y src\\electron\\* dist\\ && npm run execute-electron"
   },
   "private": true,
   "dependencies": {
@@ -28,10 +29,14 @@
     "@types/electron": "^1.6.10",
     "angularx-social-login": "^4.0.1",
     "bootstrap": "^5.1.3",
+    "canvg": "^4.0.0",
     "fs": "^0.0.1-security",
+    "jspdf": "^2.5.1",
     "ngx-electron": "^2.2.0",
     "node": "^17.4.0",
+    "pdfjs-dist": "^2.12.313",
     "rxjs": "~7.4.0",
+    "svg2pdf.js": "^2.2.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
@@ -41,6 +46,7 @@
     "@angular/compiler-cli": "~13.1.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.20.42",
+    "@types/pdfjs-dist": "^2.10.378",
     "electron": "^16.0.7",
     "electron-package": "^0.1.0",
     "file-system": "^2.2.2",
@@ -50,6 +56,7 @@
     "karma-coverage": "~2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
+    "ng-packagr": "^13.0.0",
     "typescript": "~4.5.2"
   },
   "browser": {

@@ -5,6 +5,7 @@ import { ControlsComponent } from './editor/controls/controls.component';
 import { RichTextBoxComponent } from './editor/rich-text-box/rich-text-box.component';
 
 import { MatIconModule } from '@angular/material/icon';
+import { WhiteboardWrapperComponent } from './editor/rich-text-box/whiteboard-wrapper/whiteboard-wrapper.component';
 
 
 
@@ -12,7 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
   declarations: [
     EditorComponent,
     ControlsComponent,
-    RichTextBoxComponent
+    RichTextBoxComponent,
+    WhiteboardWrapperComponent
   ],
   imports: [
     CommonModule,

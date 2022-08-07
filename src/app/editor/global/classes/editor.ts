@@ -1,3 +1,4 @@
+import { DynamicComponentCreatorService } from './../services/dynamic-component-creator.service';
 import { RichTextBoxComponent } from '../../editor/rich-text-box/rich-text-box.component';
 import { Event } from 'src/app/whiteboard/global-whiteboard/essentials/event';
 import { EditorComponent } from '../../editor/editor.component';
@@ -11,9 +12,41 @@ export class Editor {
     public readonly onInput: Event = new Event();
     public readonly onImport: Event = new Event();
 
-    constructor() { }
+    constructor(private readonly dynamicComponentCreatorService: DynamicComponentCreatorService) { }
 
     public input(e: KeyboardEvent) {
+
+        if (e.key == 'Enter') {
+            let sel = document.getSelection();
+            let p = sel?.anchorNode instanceof Text ? sel?.anchorNode.parentNode : sel?.anchorNode;
+            console.log(p, typeof p, p instanceof Text);
+            let parent = p == this.richTextBoxComponent?.wrapperEl ? p : p?.parentNode;
+            
+            let newP = document.createElement('p');
+            let br = document.createElement('br');
+            newP.appendChild(br);
+            
+            let parentNodes = parent?.childNodes;
+            if (parentNodes?.item(parentNodes.length - 1) == p) {
+                parent?.appendChild(newP);
+            }
+            else {
+                let index = 0;
+                let i = 0;
+                parentNodes?.forEach(item => {
+                    i++;
+                    if (item == p) {
+                        index = i;
+                    }
+                })
+
+                let afterEl = parentNodes?.item(index);
+                if (afterEl) parent?.insertBefore(newP, afterEl);
+            }
+            
+            e.preventDefault();
+        }
+
         if (e.key == 'Tab') {
             e.preventDefault();
             if (e.shiftKey) {
@@ -110,6 +143,12 @@ export class Editor {
   
     public ol() {
         document.execCommand('insertOrderedList');
+    }
+
+    public addWhiteboard() {
+        if (this.richTextBoxComponent) {
+            //this.dynamicComponentCreatorService.addDynamicComponent(this.richTextBoxComponent.viewContainerRef);
+        }
     }
     // #endregion
 }

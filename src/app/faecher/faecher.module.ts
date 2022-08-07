@@ -56,14 +56,14 @@ const routes: Route[] = [
     path: ':fachid/einheiten/:einheitid/whiteboards/:whiteboardid',
     component: WhiteboardWrapperComponent
   },
-  {
+  /*{
     path: ':fachid/editors/:editorid',
     component: EditorWrapperComponent
   },
   {
     path: ':fachid/einheiten/:einheitid/editors/:editorid',
     component: EditorWrapperComponent
-  },
+  },*/
   {
     path: ':fachid/whiteboards',
     pathMatch: 'full',

@@ -88,4 +88,8 @@ export class ControlsComponent implements OnInit, AfterViewInit {
     this.editor.ol();
   }
 
+  addWhiteboard() {
+    this.editor.addWhiteboard();
+  }
+
 }
