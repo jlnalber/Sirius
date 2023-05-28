@@ -1,25 +1,25 @@
 <div class="einheitenContainer">
-    <h2>Einheiten</h2>
+    <h2>Gruppen</h2>
     <button mat-button class="floatRight" (click)="this.openDialog()">Hinzufügen</button>
-    
+
     <div class="accordionContainer">
-        <mat-accordion *ngIf="this.einheiten?.length">
-            <mat-expansion-panel *ngFor="let einheit of this.einheiten">
+        <mat-accordion *ngIf="this.oberElement?.gruppen?.length">
+            <mat-expansion-panel *ngFor="let untergruppe of this.untergruppenObjects">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        {{ einheit.topic }}
+                        {{ untergruppe.name }}
                     </mat-panel-title>
                     <mat-panel-description>
-                        {{ einheit.description }}
+                        {{ untergruppe.description }}
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
                 <div class="marginBottom">
-                    <button mat-icon-button class="floatRight" [routerLink]="'einheiten/' + einheit.id">
+                    <button mat-icon-button class="floatRight" [routerLink]="'/mappen/gruppen/' + untergruppe.id">
                         <mat-icon>open_in_new</mat-icon>
                     </button>
                     <p>
-                        {{ this.getText(einheit) }}
+                        {{ this.getText(untergruppe) }}
                     </p>
                 </div>
             </mat-expansion-panel>

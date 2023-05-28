@@ -1,4 +1,4 @@
-import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
+import { MappenManagerService } from '../../faecher/global/services/mappen-manager.service';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -23,8 +23,8 @@ export class SearchService {
     let input = this.input.toLowerCase().trim();
 
     // Suche in den jeweiligen Kategorien
-    results.push(...this.getFaecher(input));
-    results.push(...this.getEinheiten(input));
+    results.push(...this.getMappen(input));
+    results.push(...this.getGruppen(input));
     results.push(...this.getEditors(input));
     results.push(...this.getWhiteboards(input));
     results.push(...this.getFiles(input));
@@ -35,33 +35,25 @@ export class SearchService {
     this.searchResults = results;
   }
 
-  private getFaecher(s: string): SearchResult[] {
+  private getMappen(s: string): SearchResult[] {
     // suche nach geeigneten Fächern
     let res: SearchResult[] = [];
 
-    for (let fach of this.faecherManager.faecherData.faecher) {
-      if (fach.name.toLowerCase().includes(s)) {
+    for (let mappe of this.faecherManager.mappenData.mappen) {
+      if (mappe.title.toLowerCase().includes(s)) {
         res.push({
-          header: fach.name, 
+          header: mappe.title,
           description: '',
-          routerLink: this.faecherManager.getLinkToFach(fach),
-          type: 'fach'
+          routerLink: this.faecherManager.getLinkToMappe(mappe),
+          type: 'mappe'
         });
       }
-      else if (fach.description.toLowerCase().includes(s)) {
+      else if (mappe.description.toLowerCase().includes(s)) {
         res.push({
-          header: fach.name,
-          description: fach.description,
-          routerLink: this.faecherManager.getLinkToFach(fach),
-          type: 'fach'
-        })
-      }
-      else if (fach.notes.toLowerCase().includes(s)) {
-        res.push({
-          header: fach.name,
-          description: fach.notes,
-          routerLink: this.faecherManager.getLinkToFach(fach),
-          type: 'fach'
+          header: mappe.title,
+          description: mappe.description,
+          routerLink: this.faecherManager.getLinkToMappe(mappe),
+          type: 'mappe'
         })
       }
     }
@@ -69,36 +61,34 @@ export class SearchService {
     return res;
   }
 
-  private getEinheiten(s: string): SearchResult[] {
-    // suche nach geeigneten Einheiten
+  private getGruppen(s: string): SearchResult[] {
+    // suche nach geeigneten Fächern
     let res: SearchResult[] = [];
 
-    for (let fach of this.faecherManager.faecherData.faecher) {
-      for (let einheit of fach.einheiten) {
-        if (einheit.topic.toLowerCase().includes(s)) {
-          res.push({
-            header: einheit.topic,
-            description: `Im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
-            type: 'einheit'
-          });
-        }
-        else if (einheit.description.toLowerCase().includes(s)) {
-          res.push({
-            header: einheit.topic,
-            description: einheit.description,
-            routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
-            type: 'einheit'
-          })
-        }
-        else if (einheit.notes.toLowerCase().includes(s)) {
-          res.push({
-            header: einheit.topic,
-            description: einheit.notes,
-            routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
-            type: 'einheit'
-          })
-        }
+    for (let gruppe of this.faecherManager.mappenData.gruppen) {
+      if (gruppe.name.toLowerCase().includes(s)) {
+        res.push({
+          header: gruppe.name,
+          description: '',
+          routerLink: this.faecherManager.getLinkToGruppe(gruppe),
+          type: 'gruppe'
+        });
+      }
+      else if (gruppe.description.toLowerCase().includes(s)) {
+        res.push({
+          header: gruppe.name,
+          description: gruppe.description,
+          routerLink: this.faecherManager.getLinkToGruppe(gruppe),
+          type: 'gruppe'
+        })
+      }
+      else if (gruppe.notes.toLowerCase().includes(s)) {
+        res.push({
+          header: gruppe.name,
+          description: gruppe.notes,
+          routerLink: this.faecherManager.getLinkToGruppe(gruppe),
+          type: 'gruppe'
+        })
       }
     }
 
@@ -109,47 +99,25 @@ export class SearchService {
     // suche nach geeigneten Whiteboards
     let res: SearchResult[] = [];
 
-    for (let fach of this.faecherManager.faecherData.faecher) {
+    for (let gruppe of this.faecherManager.mappenData.gruppen) {
 
       // durchsuche das Fach
-      for (let editor of fach.editors) {
+      for (let editor of gruppe.editors) {
         if (editor.name.toLowerCase().includes(s)) {
           res.push({
             header: editor.name,
-            description: `Im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToEditor(fach, undefined, editor),
+            description: `Im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToEditor(gruppe, editor),
             type: 'editor'
           })
         }
         else if (editor.categoryId && this.faecherManager.getCategoryNameToId(editor.categoryId)?.toLowerCase().includes(s)) {
           res.push({
             header: editor.name,
-            description: `In '${this.faecherManager.getCategoryNameToId(editor.categoryId)}' im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToEditor(fach, undefined, editor),
+            description: `In '${this.faecherManager.getCategoryNameToId(editor.categoryId)}' im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToEditor(gruppe, editor),
             type: 'editor'
           })
-        }
-      }
-
-      // durchsuche die Einheiten
-      for (let einheit of fach.einheiten) {
-        for (let editor of einheit.editors) {
-          if (editor.name.toLowerCase().includes(s)) {
-            res.push({
-              header: editor.name,
-              description: `In der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToEditor(fach, einheit, editor),
-              type: 'editor'
-            })
-          }
-          else if (editor.categoryId && this.faecherManager.getCategoryNameToId(editor.categoryId)?.toLowerCase().includes(s)) {
-            res.push({
-              header: editor.name,
-              description: `In '${this.faecherManager.getCategoryNameToId(editor.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToEditor(fach, einheit, editor),
-              type: 'editor'
-            })
-          }
         }
       }
     }
@@ -161,47 +129,25 @@ export class SearchService {
     // suche nach geeigneten Whiteboards
     let res: SearchResult[] = [];
 
-    for (let fach of this.faecherManager.faecherData.faecher) {
+    for (let gruppe of this.faecherManager.mappenData.gruppen) {
 
       // durchsuche das Fach
-      for (let whiteboard of fach.whiteboards) {
+      for (let whiteboard of gruppe.whiteboards) {
         if (whiteboard.name.toLowerCase().includes(s)) {
           res.push({
             header: whiteboard.name,
-            description: `Im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToWhiteboard(fach, undefined, whiteboard),
+            description: `Im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToWhiteboard(gruppe, whiteboard),
             type: 'whiteboard'
           })
         }
         else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId)?.toLowerCase().includes(s)) {
           res.push({
             header: whiteboard.name,
-            description: `In '${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}' im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToWhiteboard(fach, undefined, whiteboard),
+            description: `In '${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}' im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToWhiteboard(gruppe, whiteboard),
             type: 'whiteboard'
           })
-        }
-      }
-
-      // durchsuche die Einheiten
-      for (let einheit of fach.einheiten) {
-        for (let whiteboard of einheit.whiteboards) {
-          if (whiteboard.name.toLowerCase().includes(s)) {
-            res.push({
-              header: whiteboard.name,
-              description: `In der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToWhiteboard(fach, einheit, whiteboard),
-              type: 'whiteboard'
-            })
-          }
-          else if (whiteboard.categoryId && this.faecherManager.getCategoryNameToId(whiteboard.categoryId)?.toLowerCase().includes(s)) {
-            res.push({
-              header: whiteboard.name,
-              description: `In '${this.faecherManager.getCategoryNameToId(whiteboard.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToWhiteboard(fach, einheit, whiteboard),
-              type: 'whiteboard'
-            })
-          }
         }
       }
     }
@@ -213,51 +159,27 @@ export class SearchService {
     // suche nach geeigneten Dateien
     let res: SearchResult[] = [];
 
-    for (let fach of this.faecherManager.faecherData.faecher) {
+    for (let gruppe of this.faecherManager.mappenData.gruppen) {
 
       // durchsuche das Fach
-      for (let file of fach.files) {
+      for (let file of gruppe.files) {
         if (file.name.toLowerCase().includes(s)) {
           res.push({
             header: file.name,
-            description: `Im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToFach(fach),
+            description: `Im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToGruppe(gruppe),
             type: 'file',
-            additionalClickAction: () => { this.faecherManager.openFile(fach, undefined, file); }
+            additionalClickAction: () => { this.faecherManager.openFile(gruppe, file); }
           })
         }
         else if (file.categoryId && this.faecherManager.getCategoryNameToId(file.categoryId)?.toLowerCase().includes(s)) {
           res.push({
             header: file.name,
-            description: `In '${this.faecherManager.getCategoryNameToId(file.categoryId)}' im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToFach(fach),
+            description: `In '${this.faecherManager.getCategoryNameToId(file.categoryId)}' im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToGruppe(gruppe),
             type: 'file',
-            additionalClickAction: () => { this.faecherManager.openFile(fach, undefined, file); }
+            additionalClickAction: () => { this.faecherManager.openFile(gruppe, file); }
           })
-        }
-      }
-
-      // durchsuche die Einheiten
-      for (let einheit of fach.einheiten) {
-        for (let file of einheit.files) {
-          if (file.name.toLowerCase().includes(s)) {
-            res.push({
-              header: file.name,
-              description: `In der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
-              type: 'file',
-              additionalClickAction: () => { this.faecherManager.openFile(fach, einheit, file); }
-            })
-          }
-          else if (file.categoryId && this.faecherManager.getCategoryNameToId(file.categoryId)?.toLowerCase().includes(s)) {
-            res.push({
-              header: file.name,
-              description: `In '${this.faecherManager.getCategoryNameToId(file.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
-              type: 'file',
-              additionalClickAction: () => { this.faecherManager.openFile(fach, einheit, file); }
-            })
-          }
         }
       }
     }
@@ -271,63 +193,33 @@ export class SearchService {
 
     const open = 'offen'.toLowerCase();
 
-    for (let fach of this.faecherManager.faecherData.faecher) {
+    for (let gruppe of this.faecherManager.mappenData.gruppen) {
 
       // durchsuche das Fach
-      for (let task of fach.tasks) {
+      for (let task of gruppe.tasks) {
         if (task.description.toLowerCase().includes(s)) {
           res.push({
             header: task.description,
-            description: `Im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToFach(fach),
+            description: `Im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToGruppe(gruppe),
             type: task.closed ? 'task' : 'taskOpen'
           })
         }
         else if (task.categoryId && this.faecherManager.getCategoryNameToId(task.categoryId)?.toLowerCase().includes(s)) {
           res.push({
             header: task.description,
-            description: `In '${this.faecherManager.getCategoryNameToId(task.categoryId)}' im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToFach(fach),
+            description: `In '${this.faecherManager.getCategoryNameToId(task.categoryId)}' im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToGruppe(gruppe),
             type: task.closed ? 'task' : 'taskOpen'
           })
         }
         else if (!task.closed && open.includes(s)) {
           res.push({
             header: task.description,
-            description: `Offene Aufgabe im Fach '${fach.name}'`,
-            routerLink: this.faecherManager.getLinkToFach(fach),
+            description: `Offene Aufgabe im Fach '${gruppe.name}'`,
+            routerLink: this.faecherManager.getLinkToGruppe(gruppe),
             type: task.closed ? 'task' : 'taskOpen'
           })
-        }
-      }
-
-      // durchsuche die Einheiten
-      for (let einheit of fach.einheiten) {
-        for (let task of einheit.tasks) {
-          if (task.description.toLowerCase().includes(s)) {
-            res.push({
-              header: task.description,
-              description: `In der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
-              type: task.closed ? 'task' : 'taskOpen'
-            })
-          }
-          else if (task.categoryId && this.faecherManager.getCategoryNameToId(task.categoryId)?.toLowerCase().includes(s)) {
-            res.push({
-              header: task.description,
-              description: `In '${this.faecherManager.getCategoryNameToId(task.categoryId)}' in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
-              type: task.closed ? 'task' : 'taskOpen'
-            })
-          }
-          else if (!task.closed && open.includes(s)) {
-            res.push({
-              header: task.description,
-              description: `Offene Aufgabe in der Einheit '${einheit.topic}' im Fach '${fach.name}'`,
-              routerLink: this.faecherManager.getLinkToEinheit(fach, einheit),
-              type: task.closed ? 'task' : 'taskOpen'
-            })
-          }
         }
       }
     }
@@ -352,7 +244,7 @@ export class SearchService {
       }
     }
 
-    for (let c of this.faecherManager.faecherData.categories) {
+    for (let c of this.faecherManager.mappenData.categories) {
       if (c.name.toLowerCase().includes(s)) {
         res.push({
           header: c.name,
@@ -371,7 +263,7 @@ export class SearchService {
     const places: { name: string, link: string }[] = [
       {
         name: 'Übersicht',
-        link: '/faecher/'
+        link: '/mappen/'
       },
       {
         name: 'Einstellungen',
@@ -395,13 +287,13 @@ export class SearchService {
     return res;
   }
 
-  constructor(private readonly faecherManager: FaecherManagerService) { }
+  constructor(private readonly faecherManager: MappenManagerService) { }
 }
 
 export interface SearchResult {
   header: string,
   description: string,
-  type: 'fach' | 'einheit' | 'file' | 'task' | 'taskOpen' | 'whiteboard' | 'setting' | 'place' | 'editor',
+  type: 'mappe' | 'gruppe' | 'file' | 'task' | 'taskOpen' | 'whiteboard' | 'setting' | 'place' | 'editor',
   routerLink: string,
   additionalClickAction?: () => void
 }

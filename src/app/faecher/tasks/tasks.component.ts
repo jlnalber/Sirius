@@ -1,4 +1,4 @@
-import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
+import { MappenManagerService } from '../global/services/mappen-manager.service';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { Task } from 'src/app/faecher/global/interfaces/fach';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -9,14 +9,14 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
   styleUrls: ['./tasks.component.scss']
 })
 export class TasksComponent implements OnInit {
-  
+
   @Input()
   tasks: Task[] | undefined = [];
-  
+
   @Input()
   isAbleToAddTasks: boolean = true;
 
-  constructor(public dialog: MatDialog, public readonly faecherManager: FaecherManagerService) { }
+  constructor(public dialog: MatDialog, public readonly faecherManager: MappenManagerService) { }
 
   ngOnInit(): void {
 
@@ -37,7 +37,7 @@ export class TasksComponent implements OnInit {
     }
     return false;
   }
-  
+
   public openDialog(): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '270px',

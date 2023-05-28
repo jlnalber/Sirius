@@ -1,4 +1,4 @@
-import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
+import { MappenManagerService } from '../global/services/mappen-manager.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
@@ -16,15 +16,13 @@ export class FilesComponent implements OnInit {
   @Input()
   isAbleToAddFiles: boolean = true;
 
-  fach: string = '';
-  einheit: string | undefined;
+  gruppe: string = '';
 
 
-  constructor(public readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, public readonly faecherManager: FaecherManagerService) { 
+  constructor(public readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, public readonly faecherManager: MappenManagerService) {
     if (this.electron.isElectronApp) {
       this.activeRoute.params.subscribe((params: any) => {
-        this.fach = params.fachid
-        this.einheit = params.einheitid;
+        this.gruppe = params.fachid;
       })
     }
   }
@@ -38,7 +36,7 @@ export class FilesComponent implements OnInit {
     if (index != undefined && index != -1) {
       this.files?.splice(index, 1);
 
-      this.faecherManager.deleteFile(this.fach, this.einheit, file);
+      this.faecherManager.deleteFile(this.gruppe, file);
 
       return true;
     }
@@ -47,7 +45,7 @@ export class FilesComponent implements OnInit {
 
   public openFile(file: FileFach): void {
     console.log('opening')
-    this.faecherManager.openFile(this.fach, this.einheit, file);
+    this.faecherManager.openFile(this.gruppe, file);
   }
 
   @HostListener('dragover', ['$event']) onDragOver(evt: DragEvent) {
@@ -77,9 +75,9 @@ export class FilesComponent implements OnInit {
   }
 
   private async addFile(file: File | undefined): Promise<void> {
-    this.files?.push({ name: await this.faecherManager.addFile(this.fach, this.einheit, file) });
+    this.files?.push({ name: await this.faecherManager.addFile(this.gruppe, file) });
   }
-  
+
   private openFiles(files: FileList | null | undefined): void {
     try {
       if (files) {
@@ -87,10 +85,10 @@ export class FilesComponent implements OnInit {
           const file = files.item(i);
 
           if (file) {
-            this.addFile(file); 
+            this.addFile(file);
           }
         }
-      }    
+      }
     }
     catch { }
   }

@@ -1,6 +1,5 @@
 import { BottomControl } from 'src/app/whiteboard/global-whiteboard/controls/bottomControl';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { BasicControl } from 'dist/whiteboard/lib/global-whiteboard/controls/basicControl';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 
 type Part = [() => void, () => boolean, string];
@@ -30,7 +29,7 @@ export class ToolsControlComponent extends BottomControl implements AfterViewIni
 
   @Input() board!: Board;
 
-  constructor() { 
+  constructor() {
     super();
   }
 

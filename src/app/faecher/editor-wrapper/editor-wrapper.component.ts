@@ -4,7 +4,7 @@ import { ActiveService } from './../../global/services/active-whiteboard-service
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 import { ActivatedRoute } from '@angular/router';
-import { EditorSaveConfig, FaecherManagerService } from '../global/services/faecher-manager.service';
+import { EditorSaveConfig, MappenManagerService } from '../global/services/mappen-manager.service';
 import { Editor } from 'src/app/editor/global/classes/editor';
 import { Editor as EditorSaver } from '../../faecher/global/interfaces/fach';
 
@@ -30,7 +30,7 @@ export class EditorWrapperComponent implements OnInit, OnDestroy {
   }
 
   public editorContent?: EditorContent;
-  
+
   afterEditorViewInit = (editor: Editor) => {
     if (this.editorContent) {
       editor.import(this.editorContent);
@@ -38,27 +38,25 @@ export class EditorWrapperComponent implements OnInit, OnDestroy {
   }
 
 
-  private fachId: string = "";
-  private einheitId?: string;
+  private gruppeId: string = "";
   private editorId: string = "";
 
   private editorSaveConfigProvider: () => EditorSaveConfig = () => {
     return this.getEditorSaveConfig();
   }
 
-  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService, private readonly activeService: ActiveService, public readonly ref: ChangeDetectorRef) {
+  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: MappenManagerService, private readonly activeService: ActiveService, public readonly ref: ChangeDetectorRef) {
     this.activeService.isEditorActive = true;
-    
+
     // get the editor
     if (this.electron.isElectronApp) {
       this.activeRoute.params.subscribe(async (params: any) => {
-        this.fachId = params.fachid;
-        this.einheitId = params.einheitid;
+        this.gruppeId = params.fachid;
         this.editorId = params.editorid;
 
         try {
-          this.editorContent = await this.faecherManager.getEditor(this.fachId, this.einheitId, this.editorId);
-          this.editorSaver = this.faecherManager.getEditorInterface(this.fachId, this.einheitId, this.editorId);
+          this.editorContent = await this.faecherManager.getEditor(this.gruppeId, this.editorId);
+          this.editorSaver = this.faecherManager.getEditorInterface(this.gruppeId, this.editorId);
         }
         catch { }
       })
@@ -88,8 +86,7 @@ export class EditorWrapperComponent implements OnInit, OnDestroy {
 
   getEditorSaveConfig(): EditorSaveConfig {
     return {
-      fachId: this.fachId,
-      einheitId: this.einheitId,
+      gruppeId: this.gruppeId,
       editorId: this.editorId,
       content: this.editor ? this.editor.export() : defaultEditor
     }

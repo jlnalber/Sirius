@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FaecherManagerService } from './faecher-manager.service';
+import { MappenManagerService } from './mappen-manager.service';
 
 describe('FaecherManagerService', () => {
-  let service: FaecherManagerService;
+  let service: MappenManagerService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FaecherManagerService);
+    service = TestBed.inject(MappenManagerService);
   });
 
   it('should be created', () => {

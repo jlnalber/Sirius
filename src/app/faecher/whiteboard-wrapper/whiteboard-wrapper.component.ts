@@ -1,6 +1,6 @@
 import { ActiveService } from '../../global/services/active-whiteboard-service.service';
 import { Handler } from './../../whiteboard/global-whiteboard/essentials/handler';
-import { FaecherManagerService, WhiteboardSaveConfig } from 'src/app/faecher/global/services/faecher-manager.service';
+import { MappenManagerService, WhiteboardSaveConfig } from '../global/services/mappen-manager.service';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from 'ngx-electron';
 import { Board } from './../../whiteboard/global-whiteboard/board/board';
@@ -18,7 +18,7 @@ export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
   whiteboard: Whiteboard | undefined;
 
   board?: Board;
-  
+
   afterWhiteboardViewInit = (board: Board) => {
     if (this.whiteboard) {
       board.import(this.whiteboard);
@@ -27,25 +27,23 @@ export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
 
   boardExposer: Handler<Board> = new Handler<Board>();
 
-  private fachId: string = "";
-  private einheitId?: string;
+  private gruppeId: string = "";
   private whiteboardId: string = "";
 
   private whiteboardSaveConfigProvider: () => WhiteboardSaveConfig = () => {
     return this.getWhiteboardSaveConfig();
   }
 
-  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: FaecherManagerService, private readonly activeService: ActiveService) { 
+  constructor(private readonly electron: ElectronService, private readonly activeRoute: ActivatedRoute, private readonly faecherManager: MappenManagerService, private readonly activeService: ActiveService) {
     this.activeService.isWhiteboardActive = true;
-    
+
     // get the whiteboard
     if (this.electron.isElectronApp) {
       this.activeRoute.params.subscribe(async (params: any) => {
-        this.fachId = params.fachid;
-        this.einheitId = params.einheitid;
+        this.gruppeId = params.fachid;
         this.whiteboardId = params.whiteboardid;
 
-        this.whiteboard = await this.faecherManager.getWhiteboard(this.fachId, this.einheitId, this.whiteboardId);
+        this.whiteboard = await this.faecherManager.getWhiteboard(this.gruppeId, this.whiteboardId);
         /*this.electron.ipcRenderer.invoke('request-whiteboard', this.path).then((value: any) => {
           this.whiteboard = value;
         });*/
@@ -76,8 +74,7 @@ export class WhiteboardWrapperComponent implements AfterViewInit, OnDestroy {
 
   getWhiteboardSaveConfig(): WhiteboardSaveConfig {
     return {
-      fachId: this.fachId,
-      einheitId: this.einheitId,
+      gruppeId: this.gruppeId,
       whiteboardId: this.whiteboardId,
       content: this.board ? this.board.export() : defaultWhiteboard
     }

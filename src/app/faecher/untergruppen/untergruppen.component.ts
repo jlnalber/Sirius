@@ -1,32 +1,38 @@
-import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
+import { MappenManagerService } from '../global/services/mappen-manager.service';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Einheit } from 'src/app/faecher/global/interfaces/fach';
+import {Gruppe} from "../global/interfaces/fach";
 
 @Component({
-  selector: 'faecher-einheiten',
-  templateUrl: './einheiten.component.html',
-  styleUrls: ['./einheiten.component.scss']
+  selector: 'faecher-untergruppen',
+  templateUrl: './untergruppen.component.html',
+  styleUrls: ['./untergruppen.component.scss']
 })
-export class EinheitenComponent implements OnInit {
+export class UntergruppenComponent implements OnInit {
   @Input()
-  einheiten: Einheit[] | undefined = [];
+  oberElement: { gruppen: string[] } | undefined = undefined;
 
-  constructor(public dialog: MatDialog, private readonly faecherService: FaecherManagerService) { }
+  public get untergruppenObjects(): Gruppe[] {
+    return this.oberElement?.gruppen.map(s => this.faecherService.getGruppeById(s)).filter(g => g !== undefined) as Gruppe[] | undefined ?? [];
+  }
+
+  constructor(public dialog: MatDialog, private readonly faecherService: MappenManagerService) { }
 
   ngOnInit(): void {
   }
 
   public addEinheit(topic: string, description: string): void {
-    this.einheiten?.push(this.faecherService.getEinheitFromData(topic, description));
+    if (this.oberElement) {
+      this.faecherService.getGruppeFromData(this.oberElement, topic, description);
+    }
   }
-  
+
   public openDialog(): void {
-    const dialogRef = this.dialog.open(EinheitenDialogComponent, {
+    const dialogRef = this.dialog.open(UntergruppenDialogComponent, {
       width: '500px',
-      data: { 
+      data: {
         topic: '',
-        description: '' 
+        description: ''
       }
     });
 
@@ -38,35 +44,35 @@ export class EinheitenComponent implements OnInit {
     });
   }
 
-  getText(einheit: Einheit): string {
+  getText(gruppe: Gruppe): string {
 
-    let getUnfinishedTasksLength = (einheit: Einheit): number => {
+    let getUnfinishedTasksLength = (gruppe: Gruppe): number => {
       let counter = 0;
-      for (let task of einheit.tasks) {
+      for (let task of gruppe.tasks) {
         if (!task.closed) counter++;
       }
       return counter;
     }
-  
-    let getFinishedTasksLength = (einheit: Einheit): number => {
+
+    let getFinishedTasksLength = (gruppe: Gruppe): number => {
       let counter = 0;
-      for (let task of einheit.tasks) {
+      for (let task of gruppe.tasks) {
         if (task.closed) counter++;
       }
       return counter;
     }
 
     let res = '';
-    let tasks = einheit.tasks.length;
-    let files = einheit.files.length;
-    let whiteboards = einheit.whiteboards.length;
-    let editors = einheit.editors.length;
+    let tasks = gruppe.tasks.length;
+    let files = gruppe.files.length;
+    let whiteboards = gruppe.whiteboards.length;
+    let editors = gruppe.editors.length;
 
     if (tasks == 0) {
       res += 'Keine Aufgaben, '
     }
     else if (tasks == 1) {
-      if (getUnfinishedTasksLength(einheit) == 1) {
+      if (getUnfinishedTasksLength(gruppe) == 1) {
         res += 'Eine offene Aufgabe, ';
       }
       else {
@@ -74,7 +80,7 @@ export class EinheitenComponent implements OnInit {
       }
     }
     else {
-      res += `${tasks} Aufgaben, davon ${getUnfinishedTasksLength(einheit)} noch offen und ${getFinishedTasksLength(einheit)} abgeschlossen, `;
+      res += `${tasks} Aufgaben, davon ${getUnfinishedTasksLength(gruppe)} noch offen und ${getFinishedTasksLength(gruppe)} abgeschlossen, `;
     }
     if (files == 0) {
       res += 'keine Dateien, '
@@ -116,13 +122,13 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'faecher-einheiten-dialog',
-  templateUrl: 'einheiten-dialog.html',
-  styleUrls: ['einheiten-dialog.scss']
+  selector: 'faecher-untergruppen-dialog',
+  templateUrl: 'untergruppen-dialog.html',
+  styleUrls: ['untergruppen-dialog.scss']
 })
-export class EinheitenDialogComponent {
+export class UntergruppenDialogComponent {
   constructor(
-    public dialogRef: MatDialogRef<EinheitenDialogComponent>,
+    public dialogRef: MatDialogRef<UntergruppenDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
   ) {}
 

@@ -1,10 +1,10 @@
 import { EditorModule } from './../editor/editor.module';
 import { MatIconModule } from '@angular/material/icon';
-import { EinheitenComponent, EinheitenDialogComponent } from './einheiten/einheiten.component';
-import { FachComponent } from './fach/fach.component';
+import { UntergruppenComponent, UntergruppenDialogComponent } from './untergruppen/untergruppen.component';
+import { GruppeComponent } from './gruppe/gruppe.component';
 import { FilesComponent } from './files/files.component';
 import { TasksComponent, TaskDialogComponent } from './tasks/tasks.component';
-import { FaecherComponent, FaecherDialogComponent } from './faecher.component';
+import { MappenComponent, MappenDialogComponent } from './mappen.component';
 import { NgxElectronModule } from 'ngx-electron';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -20,7 +20,6 @@ import { WhiteboardModule } from '../whiteboard/whiteboard.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AcceptDialogComponent } from './accept-dialog/accept-dialog.component';
-import { EinheitComponent } from './einheit/einheit.component';
 import { Route, RouterModule } from '@angular/router';
 import { WhiteboardsComponent } from './whiteboards/whiteboards.component';
 import { WhiteboardWrapperComponent } from './whiteboard-wrapper/whiteboard-wrapper.component';
@@ -29,83 +28,66 @@ import { CategorySelectorComponent } from './category-selector/category-selector
 import { EditorsComponent } from './editors/editors.component';
 import { EditorWrapperComponent } from './editor-wrapper/editor-wrapper.component';
 import { AddEditorDialogComponent } from './editors/add-editor-dialog/add-editor-dialog.component';
+import { MappeComponent } from './mappe/mappe.component';
 
 const routes: Route[] = [
   {
     path: '',
-    component: FaecherComponent
+    component: MappenComponent
   },
   {
-    path: ':fachid',
-    component: FachComponent
+    path: ':mappeid',
+    component: MappeComponent
   },
   {
-    path: ':fachid/einheiten/:einheitid',
-    component: EinheitComponent
-  },
-  {
-    path: ':fachid/einheiten',
+    path: 'gruppen',
     pathMatch: 'full',
-    redirectTo: ':fachid'
+    redirectTo: '/mappen'
   },
   {
-    path: ':fachid/whiteboards/:whiteboardid',
-    component: WhiteboardWrapperComponent
+    path: 'gruppen/:gruppeid',
+    component: GruppeComponent
   },
   {
-    path: ':fachid/einheiten/:einheitid/whiteboards/:whiteboardid',
+    path: 'whiteboards/:whiteboardid',
     component: WhiteboardWrapperComponent
   },
   /*{
-    path: ':fachid/editors/:editorid',
-    component: EditorWrapperComponent
-  },
-  {
-    path: ':fachid/einheiten/:einheitid/editors/:editorid',
+    path: 'editors/:editorid',
     component: EditorWrapperComponent
   },*/
   {
-    path: ':fachid/whiteboards',
+    path: 'whiteboards',
     pathMatch: 'full',
-    redirectTo: ':fachid'
-  },
+    redirectTo: '/mappen'
+  },/*
   {
-    path: ':fachid/einheiten/:einheitid/whiteboards',
+    path: 'editors',
     pathMatch: 'full',
-    redirectTo: ':fachid/einheiten/:einheitid'
-  },
-  {
-    path: ':fachid/editors',
-    pathMatch: 'full',
-    redirectTo: ':fachid'
-  },
-  {
-    path: ':fachid/einheiten/:einheitid/editors',
-    pathMatch: 'full',
-    redirectTo: ':fachid/einheiten/:einheitid'
-  }
+    redirectTo: '/mappen'
+  },*/
 ]
 
 
 @NgModule({
   declarations: [
-    FaecherComponent,
-    FaecherDialogComponent,
+    MappenComponent,
+    MappenDialogComponent,
     TasksComponent,
     TaskDialogComponent,
     FilesComponent,
-    FachComponent,
-    EinheitenComponent,
-    EinheitenDialogComponent,
+    GruppeComponent,
+    UntergruppenComponent,
+    UntergruppenDialogComponent,
     AcceptDialogComponent,
-    EinheitComponent,
     WhiteboardsComponent,
     WhiteboardWrapperComponent,
     AddWhiteboardDialogComponent,
     CategorySelectorComponent,
     EditorsComponent,
     EditorWrapperComponent,
-    AddEditorDialogComponent
+    AddEditorDialogComponent,
+    MappeComponent
   ],
   imports: [
     CommonModule,
@@ -127,7 +109,7 @@ const routes: Route[] = [
   ],
   providers: [],
   exports: [
-    FaecherComponent,
+    MappenComponent,
     RouterModule
   ]
 })

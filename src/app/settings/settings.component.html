@@ -1,7 +1,7 @@
 <div class="settingsContainer">
     <h1>Einstellungen</h1>
     <!--    <h2 id="Speicherorte">Speicherorte</h2>-->
-    
+
     <div class="categorySettingsContainer">
         <mat-card id="Kategorien">
             <mat-card-title class="title">
@@ -9,7 +9,7 @@
             </mat-card-title>
             <mat-card-content>
                 <div class="categoryContainer">
-                    <div *ngFor="let category of this.faecherManager.faecherData.categories" class="category">
+                    <div *ngFor="let category of this.faecherManager.mappenData.categories" class="category">
                         <div align="left" class="categoryTitleContainer">
                             {{ category.name }}
                         </div>

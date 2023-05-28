@@ -6,7 +6,7 @@
     <button mat-icon-button class="icon" [routerLink]="this.goBackUrl()">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <button mat-icon-button routerLink="/faecher/" class="icon">
+    <button mat-icon-button routerLink="/mappen/" class="icon">
       <mat-icon>home</mat-icon>
     </button>
 
@@ -14,7 +14,7 @@
 
     <div class="search" [ngClass]="{'searchActive': this.activeWhiteboardService.isSearchActive}">
       <input type="text" onfocus="this.select();" onmouseup="return false;"  placeholder="Suchen..." routerLink="/search/" [(ngModel)]="this.searchService.input">
-      <button (click)="this.searchService.input = ''" routerLink="/faecher/">
+      <button (click)="this.searchService.input = ''" routerLink="/mappen/">
         <mat-icon>
           clear
         </mat-icon>

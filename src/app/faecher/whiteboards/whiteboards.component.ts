@@ -1,10 +1,9 @@
-import { Einheit } from './../global/interfaces/fach';
 import { AddWhiteboardDialogComponent, DialogData } from './add-whiteboard-dialog/add-whiteboard-dialog.component';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ElectronService } from 'ngx-electron';
-import { Fach, Whiteboard } from '../global/interfaces/fach';
-import { FaecherManagerService } from '../global/services/faecher-manager.service';
+import {Gruppe, Whiteboard} from '../global/interfaces/fach';
+import { MappenManagerService } from '../global/services/mappen-manager.service';
 
 @Component({
   selector: 'faecher-whiteboards',
@@ -12,7 +11,7 @@ import { FaecherManagerService } from '../global/services/faecher-manager.servic
   styleUrls: ['./whiteboards.component.scss']
 })
 export class WhiteboardsComponent implements OnInit {
-  
+
   @Input()
   whiteboards: Whiteboard[] | undefined = [];
 
@@ -20,12 +19,9 @@ export class WhiteboardsComponent implements OnInit {
   isAbleToAddWhiteboards: boolean = true;
 
   @Input()
-  fach?: Fach;
+  gruppe?: Gruppe;
 
-  @Input()
-  einheit?: Einheit;
-
-  constructor(public readonly electron: ElectronService, public dialog: MatDialog, public readonly faecherManager: FaecherManagerService) { }
+  constructor(public readonly electron: ElectronService, public dialog: MatDialog, public readonly faecherManager: MappenManagerService) { }
 
   ngOnInit(): void {
   }
@@ -33,7 +29,7 @@ export class WhiteboardsComponent implements OnInit {
   public newWhiteboard(): void {
     const dialogRef = this.dialog.open(AddWhiteboardDialogComponent, {
       width: '500px',
-      data: { 
+      data: {
         name: ''
       }
     });
@@ -41,7 +37,7 @@ export class WhiteboardsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != undefined && result != "") {
         let res = result as DialogData;
-        this.whiteboards?.push(this.faecherManager.addWhiteboard(this.fach, this.einheit, res.name));
+        this.whiteboards?.push(this.faecherManager.addWhiteboard(this.gruppe, res.name));
       }
     });
   }
@@ -52,7 +48,7 @@ export class WhiteboardsComponent implements OnInit {
     if (index != undefined && index != -1) {
       this.whiteboards?.splice(index, 1);
 
-      this.faecherManager.deleteWhitebaord(this.fach, this.einheit, whiteboard);
+      this.faecherManager.deleteWhitebaord(this.gruppe, whiteboard);
 
       return true;
     }

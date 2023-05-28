@@ -1,8 +1,7 @@
-import { TouchController } from 'dist/whiteboard/lib/global-whiteboard/essentials/touchController';
 import { Board } from 'src/app/whiteboard/global-whiteboard/board/board';
 import { Color as IColor } from '../interfaces/whiteboard';
-import { Vector, Point } from './../interfaces/point';
-import { Rect } from './../interfaces/rect';
+import { Vector, Point } from '../interfaces/point';
+import { Rect } from '../interfaces/rect';
 import { Color } from './color';
 import { TouchControllerEvents } from './touchController';
 
@@ -256,8 +255,8 @@ export function getAngle(p1: Point, p2: Point): number {
 }
 
 export function getTouchControllerEventsAllSame(
-    start: (p: Point) => void, 
-    move: (from: Point, to: Point) => void, 
+    start: (p: Point) => void,
+    move: (from: Point, to: Point) => void,
     end: (p: Point) => void,
     pinchZoom?: (factor: number, p: Point) => void,
     pinchTurn?: (angle: number, p: Point) => void,
@@ -288,7 +287,7 @@ export function mod(a: number, modul: number): number {
 }
 
 export function getIntersectionRects(rect1: Rect | DOMRect, rect2: Rect | DOMRect) {
-    
+
     if ((rect1 as DOMRect).left) rect1 = DOMRectToRect(rect1 as DOMRect);
     if ((rect2 as DOMRect).left) rect2 = DOMRectToRect(rect2 as DOMRect);
 

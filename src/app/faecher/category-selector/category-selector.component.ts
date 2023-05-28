@@ -1,4 +1,4 @@
-import { FaecherManagerService } from 'src/app/faecher/global/services/faecher-manager.service';
+import { MappenManagerService } from '../global/services/mappen-manager.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -11,7 +11,7 @@ export class CategorySelectorComponent implements OnInit {
   @Input() categoryId: string | undefined;
   @Output() categoryIdChange: EventEmitter<string | undefined> = new EventEmitter<string | undefined>();
 
-  constructor(public readonly faecherManager: FaecherManagerService) { }
+  constructor(public readonly faecherManager: MappenManagerService) { }
 
   ngOnInit(): void {
   }

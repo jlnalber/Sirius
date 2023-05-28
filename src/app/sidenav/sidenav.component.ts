@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Fach } from '../faecher/global/interfaces/fach';
-import { FaecherManagerService } from '../faecher/global/services/faecher-manager.service';
+import { MappenManagerService } from '../faecher/global/services/mappen-manager.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -13,10 +12,10 @@ export class SidenavComponent implements OnInit {
   @Output()
   openedChange = new EventEmitter<boolean>();
 
-  constructor(public faecherManager: FaecherManagerService) { }
+  constructor(public mappenManager: MappenManagerService) { }
 
   ngOnInit(): void {
-    
+
   }
 
 }

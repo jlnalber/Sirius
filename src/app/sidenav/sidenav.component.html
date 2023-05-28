@@ -1,11 +1,11 @@
 <div class="faecherContainer">
     <mat-nav-list>
-        <mat-list-item [routerLink]="'/faecher/'" class="fill" (click)="this.openedChange.emit(false)">
+        <mat-list-item [routerLink]="'/mappen/'" class="fill" (click)="this.openedChange.emit(false)">
             Übersicht
         </mat-list-item>
-        <mat-divider *ngIf="this.faecherManager.faecherData.faecher.length != 0"></mat-divider>
-        <mat-list-item routerLinkActive="activeLink" *ngFor="let fach of this.faecherManager.faecherData.faecher" [routerLink]="'/faecher/' + fach.id" class="fill" (click)="this.openedChange.emit(false)">
-            {{ fach.name }}
+        <mat-divider *ngIf="this.mappenManager.mappenData.mappen.length != 0"></mat-divider>
+        <mat-list-item routerLinkActive="activeLink" *ngFor="let mappe of this.mappenManager.mappenData.mappen" [routerLink]="this.mappenManager.getLinkToMappe(mappe)" class="fill" (click)="this.openedChange.emit(false)">
+            {{ mappe.title }}
         </mat-list-item>
         <mat-divider></mat-divider>
         <mat-list-item routerLinkActive="activeLink" [routerLink]="'/whiteboard/'" class="fill" (click)="this.openedChange.emit(false)">
@@ -23,9 +23,9 @@
             Übersicht
         </button>
     </div>
-    <div *ngFor="let fach of this.faecherManager.faecher" class="fachContainer topStroke fill">
-        <button mat-button [routerLink]="'/faecher/' + fach.id" class="fill" (click)="this.openedChange.emit(false)">
-            {{ fach.name }}
+    <div *ngFor="let gruppe of this.faecherManager.faecher" class="fachContainer topStroke fill">
+        <button mat-button [routerLink]="'/faecher/' + gruppe.id" class="fill" (click)="this.openedChange.emit(false)">
+            {{ gruppe.name }}
         </button>
     </div>-->
 </div>

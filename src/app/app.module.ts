@@ -1,4 +1,4 @@
-import { FaecherManagerService } from './faecher/global/services/faecher-manager.service';
+import { MappenManagerService } from './faecher/global/services/mappen-manager.service';
 import { FaecherModule } from './faecher/faecher.module';
 import { WhiteboardModule } from './whiteboard/whiteboard.module';
 import { EditorModule } from './editor/editor.module';
@@ -69,7 +69,7 @@ import { ConfigComponent } from './settings/config/config.component';
     FaecherModule,
     EditorModule
   ],
-  providers: [FaecherManagerService],
+  providers: [MappenManagerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

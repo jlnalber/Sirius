@@ -1,17 +1,17 @@
 <div class="fachContainer">
-    <h1>Fächer</h1>
+    <h1>Mappen</h1>
     <button mat-button class="floatRight" (click)="this.openDialog()">Hinzufügen</button>
 
     <div class="faecherContainer">
-        <mat-card *ngFor="let fach of this.faecherManager.faecherData.faecher">
+        <mat-card *ngFor="let gruppe of this.mappenManager.mappenData.mappen">
             <mat-card-title>
-                <h2>{{ fach.name }}</h2>
+                <h2>{{ gruppe.title }}</h2>
             </mat-card-title>
             <mat-card-content>
-                {{ fach.description }}
+                {{ gruppe.description }}
             </mat-card-content>
             <mat-card-actions align="end">
-                <button [routerLink]="'/faecher/' + fach.id" routerLinkActive="active" mat-flat-button>Anzeigen</button>
+                <button [routerLink]="'/mappen/' + gruppe.id" routerLinkActive="active" mat-flat-button>Anzeigen</button>
             </mat-card-actions>
         </mat-card>
     </div>

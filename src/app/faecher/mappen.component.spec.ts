@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FaecherComponent } from './faecher.component';
+import { MappenComponent } from './mappen.component';
 
 describe('FaecherComponent', () => {
-  let component: FaecherComponent;
-  let fixture: ComponentFixture<FaecherComponent>;
+  let component: MappenComponent;
+  let fixture: ComponentFixture<MappenComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FaecherComponent ]
+      declarations: [ MappenComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FaecherComponent);
+    fixture = TestBed.createComponent(MappenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

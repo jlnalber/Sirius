@@ -1,8 +1,16 @@
 import { Color } from "src/app/whiteboard/global-whiteboard/interfaces/whiteboard";
 
-export interface Faecher {
-    faecher: Fach[],
-    categories: Category[]
+export interface Mappen {
+  mappen: Mappe[],
+  categories: Category[],
+  gruppen: Gruppe[],
+}
+
+export interface Mappe {
+  title: string,
+  description: string,
+  gruppen: string[],
+  id: string
 }
 
 export interface Category {
@@ -11,26 +19,15 @@ export interface Category {
     id: string
 }
 
-export interface Fach {
+export interface Gruppe {
     id: string,
     name: string,
     description: string,
     files: File[],
-    einheiten: Einheit[],
+    gruppen: string[],
     editors: Editor[],
     notes: string,
     tasks: Task[],
-    whiteboards: Whiteboard[]
-}
-
-export interface Einheit {
-    id: string,
-    topic: string,
-    description: string,
-    notes: string,
-    tasks: Task[],
-    files: File[],
-    editors: Editor[],
     whiteboards: Whiteboard[]
 }
 

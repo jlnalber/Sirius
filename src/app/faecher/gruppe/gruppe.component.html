@@ -1,47 +1,47 @@
 
-<div class="fachContainer">
+<div class="gruppeContainer">
     <button mat-button color="accent" class="floatRight deleteButton" (click)="this.onDeleteClick()">Löschen</button>
     <button mat-button class="floatRight" (click)="this.onEditClick()">Bearbeiten</button>
     <h1>
-        {{ this.fach?.name }}
+        {{ this.gruppe?.name }}
     </h1>
 
     <p>
-        {{ this.fach?.description }}
+        {{ this.gruppe?.description }}
     </p>
 
     <mat-form-field appearance="outline" class="fill">
         <mat-label>Notizen</mat-label>
-        <textarea *ngIf="this.fach" matInput [(ngModel)]="this.fach.notes"></textarea>
+        <textarea *ngIf="this.gruppe" matInput [(ngModel)]="this.gruppe.notes"></textarea>
     </mat-form-field>
 
     <div class="marginBottom">
-        <faecher-tasks *ngIf="this.fach" [tasks]="this.fach?.tasks">
+        <faecher-tasks *ngIf="this.gruppe" [tasks]="this.gruppe?.tasks">
 
         </faecher-tasks>
     </div>
 
     <div class="marginBottom">
-        <faecher-files *ngIf="this.fach" [files]="this.fach?.files">
+        <faecher-files *ngIf="this.gruppe" [files]="this.gruppe?.files">
 
         </faecher-files>
     </div>
 
     <div class="marginBottom">
-        <faecher-whiteboards *ngIf="this.fach" [whiteboards]="this.fach?.whiteboards" [fach]="this.fach">
+        <faecher-whiteboards *ngIf="this.gruppe" [whiteboards]="this.gruppe?.whiteboards" [gruppe]="this.gruppe">
 
         </faecher-whiteboards>
     </div>
 
     <div class="marginBottom">
-        <faecher-editors *ngIf="this.fach" [editors]="this.fach?.editors" [fach]="this.fach">
+        <faecher-editors *ngIf="this.gruppe" [editors]="this.gruppe?.editors" [gruppe]="this.gruppe">
 
         </faecher-editors>
     </div>
 
     <div class="marginBottom">
-        <faecher-einheiten *ngIf="this.fach" [einheiten]="this.fach?.einheiten">
-            
-        </faecher-einheiten>
+        <faecher-untergruppen *ngIf="this.gruppe" [oberElement]="this.gruppe">
+
+        </faecher-untergruppen>
     </div>
 </div>

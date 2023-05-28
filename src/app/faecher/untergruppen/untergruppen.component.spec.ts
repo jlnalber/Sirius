@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FachComponent } from './fach.component';
+import { UntergruppenComponent } from './untergruppen.component';
 
-describe('FachComponent', () => {
-  let component: FachComponent;
-  let fixture: ComponentFixture<FachComponent>;
+describe('EinheitenComponent', () => {
+  let component: UntergruppenComponent;
+  let fixture: ComponentFixture<UntergruppenComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FachComponent ]
+      declarations: [ UntergruppenComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FachComponent);
+    fixture = TestBed.createComponent(UntergruppenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
